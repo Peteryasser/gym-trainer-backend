@@ -4,9 +4,17 @@ import supabase from './app/supabaseClient';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import fs from 'fs';
 import path from 'path';
+import { CLOUDINARY_EXERCISES_FOLDER_NAME } from './constants';
+import { ExerciseService } from './exercise/exercise.service';
+import { ImageService } from './image/image.service';
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService,private cloudinary: CloudinaryService) {}
+  constructor(
+    private readonly appService: AppService,
+    private cloudinary: CloudinaryService,
+    private exerciseService: ExerciseService,
+    private imageService:ImageService
+    ) {}
 
   @Get()
   getHello(): string {
@@ -21,37 +29,55 @@ export class AppController {
   }
 
 
-  @Get("/uploadToCloudinary")
+
+
+
+  @Get("/testRapidAPIandCloudinary")
+  async testRapidAPIandCloudinary(): Promise<string> {
+    try {
+      const exercises = await this.exerciseService.getBackExercises()
+      const exercise = exercises[0]
+      const url = exercise['gifUrl']
+      console.log("url retreived >>>> ",url);
+      const buffer = await this.imageService.fetchImage(url)
+      this.uploadWorkoutImageToCloudinary(buffer)
+      return 'Image from rapid api is uploaded to Cloudinary successfully!';
+
+    } catch (error) {
+      console.error('Failed at some point:', error.message);
+      throw new BadRequestException('Failed to retrieve data from rapid API');
+    }
+  }
+
+  
+
+  @Get("/testRapidAPI")
+  async testRapidAPI(): Promise<string> {
+    try {
+      return this.exerciseService.getBackExercises()
+    } catch (error) {
+      console.error('Failed to upload image to Cloudinary:', error.message);
+      throw new BadRequestException('Failed to retrieve data from rapid API');
+    }
+  }
+
+
+
+  @Get("/testCloudinary")
   async testCloudinary(): Promise<string> {
     try {
-
-      const filePath = path.resolve(__dirname, '..', 'assets', 'test_image.png');
-      const fileBuffer = fs.readFileSync(filePath);
-
-      // Create a Multer file object
-      const file: Express.Multer.File = {
-        fieldname: 'image',
-        originalname: 'test_image.png',
-        encoding: '7bit',
-        mimetype: 'image/png',
-        size: fileBuffer.length,
-        buffer: fileBuffer,
-        destination: '',
-        filename: 'test_image.png',
-        path: filePath,
-        stream: fs.createReadStream(filePath), // Provide a readable stream for the file
-      };
-      // Call uploadImageToCloudinary function
-      await this.uploadImageToCloudinary(file);
-
+      const imageBuffer = await this.imageService.loadLocalTestImage( 'assets\\test_image.png');
+      const imageUrl = await this.uploadWorkoutImageToCloudinary(imageBuffer);
+      console.log('Image uploaded successfully:', imageUrl);
       return 'Image uploaded to Cloudinary successfully!';
     } catch (error) {
+      console.error('Failed to upload image to Cloudinary:', error.message);
       throw new BadRequestException('Failed to upload image to Cloudinary.');
     }
   }
 
-  async uploadImageToCloudinary(file: Express.Multer.File) {
-    return await this.cloudinary.uploadImage(file).catch(() => {
+  async uploadWorkoutImageToCloudinary(imageBuffer:Buffer) {
+    return await this.cloudinary.uploadImage(imageBuffer,CLOUDINARY_EXERCISES_FOLDER_NAME).catch(() => {
       throw new BadRequestException('Invalid file type.');
     });
   }
