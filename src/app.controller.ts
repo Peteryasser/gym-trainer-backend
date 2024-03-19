@@ -2,8 +2,6 @@ import { Controller, Get, Post ,BadRequestException} from '@nestjs/common';
 import { AppService } from './app.service';
 import supabase from './app/supabaseClient';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
-import fs from 'fs';
-import path from 'path';
 import { CLOUDINARY_EXERCISES_FOLDER_NAME } from './constants';
 import { ExerciseService } from './exercise/exercise.service';
 import { ImageService } from './image/image.service';
