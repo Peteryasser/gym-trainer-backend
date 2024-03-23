@@ -1,0 +1,72 @@
+import { UUID } from 'crypto';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
+@Entity('users')
+export class User {
+  @PrimaryGeneratedColumn()
+  id?: UUID;
+
+  @Column({ length: 255, unique: true })
+  email: string;
+
+  @Column({ length: 100, unique: true })
+  username: string;
+
+  @Column({ length: 100 })
+  firstName: string;
+
+  @Column({ length: 100 })
+  lastName: string;
+
+  @Column({ length: 255, nullable: true })
+  password: string;
+
+  @Column({ length: 10 })
+  gender: string;
+
+  @Column({ length: 255, nullable: true })
+  profilePictureUrl: string;
+
+  @Column({ length: 10 })
+  countryCode: string;
+
+  @Column({ length: 20 })
+  phoneNumber: string;
+
+  @Column({ type: 'date', nullable: true })
+  dateOfBirth: Date;
+
+  @Column({ length: 6, nullable: true })
+  verificationToken: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  verificationTokenSentAt: Date;
+
+  @Column({ length: 6, nullable: true })
+  resetPasswordToken: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  resetPasswordTokenSentAt: Date;
+
+  @Column({ default: false })
+  isEmailVerified: boolean;
+
+  @Column({ default: false })
+  isSocialAccount: boolean;
+
+  @Column({ default: true })
+  enableNotifications: boolean;
+
+  @Column({ length: 10, default: 'en' })
+  defaultLocale: string;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
+}
