@@ -5,12 +5,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import typeorm from './config/typeorm';
-import { ExerciseService } from './exercise/exercise.service';
 import { ImageService } from './image/image.service';
+import { WorkoutController } from './workout/workout.controller';
+import { ExerciseModule } from './exercise/exercise.module';
+import { ExerciseService } from './exercise/exercise.service';
+import { Exercise } from './entity/exercise';
 
 @Module({
   imports: [
-    // CloudinaryModule ,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeorm],
@@ -20,9 +22,11 @@ import { ImageService } from './image/image.service';
       useFactory: async (configService: ConfigService) =>
         configService.get('typeorm'),
     }),
-    CloudinaryModule
+    TypeOrmModule.forFeature([Exercise]),
+    CloudinaryModule,
+    ExerciseModule
   ],
-  controllers: [AppController],
-  providers: [AppService, ExerciseService, ImageService],
+  controllers: [AppController, WorkoutController],
+  providers: [AppService, ImageService, ExerciseService],
 })
 export class AppModule {}

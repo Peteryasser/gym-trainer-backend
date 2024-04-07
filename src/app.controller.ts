@@ -1,10 +1,11 @@
-import { Controller, Get, Post ,BadRequestException} from '@nestjs/common';
+import { Controller, Get, Post ,BadRequestException, Body} from '@nestjs/common';
 import { AppService } from './app.service';
 import supabase from './app/supabaseClient';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { CLOUDINARY_EXERCISES_FOLDER_NAME } from './constants';
 import { ExerciseService } from './exercise/exercise.service';
 import { ImageService } from './image/image.service';
+import { ExerciseDTO } from './dtos/exercise.dto';
 @Controller()
 export class AppController {
   constructor(
@@ -28,7 +29,7 @@ export class AppController {
 
 
 
-
+  
 
   @Get("/testRapidAPIandCloudinary")
   async testRapidAPIandCloudinary(): Promise<string> {
@@ -74,6 +75,18 @@ export class AppController {
     }
   }
 
+  @Post("/addDummyWorkout")
+  async dummyWorkout(
+    @Body() exerciseDTO:ExerciseDTO
+  ): Promise<string> {
+    try {
+      await this.exerciseService.createExercise(exerciseDTO)
+      return 'added successfully';
+    } catch (error) {
+      console.error('Error message:', error.message);
+      throw new BadRequestException('Couldn\'t save to the backend');
+    }
+  }
   async uploadWorkoutImageToCloudinary(imageBuffer:Buffer) {
     return await this.cloudinary.uploadImage(imageBuffer,CLOUDINARY_EXERCISES_FOLDER_NAME).catch(() => {
       throw new BadRequestException('Invalid file type.');

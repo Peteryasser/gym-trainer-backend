@@ -1,12 +1,14 @@
 // src/entities/exercise.entity.ts
 
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, ManyToMany, JoinTable, Unique } from 'typeorm';
 import { BodyPart } from './bodyPart';
 import { Muscle } from './muscle';
 import { Instruction } from './instruction';
 import { Equipment} from './equipment';
+import { unique } from 'next/dist/build/utils';
 
-@Entity('exercises') // Specify the table name (optional)
+@Entity( {name:'exercises'}) // Specify the table name (optional)
+@Unique(["idApi"])
 export class Exercise {
   @PrimaryGeneratedColumn()
   id: number;
@@ -38,31 +40,3 @@ export class Exercise {
   equipments: Equipment[];
 }
 
-
-/*
-
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from "typeorm";
-
-@Entity({name: 'User'})
-@Unique(["email"])
-export class User{
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Column()
-    email: string;
-
-    @Column("varchar", { length: 256 })
-    name: string;
-
-    @Column()
-    password: string;
-
-    @Column({ nullable: true }) // Nullable because OTP might not be set initially
-    otp: string;
-
-    @Column({ nullable: true, type: "timestamp" }) // Nullable because OTP expiration might not be set initially
-    otpExpiration: Date;
-
-}
-*/

@@ -1,5 +1,10 @@
 import { registerAs } from '@nestjs/config';
 import { config as dotenvConfig } from 'dotenv';
+import { BodyPart } from 'src/entity/bodyPart';
+import { Equipment } from 'src/entity/equipment';
+import { Exercise } from 'src/entity/exercise';
+import { Instruction } from 'src/entity/instruction';
+import { Muscle } from 'src/entity/muscle';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
 dotenvConfig({ path: '.env' });
@@ -18,4 +23,4 @@ const config = {
 };
 
 export default registerAs('typeorm', () => config);
-export const connectionSource = new DataSource(config as DataSourceOptions);
+export const connectionSource =new DataSource(config as DataSourceOptions);
