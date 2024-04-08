@@ -10,6 +10,8 @@ import { WorkoutController } from './workout/workout.controller';
 import { ExerciseModule } from './exercise/exercise.module';
 import { ExerciseService } from './exercise/exercise.service';
 import { Exercise } from './entity/exercise';
+import { Ingredient } from './entity/ingredient';
+import { IngredientService } from './ingrediant/ingredient.service';
 
 @Module({
   imports: [
@@ -26,6 +28,6 @@ import { Exercise } from './entity/exercise';
     ExerciseModule
   ],
   controllers: [AppController, WorkoutController],
-  providers: [AppService, ImageService, ExerciseService],
+  providers: [AppService, ImageService, ExerciseService, IngredientService],
 })
 export class AppModule {}

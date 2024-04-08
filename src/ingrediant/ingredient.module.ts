@@ -8,4 +8,9 @@ import { Ingredient } from 'src/entity/ingredient';
   providers: [IngredientService],
   controllers: [IngredientController],
 })
-export class IngredientModule {}
+export class IngredientModule {
+
+  constructor() {
+    
+  }
+}
