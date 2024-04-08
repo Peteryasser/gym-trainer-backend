@@ -1,7 +1,6 @@
-// Instruction.entity.ts
+// Instruction Entity
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Exercise } from './exercise';
-
 
 @Entity()
 export class Instruction {
@@ -11,10 +10,10 @@ export class Instruction {
   @Column()
   description: string;
 
-  @Column()
+  @Column({ default: 0 })
   order: number;
 
   @ManyToOne(() => Exercise, exercise => exercise.instructions)
-  @JoinColumn({name:'exercise_id'})
+  @JoinColumn({ name: 'exercise_id', referencedColumnName: 'id' })
   exercise: Exercise;
 }

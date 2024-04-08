@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToMany } from 'typeorm';
+// Equipment Entity
+import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToMany, JoinTable } from 'typeorm';
 import { Exercise } from './exercise';
 
 @Entity('Equipments') // Specify the table name (optional)
@@ -10,8 +11,7 @@ export class Equipment {
     @Column({ type: 'varchar', length: 45 })
     name: string;
 
-    @ManyToMany(()=>Exercise,(exercise)=>exercise.equipments)
-    exercises:Exercise[]
-
+    @ManyToMany(() => Exercise, exercise => exercise.equipments)
+    @JoinTable() // JoinTable decorator needed for many-to-many relationships
+    exercises: Exercise[];
 }
-

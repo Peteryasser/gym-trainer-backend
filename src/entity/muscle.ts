@@ -1,3 +1,4 @@
+// Muscle Entity
 import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToMany, OneToMany } from 'typeorm';
 import { Exercise } from './exercise';
 
@@ -10,11 +11,9 @@ export class Muscle {
     @Column({ type: 'varchar', length: 45 })
     name: string;
 
-    @OneToMany(() => Exercise, (exercise) => exercise.targetMuscle)
-    mainFocusExercises:Exercise[];
+    @OneToMany(() => Exercise, (exercise) => exercise.targetMuscle, { cascade: true })
+    mainFocusExercises: Exercise[];
 
     @ManyToMany(() => Exercise, (exercise) => exercise.secondaryMuscles)
-    secondaryFocusExercises:Exercise[];
-
+    secondaryFocusExercises: Exercise[];
 }
-

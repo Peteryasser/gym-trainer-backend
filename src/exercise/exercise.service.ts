@@ -17,62 +17,48 @@ dotenvConfig({ path: '.env' });
 @Injectable()
 export class ExerciseService {
   private readonly apiUrl = 'https://exercisedb.p.rapidapi.com';
-  constructor(
-    // @InjectRepository(Exercise)
-    // private exerciseRepository: Repository<Exercise>,
-  ) {}
-  async createExercise(dto:ExerciseDTO){
-    console.log("a");
-    
+  constructor() {}
+  async createExercise(dto: ExerciseDTO) {
     const exercise = new Exercise();
-    console.log("b");
-
-    // Assuming idApi is equivalent to id in ExerciseDTO
     exercise.idApi = dto.id;
 
-    // Assuming you have the BodyPart, Equipment, and Muscle objects fetched based on provided data
     const bodyPart = new BodyPart();
-    bodyPart.name = dto.bodyPart; // Assuming name in BodyPart is the relevant property
+    bodyPart.name = dto.bodyPart;
     exercise.bodyPart = bodyPart;
 
     const equipment = new Equipment();
-    equipment.name = dto.equipment; // Assuming name in Equipment is the relevant property
-    exercise.equipments = [equipment]; // Assuming equipments is an array
+    equipment.name = dto.equipment;
+    exercise.equipments = [equipment];
 
     exercise.gifUrl = dto.gifUrl;
-    
-    // Assuming targetMuscle is found based on provided data
+
     const targetMuscle = new Muscle();
-    targetMuscle.name = dto.target; // Assuming name in Muscle is the relevant property
+    targetMuscle.name = dto.target;
     exercise.targetMuscle = targetMuscle;
 
-    // Assuming secondaryMuscles are found based on provided data
     const secondaryMuscles: Muscle[] = [];
     dto.secondaryMuscles.forEach(muscleName => {
         const secondaryMuscle = new Muscle();
-        secondaryMuscle.name = muscleName; // Assuming name in Muscle is the relevant property
+        secondaryMuscle.name = muscleName;
         secondaryMuscles.push(secondaryMuscle);
     });
     exercise.secondaryMuscles = secondaryMuscles;
 
-    // Assuming instructions are directly mapped from DTO
-    exercise.instructions = dto.instructions.map(instruction => {
+    exercise.instructions = dto.instructions.map((instruction, index) => {
         const mappedInstruction = new Instruction();
         mappedInstruction.description = instruction;
+        mappedInstruction.order = index;
         return mappedInstruction;
     });
 
     const connection = await ConnectionManager.getConnection();
-
-    console.log("c");
     try {
-        await connection.manager.save(exercise);
+        await connection.manager.save(exercise); // Inserting a new record into the database
     } catch (e) {
         console.log(e);
     }
-    console.log(exercise)
-    
- }
+}
+
     
   async getBackExercises(): Promise<any> {
     const headers = {
