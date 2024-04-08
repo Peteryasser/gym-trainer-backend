@@ -11,7 +11,7 @@ export class Muscle {
     @Column({ type: 'varchar', length: 45 })
     name: string;
 
-    @OneToMany(() => Exercise, (exercise) => exercise.targetMuscle, { cascade: true })
+    @OneToMany(() => Exercise, (exercise) => exercise.targetMuscle)
     mainFocusExercises: Exercise[];
 
     @ManyToMany(() => Exercise, (exercise) => exercise.secondaryMuscles)

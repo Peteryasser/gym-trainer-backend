@@ -22,7 +22,6 @@ import { Exercise } from './entity/exercise';
       useFactory: async (configService: ConfigService) =>
         configService.get('typeorm'),
     }),
-    TypeOrmModule.forFeature([Exercise]),
     CloudinaryModule,
     ExerciseModule
   ],

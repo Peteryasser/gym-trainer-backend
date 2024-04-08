@@ -14,18 +14,18 @@ export class Exercise {
   @Column({ type: 'varchar', length: 255 })
   idApi: string;
 
-  @ManyToOne(() => BodyPart, (bodyPart) => bodyPart.exercises)
+  @ManyToOne(() => BodyPart, (bodyPart) => bodyPart.exercises,{cascade:true})
   @JoinColumn()
   bodyPart: BodyPart;
 
   @Column({ type: 'varchar', length: 255 })
   gifUrl: string;
 
-  @ManyToOne(() => Muscle, (muscle) => muscle.mainFocusExercises)
+  @ManyToOne(() => Muscle, (muscle) => muscle.mainFocusExercises,{cascade:true})
   @JoinColumn()
   targetMuscle: Muscle;
 
-  @ManyToMany(() => Muscle, (muscle) => muscle.secondaryFocusExercises)
+  @ManyToMany(() => Muscle, (muscle) => muscle.secondaryFocusExercises,{cascade:true})
   @JoinTable()
   secondaryMuscles: Muscle[];
 

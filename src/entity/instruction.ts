@@ -14,6 +14,6 @@ export class Instruction {
   order: number;
 
   @ManyToOne(() => Exercise, exercise => exercise.instructions)
-  @JoinColumn({ name: 'exercise_id', referencedColumnName: 'id' })
+  @JoinColumn()
   exercise: Exercise;
 }
