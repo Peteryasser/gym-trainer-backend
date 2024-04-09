@@ -32,7 +32,7 @@ export class Exercise {
   @OneToMany(() => Instruction, instruction => instruction.exercise, { cascade: true })
   instructions: Instruction[];
 
-  @ManyToMany(() => Equipment, (equipment) => equipment.exercises)
+  @ManyToMany(() => Equipment, (equipment) => equipment.exercises, { cascade: true })
   @JoinTable()
   equipments: Equipment[];
 }

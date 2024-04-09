@@ -62,6 +62,44 @@ export class AppController {
 
 
 
+  @Get("/populateDB")
+  async populateDB(): Promise<string> {
+    try {
+      const exercises = await this.exerciseService.getAllExercises()
+      for (const exercise of exercises) {
+        const url = exercise['gifUrl']
+        const buffer = await this.imageService.fetchImage(url)
+        const newUrl = await this.uploadWorkoutImageToCloudinary(buffer)
+        exercise['gifUrl'] = newUrl
+        await this.exerciseService.createExercise(exercise)
+      }
+      console.log(" ============= DONE ===============");
+      
+      return 'Population of the exercises is done';
+
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Failed at some point');
+    }
+  }
+
+
+
+  
+  @Get("/getAllExercise")
+  async getAllExercise(): Promise<string> {
+    try {
+      return this.exerciseService.getAllExercises()
+    } catch (error) {
+      console.error('Failed to upload image to Cloudinary:', error.message);
+      throw new BadRequestException('Failed to retrieve data from rapid API');
+    }
+  }
+
+  
+
+
+
   @Get("/testCloudinary")
   async testCloudinary(): Promise<string> {
     try {
