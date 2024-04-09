@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class UserRegisterRequestDto {
   @IsNotEmpty()
@@ -19,4 +25,8 @@ export class UserRegisterRequestDto {
   @IsString()
   @MinLength(6)
   password: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  isCoach: boolean;
 }

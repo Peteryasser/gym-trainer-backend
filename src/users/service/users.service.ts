@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { User } from '../users.entity';
+import { User } from '../entities/user.entity';
 import { UUID } from 'crypto';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class UsersService {
     return this.usersRepository.findOneBy({ username });
   }
 
-  findOneById(id: UUID): Promise<User | null> {
+  findOneById(id: number): Promise<User | null> {
     return this.usersRepository.findOneBy({ id });
   }
 

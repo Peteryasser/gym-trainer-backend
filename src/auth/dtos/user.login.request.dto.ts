@@ -7,4 +7,8 @@ export class UserLoginRequestDto {
   @IsString()
   @MinLength(6)
   password: string;
+
+  @IsString()
+  @MinLength(6)
+  fcmToken: string;
 }

@@ -1,10 +1,17 @@
-import { UUID } from 'crypto';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
+import { Device } from './device.entity';
+import { Coach } from '../coaches/coach.entity';
 
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
-  id?: UUID;
+  id?: number;
 
   @Column({ length: 255, unique: true })
   email: string;
@@ -69,4 +76,10 @@ export class User {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
+
+  @OneToMany(() => Device, (device) => device.user)
+  devices: Device[];
+
+  @OneToOne(() => Coach, { cascade: true })
+  coach: Coach;
 }
