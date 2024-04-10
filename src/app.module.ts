@@ -9,9 +9,10 @@ import { ImageService } from './image/image.service';
 import { WorkoutController } from './workout/workout.controller';
 import { ExerciseModule } from './exercise/exercise.module';
 import { ExerciseService } from './exercise/exercise.service';
-import { Exercise } from './entity/exercise';
-import { Ingredient } from './entity/ingredient';
+// import { Exercise } from './entity/exercise';
+// import { Ingredient } from './entity/ingredient';
 import { IngredientService } from './ingrediant/ingredient.service';
+import { IngredientController } from './ingrediant/ingredient.controller';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { IngredientService } from './ingrediant/ingredient.service';
     CloudinaryModule,
     ExerciseModule
   ],
-  controllers: [AppController, WorkoutController],
+  controllers: [AppController, WorkoutController, IngredientController],
   providers: [AppService, ImageService, ExerciseService, IngredientService],
 })
 export class AppModule {}
