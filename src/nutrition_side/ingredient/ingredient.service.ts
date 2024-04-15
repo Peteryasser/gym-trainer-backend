@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CSVReaderService } from 'src/Readers/csv_reader.service';
-import { IngredientInfoDto } from 'src/dtos/ingredient.dto';
+import { CSVReaderService } from 'src/utils/Readers/csv_reader.service';
+import { IngredientInfoDto } from 'src/nutrition_side/ingredient/dtos/ingredient.dto';
 
 @Injectable()
 export class IngredientService {

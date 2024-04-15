@@ -4,7 +4,7 @@ import axios from 'axios';
 import { config as dotenvConfig } from 'dotenv';
 import { connectionSource } from 'src/config/typeorm';
 import { ConnectionManager } from 'src/config/connection_manager';
-import { ExerciseDTO } from 'src/dtos/exercise.dto';
+import { ExerciseDTO } from 'src/workout_side/exercise/dtos/exercise.dto';
 import { BodyPart } from 'src/entity/bodyPart';
 import { Equipment } from 'src/entity/equipment';
 import { Exercise } from 'src/entity/exercise';

@@ -1,11 +1,11 @@
 import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import supabase from 'src/app/supabaseClient';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from 'src/utils/cloudinary/cloudinary.service';
 import { CLOUDINARY_EXERCISES_FOLDER_NAME } from 'src/constants';
-import { ExerciseDTO } from 'src/dtos/exercise.dto';
-import { ExerciseService } from 'src/exercise/exercise.service';
-import { ImageService } from 'src/image/image.service';
+import { ExerciseDTO } from 'src/workout_side/exercise/dtos/exercise.dto';
+import { ExerciseService } from 'src/workout_side/exercise/exercise.service';
+import { ImageService } from 'src/utils/image/image.service';
 
 @Controller('population')
 export class PopulationController {

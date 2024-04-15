@@ -1,5 +1,5 @@
 import { v2 } from 'cloudinary';
-import { CLOUDINARY } from '../constants';
+import { CLOUDINARY } from '../../constants';
 import { config as dotenvConfig } from 'dotenv';
 
 dotenvConfig({ path: '.env' });

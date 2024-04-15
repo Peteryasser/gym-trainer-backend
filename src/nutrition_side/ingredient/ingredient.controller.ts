@@ -1,12 +1,12 @@
 import { Controller, Get, Res, Param, BadRequestException } from '@nestjs/common';
-import { IngredientInfoDto } from 'src/dtos/ingredient.dto';
+import { IngredientInfoDto } from 'src/nutrition_side/ingredient/dtos/ingredient.dto';
 import { IngredientService } from './ingredient.service';
 import * as request from 'request';
 import { headers } from 'next/headers';
 import axios from 'axios';
 import { Response } from 'express';
 import { CLOUDINARY_INGREDIENTS_FOLDER_NAME } from 'src/constants';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from 'src/utils/cloudinary/cloudinary.service';
 import { v2 } from 'cloudinary';
 import { Readable } from 'typeorm/platform/PlatformTools';
 

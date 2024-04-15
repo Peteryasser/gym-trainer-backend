@@ -1,6 +1,6 @@
 import { FindOneOptions, MoreThan } from "typeorm";
 import { User } from "../entity/User";
-import { ConnectionManager } from "./Connection_manager";
+import { ConnectionManager } from "src/config/connection_manager";
 
 export class UserDB {
     async addUser(email: string, name: string, password: string) {
