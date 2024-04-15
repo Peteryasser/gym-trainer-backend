@@ -56,8 +56,9 @@ exports.user_resetPassword = async (otp, password, confirmPassword) => {
         if (password.localeCompare(confirmPassword) != 0) return "Passwords do not match.";
         const userDB = new UserDB();
         const user = await userDB.checkotp(otp);
+        const id=0;
         if (!user) return "OTP is invalid or has expired.";
-        return await userDB.changepassword(user.id, password, confirmPassword);
+        return await userDB.changepassword(id, password, confirmPassword);
         
     }
     catch (err) {

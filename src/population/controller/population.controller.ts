@@ -1,6 +1,5 @@
 import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from 'src/app.service';
-import supabase from 'src/app/supabaseClient';
 import { CloudinaryService } from 'src/utils/cloudinary/cloudinary.service';
 import { CLOUDINARY_EXERCISES_FOLDER_NAME } from 'src/constants';
 import { ExerciseDTO } from 'src/workout_side/exercise/dtos/exercise.dto';
@@ -15,17 +14,6 @@ export class PopulationController {
         private exerciseService: ExerciseService,
         private imageService:ImageService
         ) {}
-
-    @Get("/get")
-    async getData(): Promise<string> {
-      console.log(await supabase.from('countries').select('*'));
-      return this.appService.getHello();
-    }
-  
-  
-  
-    
-  
     @Get("/testRapidAPIandCloudinary")
     async testRapidAPIandCloudinary(): Promise<string> {
       try {
