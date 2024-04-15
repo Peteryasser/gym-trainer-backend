@@ -1,31 +1,8 @@
 import { FindOneOptions, MoreThan } from "typeorm";
-import { User } from "../entity/User";
+import { User } from "src/entity/user.entity";
 import { ConnectionManager } from "src/config/connection_manager";
 
 export class UserDB {
-    async addUser(email: string, name: string, password: string) {
-        try {
-            const connection = await ConnectionManager.getConnection();
-            const user = new User();
-            user.email = email;
-            user.name = name;
-            user.password = password;
-            
-            try {
-                await connection.manager.save(user);
-            } catch (e) {
-                console.log(e);
-            }
-
-            return user.id;
-        } catch (error) {
-            if (error.code === "ER_DUP_ENTRY") {
-                return -1;
-            } else {
-                throw new Error("Failed to add new user: " + error.message);
-            }
-        }
-    }
 
     /**
      * The function `getUserByName` retrieves a user from the database based on their username.
@@ -37,7 +14,7 @@ export class UserDB {
         try {
             const connection = await ConnectionManager.getConnection();
             const options: FindOneOptions<User> = {
-                where: { name: username },
+                where: { username: username },
             };
             let user;
             try {
@@ -114,7 +91,7 @@ export class UserDB {
         try {
             const connection = await ConnectionManager.getConnection();
             const userRepository = connection.getRepository(User);
-            const updateFields: { otp: any; otpExpiration?: any } = { otp: otp };
+            const updateFields: { resetPasswordToken: any; otpExpiration?: any } = { resetPasswordToken: otp };
 
             // Include otpExpiration only if it's provided
             if (otpExpire) {
@@ -142,8 +119,8 @@ export class UserDB {
             // Check if there's a user with the given OTP and if the OTP hasn't expired
             const user = await userRepository.findOne({
                 where: {
-                    otp: otp,
-                    otpExpiration: MoreThan(new Date()) // MoreThan is imported from 'typeorm'
+                    resetPasswordToken: otp,
+                    resetPasswordTokenSentAt: MoreThan(new Date()) // MoreThan is imported from 'typeorm'
                 }
             });
     
@@ -160,8 +137,8 @@ export class UserDB {
             const userRepository = connection.getRepository(User);
             await userRepository.update(user_id, {
                 password: password, // Consider hashing the password before saving it
-                otp: null,
-                otpExpiration: null
+                resetPasswordToken: null,
+                resetPasswordTokenSentAt: null
             });
             return 'Password change successful';
         } catch (err) {

@@ -4,16 +4,6 @@ import { config as dotenvConfig } from 'dotenv';
 
 dotenvConfig({ path: '.env' });
 
-
-
-exports.user_add = async (email, name, password) => {
-    const userDB = new UserDB();
-    const user = await userDB.addUser(email, name, password);
-    return user;
-};
-
-    
-
 exports.user_forgotPassword = async (email) => {
     try {
         const userDB = new UserDB();
