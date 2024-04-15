@@ -1,5 +1,9 @@
 import {UserDB} from "../DAO/userDB";
 import nodemailer = require('nodemailer');
+import { config as dotenvConfig } from 'dotenv';
+
+dotenvConfig({ path: '.env' });
+
 
 
 exports.user_add = async (email, name, password) => {
@@ -23,16 +27,16 @@ exports.user_forgotPassword = async (email) => {
         const transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
-                user: 'gymk225@gmail.com',
-                pass: 'ydth wcaa xsrz urla',
+                user: `${process.env.EMAIL}`,
+                pass: `${process.env.EMAIL_KEY}`,
             },
         });
 
         const mailOptions = {
-            from: 'gymk225@gmail.com',
+            from: `${process.env.EMAIL}`,
             to: email,
             subject: 'Password reset OTP',
-            text: `Your OTP (It is expired after 3 min) : ${otp}`,
+            text: `Your OTP (It is expired after 5 min) : ${otp}`,
         };
 
         // Await sendMail operation to ensure proper execution and error handling
