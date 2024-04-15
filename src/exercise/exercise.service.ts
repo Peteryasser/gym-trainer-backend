@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { config as dotenvConfig } from 'dotenv';
 import { connectionSource } from 'src/config/typeorm';
-import { ConnectionManager } from 'src/connection/connection_manager';
+import { ConnectionManager } from 'src/config/connection_manager';
 import { ExerciseDTO } from 'src/dtos/exercise.dto';
 import { BodyPart } from 'src/entity/bodyPart';
 import { Equipment } from 'src/entity/equipment';

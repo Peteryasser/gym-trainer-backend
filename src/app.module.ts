@@ -13,9 +13,9 @@ import { ExerciseService } from './exercise/exercise.service';
 // import { Ingredient } from './entity/ingredient';
 import { IngredientService } from './ingrediant/ingredient.service';
 import { IngredientController } from './ingrediant/ingredient.controller';
-import typeorm from './config/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { PopulationModule } from './population/population.module';
 
 @Module({
   imports: [
@@ -32,7 +32,8 @@ import { UsersModule } from './users/users.module';
     CloudinaryModule,
     ExerciseModule,
     AuthModule,
-    UsersModule
+    UsersModule,
+    PopulationModule
   ],
   controllers: [AppController, WorkoutController, IngredientController],
   providers: [AppService, ImageService, ExerciseService, IngredientService],
