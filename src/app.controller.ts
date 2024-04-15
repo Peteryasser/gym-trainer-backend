@@ -15,10 +15,10 @@ export class AppController {
     private imageService:ImageService
     ) {}
 
+
   @Get()
   getHello(): string {
-    return this.appService.getHello();
-    
+    return this.appService.getHello();    
   }
 
   @Get("/get")
@@ -129,5 +129,6 @@ export class AppController {
     return await this.cloudinary.uploadImage(imageBuffer,CLOUDINARY_EXERCISES_FOLDER_NAME).catch(() => {
       throw new BadRequestException('Invalid file type.');
     });
+
   }
 }

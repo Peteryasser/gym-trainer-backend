@@ -13,6 +13,9 @@ import { ExerciseService } from './exercise/exercise.service';
 // import { Ingredient } from './entity/ingredient';
 import { IngredientService } from './ingrediant/ingredient.service';
 import { IngredientController } from './ingrediant/ingredient.controller';
+import typeorm from './config/typeorm';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -25,10 +28,14 @@ import { IngredientController } from './ingrediant/ingredient.controller';
       useFactory: async (configService: ConfigService) =>
         configService.get('typeorm'),
     }),
+
     CloudinaryModule,
-    ExerciseModule
+    ExerciseModule,
+    AuthModule,
+    UsersModule
   ],
   controllers: [AppController, WorkoutController, IngredientController],
   providers: [AppService, ImageService, ExerciseService, IngredientService],
+
 })
 export class AppModule {}
