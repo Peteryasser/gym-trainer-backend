@@ -4,7 +4,19 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoutesController } from './routes/routes.controller';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import typeorm from './config/typeorm';
+import { ImageService } from './image/image.service';
+import { WorkoutController } from './workout/workout.controller';
+import { ExerciseModule } from './exercise/exercise.module';
+import { ExerciseService } from './exercise/exercise.service';
+// import { Exercise } from './entity/exercise';
+// import { Ingredient } from './entity/ingredient';
+import { IngredientService } from './ingrediant/ingredient.service';
+import { IngredientController } from './ingrediant/ingredient.controller';
+import typeorm from './config/typeorm';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -17,8 +29,13 @@ import typeorm from './config/typeorm';
       useFactory: async (configService: ConfigService) =>
         configService.get('typeorm'),
     }),
+
+    CloudinaryModule,
+    ExerciseModule,
+    AuthModule,
+    UsersModule
   ],
-  controllers: [AppController, RoutesController],
-  providers: [AppService],
+  controllers: [AppController, WorkoutController, IngredientController, RoutesController],
+  providers: [AppService, ImageService, ExerciseService, IngredientService],
 })
 export class AppModule {}
