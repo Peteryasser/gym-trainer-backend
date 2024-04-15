@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RoutesController } from './routes/routes.controller';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import typeorm from './config/typeorm';
 import { ImageService } from './image/image.service';
@@ -34,8 +35,7 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     UsersModule
   ],
-  controllers: [AppController, WorkoutController, IngredientController],
+  controllers: [AppController, WorkoutController, IngredientController, RoutesController],
   providers: [AppService, ImageService, ExerciseService, IngredientService],
-
 })
 export class AppModule {}
