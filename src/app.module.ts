@@ -34,9 +34,14 @@ import { PopulationModule } from './population/population.module';
     ExerciseModule,
     AuthModule,
     UsersModule,
-    PopulationModule
+    PopulationModule,
   ],
-  controllers: [AppController, WorkoutController, IngredientController, RoutesController],
+  controllers: [
+    AppController,
+    WorkoutController,
+    IngredientController,
+    RoutesController,
+  ],
   providers: [AppService, ImageService, ExerciseService, IngredientService],
 })
 export class AppModule {}
