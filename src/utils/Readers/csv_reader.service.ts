@@ -6,6 +6,7 @@ export class CSVReaderService {
   async processCSVFile<T>(
     filePath: string,
     mapFn: (row: string[]) => T,
+    delimiter: string = ';',
   ): Promise<T[]> {
     const csvFile = readFileSync(filePath);
     const csvFileString = csvFile.toString();
@@ -14,7 +15,7 @@ export class CSVReaderService {
     const data: T[] = [];
 
     for (const line of lines) {
-      const fields = line.split(';'); // Adjust delimiter if needed
+      const fields = line.split(delimiter); // Adjust delimiter if needed
       const rowData = mapFn(fields);
       data.push(rowData);
     }

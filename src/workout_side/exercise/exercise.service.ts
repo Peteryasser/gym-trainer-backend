@@ -108,7 +108,7 @@ export class ExerciseService {
         secondaryMuscles.push(secondaryMuscle);
     }
     exercise.secondaryMuscles = secondaryMuscles;
-
+    exercise.name=dto.name;
     // Map and save instructions
     exercise.instructions = dto.instructions.map((instruction, index) => {
         const mappedInstruction = new Instruction();
