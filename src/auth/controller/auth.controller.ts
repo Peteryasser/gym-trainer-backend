@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from '../service/auth.service';
 import { Public } from '../decorators/public.decorator';
 import { UserRegisterRequestDto } from '../dtos/user.register.request.dto';
@@ -13,15 +13,15 @@ export class AuthController {
 
   @Post('login')
   async login(
-    @Body() payload: { user: UserLoginRequestDto, device: DeviceDto },
-  ): Promise<UserAuthResponseDto | BadRequestException> {
+    @Body() payload: { user: UserLoginRequestDto; device: DeviceDto },
+  ): Promise<UserAuthResponseDto> {
     return this.authService.login(payload.user, payload.device);
   }
 
   @Post('register')
   async register(
-    @Body() payload: { user: UserRegisterRequestDto, device: DeviceDto },
-  ): Promise<UserAuthResponseDto | BadRequestException> {
+    @Body() payload: { user: UserRegisterRequestDto; device: DeviceDto },
+  ): Promise<UserAuthResponseDto> {
     return await this.authService.register(payload.user, payload.device);
   }
 }

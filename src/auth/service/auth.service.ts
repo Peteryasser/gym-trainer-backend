@@ -4,7 +4,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/service/users.service';
 import { UserRegisterRequestDto } from '../dtos/user.register.request.dto';
@@ -15,6 +14,7 @@ import { DevicesService } from 'src/users/service/devices.service';
 import { DeviceDto } from 'src/users/dtos/device.dto';
 import { Coach } from 'src/users/coaches/coach.entity';
 import { CoachesService } from 'src/users/coaches/coach.service';
+import { Hash } from 'src/shared/utils/Hash';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +30,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    const isMatch: boolean = await bcrypt.compare(password, user.password);
+    const isMatch: boolean = await Hash.compare(password, user.password);
     if (!isMatch) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -69,8 +69,8 @@ export class AuthService {
     if (existingUser) {
       throw new BadRequestException('Email already exists');
     }
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(user.password, salt);
+
+    const hashedPassword = await Hash.make(user.password);
     const newUser: User = {
       ...user,
       password: hashedPassword,
