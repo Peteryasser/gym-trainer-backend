@@ -3,8 +3,11 @@ import {
   IsEmail,
   IsNotEmpty,
   IsString,
+  Matches,
+  MaxLength,
   MinLength,
 } from 'class-validator';
+import { PASSWORD_REGEX } from '../constants';
 
 export class UserRegisterRequestDto {
   @IsNotEmpty()
@@ -20,10 +23,13 @@ export class UserRegisterRequestDto {
 
   @IsString()
   @MinLength(6)
+  @MaxLength(20)
   username: string;
 
   @IsString()
-  @MinLength(6)
+  @MinLength(8)
+  @MaxLength(32)
+  @Matches(PASSWORD_REGEX, { message: 'password is too weak' })
   password: string;
 
   @IsBoolean()
