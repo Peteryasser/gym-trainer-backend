@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { User } from '../entities/user.entity';
@@ -11,27 +11,38 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  findOneByEmail(email: string): Promise<User | null> {
-    return this.usersRepository.findOneBy({ email });
+  async findOneByEmail(email: string): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ email });
+    if (!user) throw new NotFoundException('User not found');
+    return user;
   }
 
-  findOneByUsername(username: string): Promise<User | null> {
-    return this.usersRepository.findOneBy({ username });
+  async findOneByUsername(username: string): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ username });
+    if (!user) throw new NotFoundException('User not found');
+    return user;
   }
 
-  findOneById(id: number): Promise<User | null> {
-    return this.usersRepository.findOneBy({ id });
+  async findOneById(id: number): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) throw new NotFoundException('User not found');
+    return user;
   }
 
-  create(user: User): Promise<User> {
-    return this.usersRepository.save(user);
+  async create(user: User): Promise<User> {
+    return await this.usersRepository.save(user);
   }
 
-  update(userId: UUID, userInformation: Partial<User>): Promise<UpdateResult> {
-    return this.usersRepository.update(userId, userInformation);
+  async update(
+    id: UUID,
+    userInformation: Partial<User>,
+  ): Promise<UpdateResult> {
+    const task = await this.findOneById(id);
+    return await this.usersRepository.update(userId, userInformation);
   }
 
-  delete(userId: UUID): Promise<DeleteResult> {
-    return this.usersRepository.delete(userId);
+  async delete(id: UUID): Promise<void> {
+    const result = await this.usersRepository.delete(userId);
+    if (result.affected == 0) throw new NotFoundException('User not found');
   }
 }
