@@ -43,16 +43,16 @@ export class User {
   @Column({ type: 'date', nullable: true })
   dateOfBirth: Date;
 
-  @Column({ length: 6, nullable: true })
+  @Column({ length: 6, nullable: true, default: null })
   verificationToken: string;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', nullable: true, default: null })
   verificationTokenSentAt: Date;
 
-  @Column({ length: 6, nullable: true })
+  @Column({ length: 6, nullable: true, default: null })
   resetPasswordToken: string;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', nullable: true, default: null })
   resetPasswordTokenSentAt: Date;
 
   @Column({ default: false })

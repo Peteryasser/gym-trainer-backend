@@ -1,11 +1,14 @@
 import {
   IsBoolean,
+  IsDate,
   IsEmail,
+  IsIn,
   IsNotEmpty,
   IsString,
   Matches,
   MaxLength,
   MinLength,
+  IsOptional,
 } from 'class-validator';
 import { PASSWORD_REGEX } from '../constants';
 
@@ -35,4 +38,21 @@ export class UserRegisterRequestDto {
   @IsBoolean()
   @IsNotEmpty()
   isCoach: boolean;
+
+  @IsNotEmpty()
+  @IsIn(['male', 'female'])
+  gender: string;
+
+  @IsNotEmpty()
+  @IsDate()
+  dateOfBirth: Date;
+
+  @IsOptional()
+  countryCode: string;
+
+  @IsOptional()
+  phoneNumber: string;
+
+  @IsOptional()
+  profilePictureUrl: string;
 }

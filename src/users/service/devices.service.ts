@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Device } from 'src/entity/device.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { Device } from '../entities/device.entity';
 
 @Injectable()
 export class DevicesService {
@@ -17,7 +17,7 @@ export class DevicesService {
   async findOneByFcmTokenAndUserId(
     fcmToken: string,
     userId: number,
-  ): Promise<Device | undefined> {
+  ): Promise<Device> {
     return this.devicesRepository
       .createQueryBuilder('device')
       .where('device.fcmToken = :fcmToken', { fcmToken })
@@ -40,17 +40,20 @@ export class DevicesService {
     return this.devicesRepository.delete(deviceId);
   }
 
-  async saveUserDevice(userId: number, fcmToken: string): Promise<void> {
+  async saveUserDevice(userId: number, fcmToken: string): Promise<Device> {
     let device = await this.findOneByFcmTokenAndUserId(fcmToken, userId);
 
     if (!device) {
       device = new Device();
       device.userId = userId;
       device.fcmToken = fcmToken;
+
       await this.create(device);
     } else {
       device.userId = userId;
       await this.devicesRepository.save(device);
     }
+
+    return device;
   }
 }
