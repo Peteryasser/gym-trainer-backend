@@ -27,12 +27,20 @@ export class AuthService {
     private readonly deviceService: DevicesService,
   ) {}
 
-  async authenticateUser(email: string, password: string): Promise<User> {
-    const user: User = await this.usersService.findOneByEmail(email);
+  private async authenticateUser(userDto: UserLoginRequestDto): Promise<User> {
+    let user: User = null;
+    if (userDto.email) {
+      user = await this.usersService.findOneByEmail(userDto.email);
+    } else {
+      user = await this.usersService.findOneByUsername(userDto.username);
+    }
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    const isMatch: boolean = await Hash.compare(password, user.password);
+    const isMatch: boolean = await Hash.compare(
+      userDto.password,
+      user.password,
+    );
     if (!isMatch) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -43,10 +51,7 @@ export class AuthService {
     user: UserLoginRequestDto,
     deviceDTO: DeviceDto,
   ): Promise<UserAuthResponseDto> {
-    const validatedUser = await this.authenticateUser(
-      user.email,
-      user.password,
-    );
+    const validatedUser = await this.authenticateUser(user);
     const device = await this.deviceService.saveUserDevice(
       validatedUser.id,
       deviceDTO.fcmToken,

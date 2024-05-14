@@ -9,10 +9,10 @@ import { UsersService } from 'src/users/service/users.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
-import { User } from 'src/users/entities/user.entity';
-import { Device } from 'src/users/entities/device.entity';
 import { CoachesService } from 'src/users/coaches/coach.service';
-import { Coach } from 'src/users/coaches/coach.entity';
+import { Coach } from 'src/entity/coach.entity';
+import { Device } from 'src/entity/device.entity';
+import { User } from 'src/entity/user.entity';
 
 @Module({
   imports: [

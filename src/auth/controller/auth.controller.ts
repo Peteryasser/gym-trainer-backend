@@ -24,4 +24,7 @@ export class AuthController {
   ): Promise<UserAuthResponseDto> {
     return await this.authService.register(payload.user, payload.device);
   }
+
+  @Post('logout')
+  logout(): void {}
 }

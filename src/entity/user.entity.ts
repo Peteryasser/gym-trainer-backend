@@ -34,7 +34,7 @@ export class User {
   @Column({ length: 255, nullable: true })
   profilePictureUrl: string;
 
-  @Column({ length: 10 })
+  @Column({ length: 10, default: '+20' })
   countryCode: string;
 
   @Column({ length: 20 })
