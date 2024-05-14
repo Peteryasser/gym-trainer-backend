@@ -15,6 +15,8 @@ import { DeviceDto } from 'src/users/dtos/device.dto';
 import { Coach } from 'src/users/coaches/coach.entity';
 import { CoachesService } from 'src/users/coaches/coach.service';
 import { Hash } from 'src/shared/utils/Hash';
+import { UserType } from 'src/users/user-type.enum';
+import { TokenPayload } from '../types/token.payload';
 
 @Injectable()
 export class AuthService {
@@ -39,59 +41,40 @@ export class AuthService {
 
   async login(
     user: UserLoginRequestDto,
-    device: DeviceDto,
+    deviceDTO: DeviceDto,
   ): Promise<UserAuthResponseDto> {
     const validatedUser = await this.authenticateUser(
       user.email,
       user.password,
     );
-    await this.deviceService.saveUserDevice(validatedUser.id, device.fcmToken);
-    return this.getToken(validatedUser);
-  }
+    const device = await this.deviceService.saveUserDevice(
+      validatedUser.id,
+      deviceDTO.fcmToken,
+    );
 
-  async getToken(user: User): Promise<UserAuthResponseDto> {
-    const payload = { id: user.id };
-    const token = this.jwtService.sign(payload);
-    const userDto: UserDto = {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      username: user.username,
-    };
-    return new UserAuthResponseDto(token, userDto);
+    return this.createUserAuthResponse(validatedUser, device.id);
   }
 
   async register(
     user: UserRegisterRequestDto,
-    device: DeviceDto,
+    deviceDTO: DeviceDto,
   ): Promise<UserAuthResponseDto> {
-    const existingUser = await this.usersService.findOneByEmail(user.email);
+    const existingUser = await this.usersService.findOneByEmail(
+      user.email,
+      false,
+    );
+
     if (existingUser) {
       throw new BadRequestException('Email already exists');
     }
 
     const hashedPassword = await Hash.make(user.password);
-    const newUser: User = {
+    const partialNewUser: Partial<User> = {
       ...user,
       password: hashedPassword,
-      gender: '',
-      profilePictureUrl: '',
-      countryCode: '',
-      phoneNumber: '',
-      dateOfBirth: null,
-      verificationToken: '',
-      verificationTokenSentAt: null,
-      resetPasswordToken: '',
-      resetPasswordTokenSentAt: null,
-      isEmailVerified: false,
-      isSocialAccount: false,
-      enableNotifications: true,
-      defaultLocale: 'en',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      devices: [],
-      coach: new Coach(),
     };
+
+    const newUser: User = partialNewUser as User;
 
     if (user.isCoach) {
       const newCoach = new Coach();
@@ -102,7 +85,53 @@ export class AuthService {
     } else {
       await this.usersService.create(newUser);
     }
-    await this.deviceService.saveUserDevice(newUser.id, device.fcmToken);
-    return this.getToken(newUser);
+
+    const device = await this.deviceService.saveUserDevice(
+      newUser.id,
+      deviceDTO.fcmToken,
+    );
+    return await this.createUserAuthResponse(newUser, device.id);
+  }
+
+  private async getToken(
+    user: User | Coach,
+    deviceID: number,
+  ): Promise<string> {
+    const userType: UserType =
+      user instanceof Coach ? UserType.COACH : UserType.USER;
+
+    const payload: TokenPayload = {
+      userID: user.id,
+      userType: userType,
+      deviceID: deviceID,
+    };
+    const token = this.jwtService.sign(payload);
+
+    return token;
+  }
+
+  private createUserDTO(user: User | Coach): UserDto {
+    if (user instanceof Coach) {
+      user = user.user;
+    }
+
+    const userDto: UserDto = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      username: user.username,
+    };
+
+    return userDto;
+  }
+
+  private async createUserAuthResponse(
+    user: User | Coach,
+    deviceID: number,
+  ): Promise<UserAuthResponseDto> {
+    const token = await this.getToken(user, deviceID);
+    const userDto = this.createUserDTO(user);
+
+    return new UserAuthResponseDto(token, userDto);
   }
 }
