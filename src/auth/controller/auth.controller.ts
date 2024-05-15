@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Post, Req, UseGuards } from '@nestjs/common';
 import { Public } from '../decorators/public.decorator';
 import { UserRegisterRequestDto } from '../dtos/user.register.request.dto';
 import { UserAuthResponseDto } from '../dtos/user.auth.response.dto';
@@ -28,9 +28,9 @@ export class AuthController {
 
   @Public(false)
   @UseGuards(JwtAuthGuard)
-  @Post('logout')
+  @Delete('logout')
   async logout(@Req() req): Promise<void> {
-    const deviceID = req.user.deviceID;
+    const deviceID = req.user.device.id;
 
     await this.authService.logout(deviceID);
   }
