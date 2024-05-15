@@ -1,10 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { AuthService } from '../service/auth.service';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { Public } from '../decorators/public.decorator';
 import { UserRegisterRequestDto } from '../dtos/user.register.request.dto';
 import { UserAuthResponseDto } from '../dtos/user.auth.response.dto';
 import { UserLoginRequestDto } from '../dtos/user.login.request.dto';
 import { DeviceDto } from 'src/users/dtos/device.dto';
+import { JwtAuthGuard } from '../guards/jwt.auth.guard';
+import { AuthService } from '../service/auth.service';
 
 @Public()
 @Controller('auth')
@@ -25,6 +26,12 @@ export class AuthController {
     return await this.authService.register(payload.user, payload.device);
   }
 
+  @Public(false)
+  @UseGuards(JwtAuthGuard)
   @Post('logout')
-  logout(): void {}
+  async logout(@Req() req): Promise<void> {
+    const deviceID = req.user.deviceID;
+
+    await this.authService.logout(deviceID);
+  }
 }

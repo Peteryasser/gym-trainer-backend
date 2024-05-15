@@ -98,6 +98,10 @@ export class AuthService {
     return await this.createUserAuthResponse(newUser, device.id);
   }
 
+  async logout(deviceID: number): Promise<void> {
+    await this.deviceService.delete(deviceID);
+  }
+
   private async getToken(
     user: User | Coach,
     deviceID: number,
