@@ -43,7 +43,7 @@ import { User } from 'src/entity/user.entity';
     DevicesService,
     CoachesService,
   ],
-  exports: [AuthService, JwtStrategy],
+  exports: [JwtModule, AuthService],
   controllers: [AuthController],
 })
 export class AuthModule {}

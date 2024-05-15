@@ -1,15 +1,15 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UsersService } from 'src/users/service/users.service';
 import { jwtConstants } from './constants';
 import { User } from 'src/entity/user.entity';
+import { DevicesService } from 'src/users/service/devices.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private readonly configService: ConfigService,
+    private readonly devicesService: DevicesService,
     private readonly usersService: UsersService,
   ) {
     super({
@@ -19,16 +19,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate({ iat, exp, id }: Record<string, number>): Promise<User> {
-    const timeDiff = exp - iat;
-    if (timeDiff <= 0) {
-      throw new UnauthorizedException('Expired Token');
-    }
+  async validate(payload: any): Promise<User> {
+    const user = await this.usersService.findOneById(payload.userID);
+    if (!user) throw new UnauthorizedException('Invalid Token');
 
-    const user = await this.usersService.findOneById(id);
-    if (!user) {
-      throw new UnauthorizedException('Invalid Token');
-    }
+    const device = await this.devicesService.findOneById(payload.deviceID);
+    if (!device) throw new UnauthorizedException('Invalid Token');
 
     return user;
   }
