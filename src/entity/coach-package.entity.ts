@@ -1,19 +1,28 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 import { DurationUnitEnum } from 'src/packages/duration-unit.enum';
 import { Coach } from './coach.entity';
+import { PackageDiscount } from './package-discount.entity';
 
 @Entity('coach_packages')
 export class Package {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Coach, { cascade: true })
+  @ManyToOne(() => Coach, (coach) => coach.packages, { cascade: true })
+  @JoinColumn({ name: 'coach_id' })
   coach: Coach;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
   price: number;
 
-  @Column()
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
   duration: number;
 
   @Column({
@@ -21,11 +30,18 @@ export class Package {
     enum: DurationUnitEnum,
     default: DurationUnitEnum.MONTH,
   })
-  duration_unit: DurationUnitEnum;
+  durationUnit: DurationUnitEnum;
 
   @Column({ length: 255, nullable: true })
   description: string;
 
   @Column({ default: false })
-  has_nutrition: boolean;
+  hasNutrition: boolean;
+
+  @OneToMany(
+    () => PackageDiscount,
+    (package_discount) => package_discount.package,
+    { cascade: true },
+  )
+  discounts: PackageDiscount[];
 }
