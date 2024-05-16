@@ -1,4 +1,4 @@
 export enum UserType {
-  COACH = 'coach',
-  TRAINEE = 'trainee',
+  coach = 'coach',
+  user = 'user',
 }

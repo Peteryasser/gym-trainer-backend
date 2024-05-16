@@ -6,7 +6,7 @@ export class Coach {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => User)
+  @OneToOne(() => User, (user) => user.coach, { lazy: true })
   @JoinColumn({ name: 'user_id' })
-  user: User;
+  user: Promise<User>;
 }

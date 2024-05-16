@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { Device } from '../entities/device.entity';
+import { Device } from 'src/entity/device.entity';
+import { Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class DevicesService {
@@ -10,47 +10,55 @@ export class DevicesService {
     private devicesRepository: Repository<Device>,
   ) {}
 
-  findOneByFcmToken(fcmToken: string): Promise<Device | null> {
-    return this.devicesRepository.findOneBy({ fcmToken });
+  async findOneByFcmToken(fcmToken: string): Promise<Device> {
+    return await this.devicesRepository.findOneBy({ fcmToken });
+  }
+
+  async findOneById(id: number): Promise<Device> {
+    return await this.devicesRepository.findOneBy({ id });
   }
 
   async findOneByFcmTokenAndUserId(
     fcmToken: string,
     userId: number,
-  ): Promise<Device | undefined> {
-    return this.devicesRepository
+  ): Promise<Device> {
+    return await this.devicesRepository
       .createQueryBuilder('device')
       .where('device.fcmToken = :fcmToken', { fcmToken })
       .andWhere('device.user_id = :userId', { userId })
       .getOne();
   }
 
-  create(device: Device): Promise<Device> {
-    return this.devicesRepository.save(device);
+  async create(device: Device): Promise<Device> {
+    return await this.devicesRepository.save(device);
   }
 
-  update(
+  async update(
     deviceId: number,
     deviceInformation: Partial<Device>,
   ): Promise<UpdateResult> {
-    return this.devicesRepository.update(deviceId, deviceInformation);
+    return await this.devicesRepository.update(deviceId, deviceInformation);
   }
 
-  delete(deviceId: number): Promise<DeleteResult> {
-    return this.devicesRepository.delete(deviceId);
+  async delete(deviceId: number): Promise<void> {
+    const result = await this.devicesRepository.delete(deviceId);
+    if (result.affected == 0) throw new NotFoundException('Device not found');
   }
 
-  async saveUserDevice(userId: number, fcmToken: string): Promise<void> {
+  async saveUserDevice(userId: number, fcmToken: string): Promise<Device> {
     let device = await this.findOneByFcmTokenAndUserId(fcmToken, userId);
 
     if (!device) {
       device = new Device();
       device.userId = userId;
       device.fcmToken = fcmToken;
+
       await this.create(device);
     } else {
       device.userId = userId;
       await this.devicesRepository.save(device);
     }
+
+    return device;
   }
 }
