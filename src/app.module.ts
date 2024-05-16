@@ -17,6 +17,7 @@ import { IngredientController } from './nutrition_side/ingredient/ingredient.con
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PopulationModule } from './population/population.module';
+import { PackagesModule } from './packages/packages.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { PopulationModule } from './population/population.module';
     AuthModule,
     UsersModule,
     PopulationModule,
+    PackagesModule,
   ],
   controllers: [
     AppController,
