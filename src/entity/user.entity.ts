@@ -80,6 +80,6 @@ export class User {
   @OneToMany(() => Device, (device) => device.user)
   devices: Device[];
 
-  @OneToOne(() => Coach, { cascade: true })
+  @OneToOne(() => Coach, (coach) => coach.user, { cascade: true, eager: true })
   coach: Coach;
 }
