@@ -6,12 +6,16 @@ import { jwtConstants } from './constants';
 import { User } from 'src/entity/user.entity';
 import { DevicesService } from 'src/users/service/devices.service';
 import { Device } from 'src/entity/device.entity';
+import { CoachesService } from 'src/users/coaches/coach.service';
+import { Coach } from 'src/entity/coach.entity';
+import { UserType } from 'src/users/user-type.enum';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly devicesService: DevicesService,
     private readonly usersService: UsersService,
+    private readonly coachesService: CoachesService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -20,8 +24,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any): Promise<{ user: User; device: Device }> {
-    const user = await this.usersService.findOneById(payload.userID);
+  async validate(
+    payload: any,
+  ): Promise<{ user: User | Coach; device: Device }> {
+    let user: User | Coach;
+
+    if (payload.userType === UserType.user)
+      user = await this.usersService.findOneById(payload.userID, false);
+    else if (payload.userType === UserType.coach)
+      user = await this.coachesService.findOneById(payload.userID, false);
+
     if (!user) throw new UnauthorizedException('Invalid Token');
 
     const device = await this.devicesService.findOneById(payload.deviceID);

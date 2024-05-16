@@ -27,16 +27,21 @@ export class AuthService {
     private readonly deviceService: DevicesService,
   ) {}
 
-  private async authenticateUser(userDto: UserLoginRequestDto): Promise<User> {
+  private async authenticateUser(
+    userType: UserType,
+    userDto: UserLoginRequestDto,
+  ): Promise<User> {
     let user: User = null;
     if (userDto.email) {
       user = await this.usersService.findOneByEmail(userDto.email);
     } else {
       user = await this.usersService.findOneByUsername(userDto.username);
     }
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+
+    if (userType == UserType.coach && !user.coach)
+      throw new BadRequestException();
+
     const isMatch: boolean = await Hash.compare(
       userDto.password,
       user.password,
@@ -48,15 +53,20 @@ export class AuthService {
   }
 
   async login(
+    userType: UserType,
     user: UserLoginRequestDto,
     deviceDTO: DeviceDto,
   ): Promise<UserAuthResponseDto> {
-    const validatedUser = await this.authenticateUser(user);
+    let validatedUser: User | Coach = await this.authenticateUser(
+      userType,
+      user,
+    );
     const device = await this.deviceService.saveUserDevice(
       validatedUser.id,
       deviceDTO.fcmToken,
     );
 
+    if (userType == UserType.coach) validatedUser = validatedUser.coach;
     return this.createUserAuthResponse(validatedUser, device.id);
   }
 
@@ -83,10 +93,11 @@ export class AuthService {
 
     if (user.isCoach) {
       const newCoach = new Coach();
+      newCoach.user = Promise.resolve(newUser);
+
       newUser.coach = newCoach;
-      await this.usersService.create(newUser); // Save user first
-      newCoach.user = newUser;
-      await this.coachesService.create(newCoach); // Save coach separately
+
+      await this.usersService.create(newUser);
     } else {
       await this.usersService.create(newUser);
     }
@@ -107,7 +118,7 @@ export class AuthService {
     deviceID: number,
   ): Promise<string> {
     const userType: UserType =
-      user instanceof Coach ? UserType.COACH : UserType.USER;
+      user instanceof Coach ? UserType.coach : UserType.user;
 
     const payload: TokenPayload = {
       userID: user.id,
@@ -119,9 +130,9 @@ export class AuthService {
     return token;
   }
 
-  private createUserDTO(user: User | Coach): UserDto {
+  private async createUserDTO(user: User | Coach): Promise<UserDto> {
     if (user instanceof Coach) {
-      user = user.user;
+      user = await user.user;
     }
 
     const userDto: UserDto = {
@@ -139,7 +150,7 @@ export class AuthService {
     deviceID: number,
   ): Promise<UserAuthResponseDto> {
     const token = await this.getToken(user, deviceID);
-    const userDto = this.createUserDTO(user);
+    const userDto = await this.createUserDTO(user);
 
     return new UserAuthResponseDto(token, userDto);
   }
