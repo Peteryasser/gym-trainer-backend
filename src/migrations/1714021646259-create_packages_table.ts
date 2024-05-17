@@ -34,7 +34,7 @@ export class CreatePackagesTable1714021646259 implements MigrationInterface {
           },
 
           {
-            name: 'duration_unit',
+            name: 'durationUnit',
             type: 'enum',
             enum: ['day', 'week', 'month', 'year'],
             default: "'month'",
@@ -46,12 +46,12 @@ export class CreatePackagesTable1714021646259 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'has_nutrition',
+            name: 'hasNutrition',
             type: 'boolean',
             default: false,
           },
           {
-            name: 'coach_id',
+            name: 'coachId',
             type: 'int',
           },
         ],
@@ -61,7 +61,7 @@ export class CreatePackagesTable1714021646259 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'coach_packages',
       new TableForeignKey({
-        columnNames: ['coach_id'],
+        columnNames: ['coachId'],
         referencedColumnNames: ['id'],
         referencedTableName: 'coaches',
         onDelete: 'CASCADE',

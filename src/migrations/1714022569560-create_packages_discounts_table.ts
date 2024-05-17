@@ -21,7 +21,7 @@ export class CreatePackagesDiscountsTable1714022569560
             generationStrategy: 'increment',
           },
           {
-            name: 'package_id',
+            name: 'packageId',
             type: 'integer',
           },
           {
@@ -32,12 +32,12 @@ export class CreatePackagesDiscountsTable1714022569560
             isNullable: false,
           },
           {
-            name: 'start_date',
+            name: 'startDate',
             type: 'timestamp',
             isNullable: false,
           },
           {
-            name: 'end_date',
+            name: 'endDate',
             type: 'timestamp',
             isNullable: false,
           },
@@ -48,7 +48,7 @@ export class CreatePackagesDiscountsTable1714022569560
     await queryRunner.createForeignKey(
       'package_discounts',
       new TableForeignKey({
-        columnNames: ['package_id'],
+        columnNames: ['packageId'],
         referencedColumnNames: ['id'],
         referencedTableName: 'coach_packages',
         onDelete: 'CASCADE',
