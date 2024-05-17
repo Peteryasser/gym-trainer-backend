@@ -1,5 +1,5 @@
 // package-filter.dto.ts
-import { IsOptional, IsNumber, IsEnum } from 'class-validator';
+import { IsOptional, IsEnum, IsNumberString } from 'class-validator';
 import { DurationUnitEnum } from 'src/packages/duration-unit.enum';
 
 export class PackageFilterDto {
@@ -13,19 +13,19 @@ export class PackageFilterDto {
   keyword?: string;
 
   @IsOptional()
-  @IsNumber()
+  @IsNumberString()
   minPrice?: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsNumberString()
   maxPrice?: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsNumberString()
   minDuration?: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsNumberString()
   maxDuration?: number;
 
   @IsOptional()
