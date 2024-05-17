@@ -15,8 +15,8 @@ export class Package {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Coach, (coach) => coach.packages, { cascade: true })
-  @JoinColumn({ name: 'coach_id' })
+  @ManyToOne(() => Coach, (coach) => coach.packages)
+  @JoinColumn({ name: 'coachId' })
   coach: Coach;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })

@@ -4,26 +4,25 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  Timestamp,
 } from 'typeorm';
 
 import { Package } from './coach-package.entity';
 
-@Entity('coach_packages')
+@Entity('package_discounts')
 export class PackageDiscount {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Package, (pack) => pack.discounts, { cascade: true })
-  @JoinColumn({ name: 'package_id' })
+  @ManyToOne(() => Package, (pack) => pack.discounts)
+  @JoinColumn({ name: 'packageId' })
   package: Package;
 
   @Column({ type: 'decimal', precision: 5, scale: 2, nullable: false })
   percentage: number;
 
   @Column({ nullable: false })
-  startDate: Timestamp;
+  startDate: Date;
 
   @Column({ nullable: false })
-  endDate: Timestamp;
+  endDate: Date;
 }
