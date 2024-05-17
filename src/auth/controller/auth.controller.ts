@@ -11,7 +11,6 @@ import { Public } from '../decorators/public.decorator';
 import { UserRegisterRequestDto } from '../dtos/user.register.request.dto';
 import { UserAuthResponseDto } from '../dtos/user.auth.response.dto';
 import { UserLoginRequestDto } from '../dtos/user.login.request.dto';
-import { DeviceDto } from 'src/users/dtos/device.dto';
 import { JwtAuthGuard } from '../guards/jwt.auth.guard';
 import { AuthService } from '../service/auth.service';
 import { UserType } from 'src/users/user-type.enum';
@@ -25,16 +24,16 @@ export class AuthController {
   @Post(':userType/login')
   async login(
     @Param('userType', new UserTypeValidationPipe()) userType: UserType,
-    @Body() payload: { user: UserLoginRequestDto; device: DeviceDto },
+    @Body() payload: UserLoginRequestDto,
   ): Promise<UserAuthResponseDto> {
-    return this.authService.login(userType, payload.user, payload.device);
+    return this.authService.login(userType, payload);
   }
 
   @Post('register')
   async register(
-    @Body() payload: { user: UserRegisterRequestDto; device: DeviceDto },
+    @Body() payload: UserRegisterRequestDto,
   ): Promise<UserAuthResponseDto> {
-    return await this.authService.register(payload.user, payload.device);
+    return await this.authService.register(payload);
   }
 
   @Public(false)

@@ -10,7 +10,6 @@ import { UserLoginRequestDto } from '../dtos/user.login.request.dto';
 import { UserAuthResponseDto } from '../dtos/user.auth.response.dto';
 import { UserDto } from 'src/users/dtos/user.dto';
 import { DevicesService } from 'src/users/service/devices.service';
-import { DeviceDto } from 'src/users/dtos/device.dto';
 import { CoachesService } from 'src/users/coaches/coach.service';
 import { Hash } from 'src/shared/utils/Hash';
 import { UserType } from 'src/users/user-type.enum';
@@ -55,7 +54,6 @@ export class AuthService {
   async login(
     userType: UserType,
     user: UserLoginRequestDto,
-    deviceDTO: DeviceDto,
   ): Promise<UserAuthResponseDto> {
     let validatedUser: User | Coach = await this.authenticateUser(
       userType,
@@ -63,17 +61,14 @@ export class AuthService {
     );
     const device = await this.deviceService.saveUserDevice(
       validatedUser.id,
-      deviceDTO.fcmToken,
+      user.fcmToken,
     );
 
     if (userType == UserType.coach) validatedUser = validatedUser.coach;
     return this.createUserAuthResponse(validatedUser, device.id);
   }
 
-  async register(
-    user: UserRegisterRequestDto,
-    deviceDTO: DeviceDto,
-  ): Promise<UserAuthResponseDto> {
+  async register(user: UserRegisterRequestDto): Promise<UserAuthResponseDto> {
     const existingUser = await this.usersService.findOneByEmail(
       user.email,
       false,
@@ -104,7 +99,7 @@ export class AuthService {
 
     const device = await this.deviceService.saveUserDevice(
       newUser.id,
-      deviceDTO.fcmToken,
+      user.fcmToken,
     );
     return await this.createUserAuthResponse(newUser, device.id);
   }
