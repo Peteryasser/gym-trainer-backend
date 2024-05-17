@@ -1,6 +1,5 @@
 import {
   IsBoolean,
-  IsDate,
   IsEmail,
   IsIn,
   IsNotEmpty,
@@ -9,6 +8,7 @@ import {
   MaxLength,
   MinLength,
   IsOptional,
+  IsDateString,
 } from 'class-validator';
 import { PASSWORD_REGEX } from '../constants';
 
@@ -44,7 +44,7 @@ export class UserRegisterRequestDto {
   gender: string;
 
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString()
   dateOfBirth: Date;
 
   @IsOptional()
@@ -55,4 +55,8 @@ export class UserRegisterRequestDto {
 
   @IsOptional()
   profilePictureUrl: string;
+
+  @IsString()
+  @MinLength(6)
+  fcmToken: string;
 }
