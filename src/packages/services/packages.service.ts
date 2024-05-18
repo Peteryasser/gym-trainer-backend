@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CoachesService } from 'src/users/coaches/coach.service';
+import { CoachesService } from '../../users/coaches/coach.service';
 import { PackageDto } from '../dtos/package.dto';
 import { Package } from '../../entity/coach-package.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Coach } from 'src/entity/coach.entity';
+import { Coach } from '../../entity/coach.entity';
 import { Repository } from 'typeorm';
 import { PackageFilterDto } from '../dtos/package-filter.dto';
 import { PackageEditDto } from '../dtos/package-edit.dto';
@@ -17,7 +17,8 @@ export class PackagesService {
   ) {}
 
   async create(user: Coach, packageDto: PackageDto): Promise<Package> {
-    const pack = this.packageRepository.create(packageDto);
+    const partialPack: Partial<Package> = packageDto;
+    const pack = this.packageRepository.create(partialPack);
     pack.coach = user;
 
     await this.packageRepository.save(pack);

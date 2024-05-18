@@ -6,7 +6,7 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { DurationUnitEnum } from 'src/packages/duration-unit.enum';
+import { DurationUnitEnum } from '../packages/duration-unit.enum';
 import { Coach } from './coach.entity';
 import { PackageDiscount } from './package-discount.entity';
 

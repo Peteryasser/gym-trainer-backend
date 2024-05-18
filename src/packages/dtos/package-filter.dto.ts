@@ -1,6 +1,6 @@
 // package-filter.dto.ts
 import { IsOptional, IsEnum, IsNumberString } from 'class-validator';
-import { DurationUnitEnum } from 'src/packages/duration-unit.enum';
+import { DurationUnitEnum } from '../../packages/duration-unit.enum';
 
 export class PackageFilterDto {
   @IsOptional()

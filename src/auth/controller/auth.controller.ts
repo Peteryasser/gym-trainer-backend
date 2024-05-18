@@ -13,8 +13,8 @@ import { UserAuthResponseDto } from '../dtos/user.auth.response.dto';
 import { UserLoginRequestDto } from '../dtos/user.login.request.dto';
 import { JwtAuthGuard } from '../guards/jwt.auth.guard';
 import { AuthService } from '../service/auth.service';
-import { UserType } from 'src/users/user-type.enum';
-import { UserTypeValidationPipe } from 'src/pipe';
+import { UserType } from '../../users/user-type.enum';
+import { UserTypeValidationPipe } from '../../pipe';
 
 @Public()
 @Controller('auth')

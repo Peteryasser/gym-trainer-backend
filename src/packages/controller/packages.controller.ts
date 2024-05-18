@@ -9,12 +9,12 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { PackagesService } from '../services/packages.service';
-import { Coach } from 'src/entity/coach.entity';
+import { Coach } from '../../entity/coach.entity';
 import { PackageDto } from '../dtos/package.dto';
-import { Package } from 'src/entity/coach-package.entity';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { Package } from '../../entity/coach-package.entity';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { PackageFilterDto } from '../dtos/package-filter.dto';
 import { PackageEditDto } from '../dtos/package-edit.dto';
 
