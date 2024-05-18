@@ -17,8 +17,7 @@ export class PackagesService {
   ) {}
 
   async create(user: Coach, packageDto: PackageDto): Promise<Package> {
-    const partialPack: Partial<Package> = packageDto;
-    const pack = this.packageRepository.create(partialPack);
+    const pack = this.packageRepository.create(packageDto);
     pack.coach = user;
 
     await this.packageRepository.save(pack);
