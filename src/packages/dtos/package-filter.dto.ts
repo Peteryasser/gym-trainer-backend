@@ -1,8 +1,9 @@
 // package-filter.dto.ts
 import { IsOptional, IsEnum, IsNumberString } from 'class-validator';
 import { DurationUnitEnum } from '../../packages/duration-unit.enum';
+import { PaginationDto } from '../../dtos/pagination.dto';
 
-export class PackageFilterDto {
+export class PackageFilterDto extends PaginationDto {
   @IsOptional()
   sortBy?: string;
 

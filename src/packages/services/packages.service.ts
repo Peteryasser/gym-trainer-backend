@@ -7,6 +7,8 @@ import { Coach } from '../../entity/coach.entity';
 import { Repository } from 'typeorm';
 import { PackageFilterDto } from '../dtos/package-filter.dto';
 import { PackageEditDto } from '../dtos/package-edit.dto';
+import { paginate } from '../../utils/pagination/pagination.util';
+import { PaginatedResultDto } from '../../dtos/paginatied-result.dto';
 
 @Injectable()
 export class PackagesService {
@@ -24,7 +26,10 @@ export class PackagesService {
     return pack;
   }
 
-  async getAll(user: Coach, filterDto: PackageFilterDto): Promise<Package[]> {
+  async getAll(
+    user: Coach,
+    filterDto: PackageFilterDto,
+  ): Promise<PaginatedResultDto<Package>> {
     let query = this.packageRepository.createQueryBuilder('package');
 
     if (filterDto.sortBy)
@@ -53,7 +58,16 @@ export class PackagesService {
         coachId: user.id,
       });
 
-    return query.getMany();
+    query = paginate(query, filterDto.page, filterDto.pageSize);
+
+    const [data, total] = await query.getManyAndCount();
+
+    return {
+      data,
+      total,
+      page: filterDto.page,
+      pageSize: filterDto.pageSize,
+    };
   }
 
   async getById(user: Coach, id: number): Promise<Package> {
