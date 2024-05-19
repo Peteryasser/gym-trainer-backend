@@ -18,6 +18,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PopulationModule } from './population/population.module';
 import { PackagesModule } from './packages/packages.module';
+import { UserSubscriptionsModule } from './user_subscriptions/user_subscriptions.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { PackagesModule } from './packages/packages.module';
     UsersModule,
     PopulationModule,
     PackagesModule,
+    UserSubscriptionsModule,
   ],
   controllers: [
     AppController,
