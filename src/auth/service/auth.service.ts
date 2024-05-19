@@ -4,18 +4,18 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from 'src/users/service/users.service';
+import { UsersService } from '../../users/service/users.service';
 import { UserRegisterRequestDto } from '../dtos/user.register.request.dto';
 import { UserLoginRequestDto } from '../dtos/user.login.request.dto';
 import { UserAuthResponseDto } from '../dtos/user.auth.response.dto';
-import { UserDto } from 'src/users/dtos/user.dto';
-import { DevicesService } from 'src/users/service/devices.service';
-import { CoachesService } from 'src/users/coaches/coach.service';
-import { Hash } from 'src/shared/utils/Hash';
-import { UserType } from 'src/users/user-type.enum';
+import { UserDto } from '../../users/dtos/user.dto';
+import { DevicesService } from '../../users/service/devices.service';
+import { CoachesService } from '../../users/coaches/coach.service';
+import { Hash } from '../../shared/utils/Hash';
+import { UserType } from '../../users/user-type.enum';
 import { TokenPayload } from '../types/token.payload';
-import { User } from 'src/entity/user.entity';
-import { Coach } from 'src/entity/coach.entity';
+import { User } from '../../entity/user.entity';
+import { Coach } from '../../entity/coach.entity';
 
 @Injectable()
 export class AuthService {

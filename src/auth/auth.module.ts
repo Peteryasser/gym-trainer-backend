@@ -3,16 +3,16 @@ import { AuthService } from './service/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './controller/auth.controller';
 import { jwtConstants } from './constants';
-import { DevicesService } from 'src/users/service/devices.service';
+import { DevicesService } from '../users/service/devices.service';
 import { JwtStrategy } from './jwt.strategy';
-import { UsersService } from 'src/users/service/users.service';
+import { UsersService } from '../users/service/users.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
-import { CoachesService } from 'src/users/coaches/coach.service';
-import { Coach } from 'src/entity/coach.entity';
-import { Device } from 'src/entity/device.entity';
-import { User } from 'src/entity/user.entity';
+import { CoachesService } from '../users/coaches/coach.service';
+import { Coach } from '../entity/coach.entity';
+import { Device } from '../entity/device.entity';
+import { User } from '../entity/user.entity';
 
 @Module({
   imports: [
