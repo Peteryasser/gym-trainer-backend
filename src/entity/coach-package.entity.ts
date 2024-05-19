@@ -9,6 +9,7 @@ import {
 import { DurationUnitEnum } from '../packages/duration-unit.enum';
 import { Coach } from './coach.entity';
 import { PackageDiscount } from './package-discount.entity';
+import { UserSubscription } from './user-subscription.entity';
 
 @Entity('coach_packages')
 export class Package {
@@ -44,4 +45,7 @@ export class Package {
     { cascade: true },
   )
   discounts: PackageDiscount[];
+
+  @OneToMany(() => UserSubscription, (subscription) => subscription.package)
+  subscriptions: UserSubscription[];
 }
