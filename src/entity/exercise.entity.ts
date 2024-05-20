@@ -46,6 +46,9 @@ export class Exercise {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @Column({ type: 'boolean', default: false })
+  type: boolean;
+
 
   @OneToMany(() => UserExerciseHistory, history => history.exercise)
   userHistory: UserExerciseHistory[];
