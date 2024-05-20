@@ -17,6 +17,7 @@ import { IngredientController } from './nutrition_side/ingredient/ingredient.con
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PopulationModule } from './population/population.module';
+import { ExerciseController } from './workout_side/exercise/exercise.controller';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { PopulationModule } from './population/population.module';
     WorkoutController,
     IngredientController,
     RoutesController,
+    ExerciseController
   ],
   providers: [AppService, ImageService, ExerciseService, IngredientService],
 })

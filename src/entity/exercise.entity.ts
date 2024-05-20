@@ -1,9 +1,12 @@
 // Exercise Entity
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, ManyToMany, JoinTable, Unique } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, ManyToMany, JoinTable, Unique, OneToOne } from 'typeorm';
 import { BodyPart } from './bodyPart';
 import { Muscle } from './muscle';
 import { Instruction } from './instruction';
 import { Equipment } from './equipment';
+import { User } from './user.entity';
+import { join } from 'path';
+import { UserExerciseHistory } from './user-exercise-history';
 
 @Entity({ name: 'exercises' }) // Specify the table name (optional)
 @Unique(["idApi"])
@@ -38,4 +41,12 @@ export class Exercise {
   @ManyToMany(() => Equipment, (equipment) => equipment.exercises, { cascade: true })
   @JoinTable()
   equipments: Equipment[];
+
+  @ManyToOne(() => User, user => user.id, { nullable: true })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+
+  @OneToMany(() => UserExerciseHistory, history => history.exercise)
+  userHistory: UserExerciseHistory[];
 }

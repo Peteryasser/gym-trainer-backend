@@ -7,6 +7,11 @@ import {
 } from 'typeorm';
 import { Device } from './device.entity';
 import { Coach } from './coach.entity';
+import { Workout } from './workout.entity';
+import { UserExerciseHistory } from './user-exercise-history';
+import { WorkoutPlan } from './workout-plan';
+import { SavedWorkout } from './saved-workouts';
+import { UserPackageWorkoutPlan } from './user-package-workoutPlan';
 
 @Entity('users')
 export class User {
@@ -82,4 +87,19 @@ export class User {
 
   @OneToOne(() => Coach, (coach) => coach.user, { cascade: true, eager: true })
   coach: Coach;
+
+  @OneToMany(() => Workout, workout => workout.user)
+  workouts: Workout[];
+
+  @OneToMany(() => UserExerciseHistory, history => history.user)
+  exerciseHistory: UserExerciseHistory[];
+
+  @OneToMany(() => WorkoutPlan, workoutPlan => workoutPlan.user)
+  workoutPlans: WorkoutPlan[];
+
+  @OneToMany(() => SavedWorkout, savedWorkout => savedWorkout.user)
+  savedWorkouts: SavedWorkout[];
+
+  @OneToMany(() => UserPackageWorkoutPlan, userPackageWorkoutPlan => userPackageWorkoutPlan.user)
+  userPackageWorkoutPlans: UserPackageWorkoutPlan[];
 }

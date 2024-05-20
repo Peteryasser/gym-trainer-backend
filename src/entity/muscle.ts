@@ -1,6 +1,6 @@
 // Muscle Entity
 import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToMany, OneToMany } from 'typeorm';
-import { Exercise } from './exercise';
+import { Exercise } from './exercise.entity';
 
 @Entity('Muscles') // Specify the table name (optional)
 @Unique(["name"])

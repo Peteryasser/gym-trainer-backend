@@ -1,6 +1,6 @@
 // BodyPart Entity
 import { Entity, PrimaryGeneratedColumn, Column, Unique, OneToMany } from 'typeorm';
-import { Exercise } from './exercise';
+import { Exercise } from './exercise.entity';
 
 @Entity('Body_parts') // Specify the table name (optional) - changed to lowercase and underscores for consistency
 @Unique(["name"])

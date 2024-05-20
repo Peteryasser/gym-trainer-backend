@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne , OneToMany} from 'typeorm';
 import { DurationUnitEnum } from 'src/packages/duration-unit.enum';
 import { Coach } from './coach.entity';
+import { UserPackageWorkoutPlan } from './user-package-workoutPlan';
 
 @Entity('coach_packages')
 export class Package {
@@ -28,4 +29,8 @@ export class Package {
 
   @Column({ default: false })
   has_nutrition: boolean;
+
+  @OneToMany(() => UserPackageWorkoutPlan, userPackageWorkoutPlan => userPackageWorkoutPlan.package)
+  userPackageWorkoutPlans: UserPackageWorkoutPlan[];
+
 }

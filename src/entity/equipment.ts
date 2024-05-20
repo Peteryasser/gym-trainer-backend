@@ -1,6 +1,6 @@
 // Equipment Entity
 import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToMany, JoinTable } from 'typeorm';
-import { Exercise } from './exercise';
+import { Exercise } from './exercise.entity';
 
 @Entity('Equipments') // Specify the table name (optional)
 @Unique(["name"])
