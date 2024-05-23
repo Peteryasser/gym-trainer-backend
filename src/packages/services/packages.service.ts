@@ -73,7 +73,7 @@ export class PackagesService {
   async getById(user: Coach, id: number): Promise<Package> {
     const pack = await this.packageRepository.findOneBy({
       id: id,
-      coach: user,
+      coach: { id: user.id },
     });
     if (!pack) throw new NotFoundException('Package not found');
 
