@@ -86,4 +86,8 @@ export class User {
 
   @OneToMany(() => UserSubscription, (subsciption) => subsciption.user)
   subscriptions: UserSubscription[];
+
+  public get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
 }
