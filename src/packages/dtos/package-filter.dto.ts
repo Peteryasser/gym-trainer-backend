@@ -1,7 +1,7 @@
-// package-filter.dto.ts
-import { IsOptional, IsEnum, IsNumberString } from 'class-validator';
+import { IsOptional, IsEnum } from 'class-validator';
 import { DurationUnitEnum } from '../../packages/duration-unit.enum';
 import { PaginationDto } from '../../dtos/pagination.dto';
+import { Transform } from 'class-transformer';
 
 export class PackageFilterDto extends PaginationDto {
   @IsOptional()
@@ -14,19 +14,19 @@ export class PackageFilterDto extends PaginationDto {
   keyword?: string;
 
   @IsOptional()
-  @IsNumberString()
+  @Transform(({ value }) => parseInt(value, 10))
   minPrice?: number;
 
   @IsOptional()
-  @IsNumberString()
+  @Transform(({ value }) => parseInt(value, 10))
   maxPrice?: number;
 
   @IsOptional()
-  @IsNumberString()
+  @Transform(({ value }) => parseInt(value, 10))
   minDuration?: number;
 
   @IsOptional()
-  @IsNumberString()
+  @Transform(({ value }) => parseInt(value, 10))
   maxDuration?: number;
 
   @IsOptional()

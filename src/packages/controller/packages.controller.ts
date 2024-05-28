@@ -29,7 +29,6 @@ export class PackagesController {
     @GetUser() user: Coach,
     @Body() payload: PackageDto,
   ): Promise<Package> {
-    console.log('im in');
     return this.packagesService.create(user, payload);
   }
 
@@ -42,11 +41,8 @@ export class PackagesController {
   }
 
   @Get(':id')
-  async getById(
-    @Param('id') id: number,
-    @GetUser() user: Coach,
-  ): Promise<Package> {
-    return this.packagesService.getById(user, id);
+  async getById(@Param('id') id: number): Promise<Package> {
+    return this.packagesService.getById(id);
   }
 
   @Put(':id')

@@ -70,10 +70,9 @@ export class PackagesService {
     };
   }
 
-  async getById(user: Coach, id: number): Promise<Package> {
+  async getById(id: number): Promise<Package> {
     const pack = await this.packageRepository.findOneBy({
       id: id,
-      coach: user,
     });
     if (!pack) throw new NotFoundException('Package not found');
 
@@ -94,7 +93,7 @@ export class PackagesService {
 
     if (result.affected === 0) throw new NotFoundException('Package not found');
 
-    return await this.getById(user, id);
+    return await this.getById(id);
   }
 
   async delete(user: Coach, id: number): Promise<void> {

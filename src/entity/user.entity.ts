@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Device } from './device.entity';
 import { Coach } from './coach.entity';
+import { UserSubscription } from './user-subscription.entity';
 
 @Entity('users')
 export class User {
@@ -82,4 +83,11 @@ export class User {
 
   @OneToOne(() => Coach, (coach) => coach.user, { cascade: true, eager: true })
   coach: Coach;
+
+  @OneToMany(() => UserSubscription, (subsciption) => subsciption.user)
+  subscriptions: UserSubscription[];
+
+  public get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
 }
