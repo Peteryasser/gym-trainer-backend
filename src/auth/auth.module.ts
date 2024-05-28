@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './service/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './controller/auth.controller';
-import { jwtConstants } from './constants';
 import { DevicesService } from '../users/service/devices.service';
 import { JwtStrategy } from './jwt.strategy';
 import { UsersService } from '../users/service/users.service';
@@ -23,11 +22,11 @@ import { User } from '../entity/user.entity';
       imports: [ConfigModule],
       useFactory: async () => {
         return {
-          secret: jwtConstants.secret,
+          secret: process.env.JWT_SECRET_KEY,
           signOptions: {
-            ...(jwtConstants.expiry
+            ...(process.env.JWT_EXPIRY
               ? {
-                  expiresIn: Number(jwtConstants.expiry),
+                  expiresIn: Number(process.env.JWT_EXPIRY),
                 }
               : {}),
           },
