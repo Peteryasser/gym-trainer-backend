@@ -19,6 +19,7 @@ import { UsersModule } from './users/users.module';
 import { PopulationModule } from './population/population.module';
 import { PackagesModule } from './packages/packages.module';
 import { UserSubscriptionsModule } from './user_subscriptions/user_subscriptions.module';
+import { CoachesModule } from './users/coaches/coaches.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { UserSubscriptionsModule } from './user_subscriptions/user_subscriptions
     ExerciseModule,
     AuthModule,
     UsersModule,
+    CoachesModule,
     PopulationModule,
     PackagesModule,
     UserSubscriptionsModule,
