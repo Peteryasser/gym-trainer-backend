@@ -45,7 +45,6 @@ import { CoachesModule } from './users/coaches/coaches.module';
     AppController,
     WorkoutController,
     IngredientController,
-    RoutesController,
   ],
   providers: [AppService, ImageService, ExerciseService, IngredientService],
 })
