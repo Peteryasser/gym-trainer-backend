@@ -1,10 +1,7 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, MoreThan, Repository, UpdateResult } from 'typeorm';
-import { User } from '../entities/user.entity';
-import { UUID } from 'crypto';
-import * as bcrypt from 'bcrypt';
-
+import { User } from '../../entity/user.entity';
+import { MoreThan, Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class UsersService {
@@ -13,28 +10,50 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  findOneByEmail(email: string): Promise<User | null> {
-    return this.usersRepository.findOneBy({ email });
+  async findOneByEmail(
+    email: string,
+    throwException: boolean = true,
+  ): Promise<User> {
+    const user = await this.usersRepository.findOne({
+      where: { email: email },
+    });
+    if (!user && throwException) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 
-  findOneByUsername(username: string): Promise<User | null> {
-    return this.usersRepository.findOneBy({ username });
+  async findOneByUsername(
+    username: string,
+    throwException: boolean = true,
+  ): Promise<User | undefined> {
+    const user = await this.usersRepository.findOneBy({ username });
+    if (!user && throwException) throw new NotFoundException('User not found');
+    return user;
   }
 
-  findOneById(id: number): Promise<User | null> {
-    return this.usersRepository.findOneBy({ id });
+  async findOneById(
+    id: number,
+    throwException: boolean = true,
+  ): Promise<User | undefined> {
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user && throwException) throw new NotFoundException('User not found');
+    return user;
   }
 
-  create(user: User): Promise<User> {
-    return this.usersRepository.save(user);
+  async create(user: User): Promise<User> {
+    return await this.usersRepository.save(user);
   }
 
-  update(userId: number, userInformation: Partial<User>): Promise<UpdateResult> {
-    return this.usersRepository.update(userId, userInformation);
+  async update(id: number, userInfo: Partial<User>): Promise<UpdateResult> {
+    await this.findOneById(id);
+
+    return await this.usersRepository.update(id, userInfo);
   }
 
-  delete(userId: UUID): Promise<DeleteResult> {
-    return this.usersRepository.delete(userId);
+  async delete(id: number): Promise<void> {
+    const result = await this.usersRepository.delete(id);
+    if (result.affected == 0) throw new NotFoundException('User not found');
   }
   
   async setotp(otp, otpExpire, email) {

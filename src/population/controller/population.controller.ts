@@ -1,10 +1,12 @@
 import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { CloudinaryService } from 'src/utils/cloudinary/cloudinary.service';
-import { CLOUDINARY_EXERCISES_FOLDER_NAME } from 'src/constants';
+import { CLOUDINARY_EXERCISES_FOLDER_NAME, CSV_ASSISTED_POPULATION } from 'src/constants';
 import { ExerciseDTO } from 'src/workout_side/exercise/dtos/exercise.dto';
 import { ExerciseService } from 'src/workout_side/exercise/exercise.service';
 import { ImageService } from 'src/utils/image/image.service';
+import { CSVReaderService } from 'src/utils/Readers/csv_reader.service';
+import { log } from 'console';
 
 @Controller('population')
 export class PopulationController {
@@ -12,8 +14,12 @@ export class PopulationController {
         private readonly appService: AppService,
         private cloudinary: CloudinaryService,
         private exerciseService: ExerciseService,
-        private imageService:ImageService
+        private imageService:ImageService,
+        private csvReaderservice: CSVReaderService,
         ) {}
+
+
+      
     @Get("/testRapidAPIandCloudinary")
     async testRapidAPIandCloudinary(): Promise<string> {
       try {
@@ -49,17 +55,41 @@ export class PopulationController {
     async populateDB(): Promise<string> {
       try {
         const exercises = await this.exerciseService.getAllExercises()
-        for (const exercise of exercises) {
-          const url = exercise['gifUrl']
-          const buffer = await this.imageService.fetchImage(url)
-          const newUrl = await this.uploadWorkoutImageToCloudinary(buffer)
-          exercise['gifUrl'] = newUrl
-          await this.exerciseService.createExercise(exercise)
+        var local_db = []
+
+        if(CSV_ASSISTED_POPULATION){
+          local_db = await this.csvReaderservice.processCSVFile(
+            'exercises.csv', (fields: string[]) => ({
+              idApi: fields[1],
+              gifUrl: fields[2],
+            }),',');
         }
+                  
+        for (const exercise of exercises) {
+          const url = exercise['gifUrl'];
+          const idApi = exercise['id'];
+          let newUrl = url;
+          if (CSV_ASSISTED_POPULATION) { // the condition for this if statement is in constants.ts
+            const localExercise = local_db.find((ex) => {
+              const idApiWithoutQuotes = idApi.replaceAll('"', '');
+              const exIdApiWithoutQuotes = ex.idApi.replaceAll('"', '');
+              return exIdApiWithoutQuotes === idApiWithoutQuotes});  
+            if (localExercise) {
+                newUrl = localExercise.gifUrl;                
+            } else {
+                const buffer = await this.imageService.fetchImage(url);
+                newUrl = await this.uploadWorkoutImageToCloudinary(buffer);
+            }
+          } else {
+              const buffer = await this.imageService.fetchImage(url);
+              newUrl = await this.uploadWorkoutImageToCloudinary(buffer);
+          }
+          exercise['gifUrl'] = newUrl;
+          await this.exerciseService.createExercise(exercise);
+      }
         console.log(" ============= DONE ===============");
-        
         return 'Population of the exercises is done';
-  
+      
       } catch (error) {
         console.log(error);
         throw new BadRequestException('Failed at some point');

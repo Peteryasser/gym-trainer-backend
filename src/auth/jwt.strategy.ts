@@ -1,35 +1,43 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { User } from 'src/users/entities/user.entity';
-import { UsersService } from 'src/users/service/users.service';
-import { jwtConstants } from './constants';
+import { UsersService } from '../users/service/users.service';
+import { User } from '../entity/user.entity';
+import { DevicesService } from '../users/service/devices.service';
+import { Device } from '../entity/device.entity';
+import { CoachesService } from '../users/coaches/coach.service';
+import { Coach } from '../entity/coach.entity';
+import { UserType } from '../users/user-type.enum';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private readonly configService: ConfigService,
+    private readonly devicesService: DevicesService,
     private readonly usersService: UsersService,
+    private readonly coachesService: CoachesService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: jwtConstants.secret,
+      secretOrKey: process.env.JWT_SECRET_KEY,
     });
   }
 
-  async validate({ iat, exp, id }: Record<string, number>): Promise<User> {
-    const timeDiff = exp - iat;
-    if (timeDiff <= 0) {
-      throw new UnauthorizedException('Expired Token');
-    }
+  async validate(
+    payload: any,
+  ): Promise<{ user: User | Coach; device: Device }> {
+    let user: User | Coach;
 
-    const user = await this.usersService.findOneById(id);
-    if (!user) {
-      throw new UnauthorizedException('Invalid Token');
-    }
+    if (payload.userType === UserType.user)
+      user = await this.usersService.findOneById(payload.userID, false);
+    else if (payload.userType === UserType.coach)
+      user = await this.coachesService.findOneById(payload.userID, false);
 
-    return user;
+    if (!user) throw new UnauthorizedException('Invalid Token');
+
+    const device = await this.devicesService.findOneById(payload.deviceID);
+    if (!device) throw new UnauthorizedException('Invalid Token');
+
+    return { user, device };
   }
 }

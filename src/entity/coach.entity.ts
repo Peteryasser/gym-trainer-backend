@@ -1,12 +1,22 @@
-import { Entity, OneToOne, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  OneToOne,
+  JoinColumn,
+  PrimaryGeneratedColumn,
+  OneToMany,
+} from 'typeorm';
 import { User } from './user.entity';
+import { Package } from './coach-package.entity';
 
 @Entity('coaches')
 export class Coach {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => User)
+  @OneToOne(() => User, (user) => user.coach, { lazy: true })
   @JoinColumn({ name: 'user_id' })
-  user: User;
+  user: Promise<User>;
+
+  @OneToMany(() => Package, (packs) => packs.coach, { cascade: true })
+  packages: Package[];
 }

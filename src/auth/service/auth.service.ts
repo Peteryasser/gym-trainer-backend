@@ -4,25 +4,28 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
-import { User } from 'src/users/entities/user.entity';
-import { UsersService } from 'src/users/service/users.service';
+import { UsersService } from '../../users/service/users.service';
 import { UserRegisterRequestDto } from '../dtos/user.register.request.dto';
 import { UserLoginRequestDto } from '../dtos/user.login.request.dto';
 import { UserForgetPasswordRequestDto } from '../dtos/user.forgetpassword.request.dto';
 import { UserChangePasswordRequestDto } from '../dtos/user.changepassword.request.dto' 
 import { UserAuthResponseDto } from '../dtos/user.auth.response.dto';
-import { UserDto } from 'src/users/dtos/user.dto';
-import { DevicesService } from 'src/users/service/devices.service';
 import { DeviceDto } from 'src/users/dtos/device.dto';
-import { Coach } from 'src/users/coaches/coach.entity';
-import { CoachesService } from 'src/users/coaches/coach.service';
 import nodemailer = require('nodemailer');
 import { config as dotenvConfig } from 'dotenv';
+import * as bcrypt from 'bcrypt';
 import { UserResetPasswordRequestDto } from '../dtos/user.resetpassword.request.dto';
 import { UUID } from 'crypto';
 
 dotenvConfig({ path: '.env' });
+import { UserDto } from '../../users/dtos/user.dto';
+import { DevicesService } from '../../users/service/devices.service';
+import { CoachesService } from '../../users/coaches/coach.service';
+import { Hash } from '../../shared/utils/Hash';
+import { UserType } from '../../users/user-type.enum';
+import { TokenPayload } from '../types/token.payload';
+import { User } from '../../entity/user.entity';
+import { Coach } from '../../entity/coach.entity';
 
 @Injectable()
 export class AuthService {
@@ -33,12 +36,25 @@ export class AuthService {
     private readonly deviceService: DevicesService,
   ) {}
 
-  async authenticateUser(email: string, password: string): Promise<User> {
-    const user: User = await this.usersService.findOneByEmail(email);
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+  private async authenticateUser(
+    userType: UserType,
+    userDto: UserLoginRequestDto,
+  ): Promise<User> {
+    let user: User = null;
+    if (userDto.email) {
+      user = await this.usersService.findOneByEmail(userDto.email);
+    } else {
+      user = await this.usersService.findOneByUsername(userDto.username);
     }
-    const isMatch: boolean = await bcrypt.compare(password, user.password);
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+
+    if (userType == UserType.coach && !user.coach)
+      throw new BadRequestException();
+
+    const isMatch: boolean = await Hash.compare(
+      userDto.password,
+      user.password,
+    );
     if (!isMatch) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -46,73 +62,104 @@ export class AuthService {
   }
 
   async login(
+    userType: UserType,
     user: UserLoginRequestDto,
-    device: DeviceDto,
   ): Promise<UserAuthResponseDto> {
-    const validatedUser = await this.authenticateUser(
-      user.email,
-      user.password,
+    let validatedUser: User | Coach = await this.authenticateUser(
+      userType,
+      user,
     );
-    await this.deviceService.saveUserDevice(validatedUser.id, device.fcmToken);
-    return this.getToken(validatedUser);
+    const device = await this.deviceService.saveUserDevice(
+      validatedUser.id,
+      user.fcmToken,
+    );
+
+    if (userType == UserType.coach) validatedUser = validatedUser.coach;
+    return this.createUserAuthResponse(validatedUser, device.id);
   }
 
-  async getToken(user: User): Promise<UserAuthResponseDto> {
-    const payload = { id: user.id };
+  async register(user: UserRegisterRequestDto): Promise<UserAuthResponseDto> {
+    const existingUser = await this.usersService.findOneByEmail(
+      user.email,
+      false,
+    );
+
+    if (existingUser) {
+      throw new BadRequestException('Email already exists');
+    }
+
+    const hashedPassword = await Hash.make(user.password);
+    const partialNewUser: Partial<User> = {
+      ...user,
+      password: hashedPassword,
+    };
+
+    const newUser: User = partialNewUser as User;
+
+    if (user.isCoach) {
+      const newCoach = new Coach();
+      newCoach.user = Promise.resolve(newUser);
+
+      newUser.coach = newCoach;
+
+      await this.usersService.create(newUser);
+    } else {
+      await this.usersService.create(newUser);
+    }
+
+    const device = await this.deviceService.saveUserDevice(
+      newUser.id,
+      user.fcmToken,
+    );
+    return await this.createUserAuthResponse(newUser, device.id);
+  }
+
+  async logout(deviceID: number): Promise<void> {
+    await this.deviceService.delete(deviceID);
+  }
+
+  private async getToken(
+    user: User | Coach,
+    deviceID: number,
+  ): Promise<string> {
+    const userType: UserType =
+      user instanceof Coach ? UserType.coach : UserType.user;
+
+    const payload: TokenPayload = {
+      userID: user.id,
+      userType: userType,
+      deviceID: deviceID,
+    };
     const token = this.jwtService.sign(payload);
+
+    return token;
+  }
+
+  private async createUserDTO(user: User | Coach): Promise<UserDto> {
+    if (user instanceof Coach) {
+      user = await user.user;
+    }
+
     const userDto: UserDto = {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
       username: user.username,
     };
+
+    return userDto;
+  }
+
+  private async createUserAuthResponse(
+    user: User | Coach,
+    deviceID: number,
+  ): Promise<UserAuthResponseDto> {
+    const token = await this.getToken(user, deviceID);
+    const userDto = await this.createUserDTO(user);
+
     return new UserAuthResponseDto(token, userDto);
   }
 
-  async register(
-    user: UserRegisterRequestDto,
-    device: DeviceDto,
-  ): Promise<UserAuthResponseDto> {
-    const existingUser = await this.usersService.findOneByEmail(user.email);
-    if (existingUser) {
-      throw new BadRequestException('Email already exists');
-    }
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(user.password, salt);
-    const newUser: User = {
-      ...user,
-      password: hashedPassword,
-      gender: '',
-      profilePictureUrl: '',
-      countryCode: '',
-      phoneNumber: '',
-      dateOfBirth: null,
-      verificationToken: '',
-      verificationTokenSentAt: null,
-      resetPasswordToken: '',
-      resetPasswordTokenSentAt: null,
-      isEmailVerified: false,
-      isSocialAccount: false,
-      enableNotifications: true,
-      defaultLocale: 'en',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      devices: [],
-      coach: new Coach(),
-    };
-
-    if (user.isCoach) {
-      const newCoach = new Coach();
-      newUser.coach = newCoach;
-      await this.usersService.create(newUser); // Save user first
-      newCoach.user = newUser;
-      await this.coachesService.create(newCoach); // Save coach separately
-    } else {
-      await this.usersService.create(newUser);
-    }
-    await this.deviceService.saveUserDevice(newUser.id, device.fcmToken);
-    return this.getToken(newUser);
-  }
 
   async forgetPassword(
     user: UserForgetPasswordRequestDto
