@@ -16,12 +16,12 @@ export class Ingredient {
   servingSize: number;
 
   @Column({ name: 'fat_total_g' })
-  fat: number;
+  fatTotal: number;
 
   @Column({ name: 'fat_saturated_g' })
   fatSaturated: number;
 
-  @Column()
+  @Column({ name: 'protein_g' })
   protein: number;
 
   @Column({ name: 'sodium_mg' })
@@ -34,12 +34,12 @@ export class Ingredient {
   cholesterol: number;
 
   @Column({ name: 'carbohydrates_total_g' })
-  carbohydrates: number;
+  carbohydratesTotal: number;
 
-  @Column()
+  @Column({ name: 'fiber_g' })
   fiber: number;
 
-  @Column()
+  @Column({ name: 'sugar_g' })
   sugar: number;
 
   @Column({ nullable: true })

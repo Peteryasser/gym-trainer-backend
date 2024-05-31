@@ -6,7 +6,6 @@ import { AuthModule } from 'src/auth/auth.module';
 import typeorm from 'src/config/typeorm';
 import { IngredientController } from 'src/nutrition_side/ingredient/ingredient.controller';
 import { IngredientService } from 'src/nutrition_side/ingredient/ingredient.service';
-import { RoutesController } from 'src/routes/routes.controller';
 import { UsersModule } from 'src/users/users.module';
 import { CloudinaryModule } from 'src/utils/cloudinary/cloudinary.module';
 import { ImageService } from 'src/utils/image/image.service';
@@ -31,7 +30,7 @@ import { AppService } from 'src/app.service';
     ExerciseModule,
     UsersModule,
   ],
-  controllers: [PopulationController, WorkoutController, IngredientController, RoutesController],
+  controllers: [PopulationController, WorkoutController, IngredientController],
   providers: [AppService, ImageService, ExerciseService, IngredientService],
 })
 export class PopulationModule {}

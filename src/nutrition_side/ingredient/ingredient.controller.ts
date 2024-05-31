@@ -25,7 +25,7 @@ export class IngredientController {
     this.ninja_api_url = process.env.NINJA_API_URL;
     this.ninja_api_key = process.env.NINJA_API_KEY;
     this.spoonacular_api_url = process.env.SPOONACULAR_API_URL;
-    this.spoonacular_api_key = process.env.SPOONACULAR_API_URL;
+    this.spoonacular_api_key = process.env.SPOONACULAR_API_KEY;
   }
 
   // Call the function with the path to your CSV file
@@ -33,8 +33,6 @@ export class IngredientController {
   async readIngredients(): Promise<IngredientInfoDto[]> {
     const filePath = 'src/top-1k-ingredients.csv';
     const ingredients = await this.ingredientService.processIngredientsFile(filePath);
-    console.log(ingredients);
-    console.log('Number of ingredients:', ingredients.length);
     return ingredients;
 }
 
@@ -47,10 +45,7 @@ export class IngredientController {
                     'X-Api-Key': this.ninja_api_key,
                 },
             });
-
-            console.log(response.data);
             return response.data;
-
         } catch (error) {
             if (error.response) {
                 console.error(`Error: ${error.response.status} ${error.response.data}`);
@@ -68,26 +63,30 @@ export class IngredientController {
 
     @Get('get_ingredient_details_by_id/:id') // Adjusted route definition to include the 'id' parameter
     async getIngredientDetails(@Param('id') id: string): Promise<any> {
-        const options = {
-            method: 'GET',
-            url: `${this.spoonacular_api_url}${id}/information`,
-            headers: {
-                'x-api-key': this.spoonacular_api_key,
-            }
-        };
-
         try {
-            const response = await axios.request(options);
-            console.log(response.data);
-            return response.data; // Return the data received from the API
+            const response = await axios.get(`${this.spoonacular_api_url}${id}/information`, {
+                headers: {
+                    'X-Api-Key': this.spoonacular_api_key,
+                },
+            });
+
+            return response.data;
         } catch (error) {
-            console.error(error);
-            throw error; // Rethrow the error to be handled by NestJS error handling mechanism
+            if (error.response) {
+                console.error(`Error: ${error.response.status} ${error.response.data}`);
+                throw new Error(`Error: ${error.response.status} ${error.response.data}`);
+            } else if (error.request) {
+                console.error(`Error: No response received from the server`);
+                throw new Error('Error: No response received from the server');
+            } else {
+                console.error(`Error: ${error.message}`);
+                throw new Error(`Error: ${error.message}`);
+            }
         }
     }
 
     @Get('get_image/:imageName')
-    async getImage(@Param('imageName') imageName: string, @Res() res: Response): Promise<void> {
+    async getImage(@Param('imageName') imageName: string, @Res() res: Response): Promise<string> {
         try {
             const imageResponse = await axios.get(`https://img.spoonacular.com/ingredients_500x500/${imageName}`, {
                 responseType: 'stream', // Set response type to stream to directly pipe it to response
@@ -101,6 +100,7 @@ export class IngredientController {
             
             const link = await this.uploadIngredientImageToCloudinary(imageResponse.data);
             console.log(link);
+            return link;
 
             // return Buffer.from(imageResponse.data, 'binary');
         } catch (error) {
@@ -130,6 +130,35 @@ export class IngredientController {
             imageStream.pipe(uploadStream);
         });
     }
+
+    @Get('get_all_ingredient_data')
+    async getAll(@Res() res: Response): Promise<void> {
+        try {
+            const ingredients = (await axios.get('http://localhost:3000/read-ingredients', {})).data;
+            for(let ingredient of ingredients){
+                try{
+                    const info = (await axios.get(`http://localhost:3000/get_ingredient_info/${ingredient.name}`, {})).data;
+                    const info2 = (await axios.get(`http://localhost:3000/get_ingredient_details_by_id/${ingredient.id}`, {})).data;
+                    const imageName = info2.image;
+                    const cat = info2.categoryPath[0]
+                    console.log(imageName, cat)
+                    const link = (await axios.get(`http://localhost:3000/get_image/${imageName}`, {})).data;
+                    
+
+
+                }catch (error){
+                    continue;
+                }
+
+            
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).send('Internal server error');
+        }
+    }
+
 
 
 
