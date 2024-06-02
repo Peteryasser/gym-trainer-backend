@@ -41,8 +41,8 @@ export class AppNotification {
   @Column()
   title: string;
 
-  @Column('text')
-  content: string;
+  @Column({ type: 'text' })
+  message: string;
 
   @Column({ default: false })
   isRead: boolean;
