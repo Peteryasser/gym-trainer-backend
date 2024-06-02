@@ -17,6 +17,8 @@ import { Coach } from '../../entity/coach.entity';
 import { SubscriptionFilterDto } from '../dtos/subscription-filter.dto';
 import { PaginatedResultDto } from '../../dtos/paginatied-result.dto';
 import { paginate } from '../../utils/pagination/pagination.util';
+import { NotificationsService } from 'src/notifications/service/notifications.service';
+import { Package } from 'src/entity/coach-package.entity';
 
 @Injectable()
 export class UserSubscriptionsService {
@@ -24,6 +26,7 @@ export class UserSubscriptionsService {
     @InjectRepository(UserSubscription)
     private readonly subscriptionRepository: Repository<UserSubscription>,
     private readonly packageService: PackagesService,
+    private readonly notificationService: NotificationsService,
   ) {}
 
   async createSubscription(
@@ -71,6 +74,8 @@ export class UserSubscriptionsService {
 
     const savedSubscription =
       await this.subscriptionRepository.save(newSubscription);
+
+    this.notifySubscriptionObservers(user, packageEntity);
 
     return await this.getById(savedSubscription.id, user);
   }
@@ -200,5 +205,19 @@ export class UserSubscriptionsService {
         );
       }
     }
+  }
+
+  private notifySubscriptionObservers(user: User, pack: Package): void {
+    this.notificationService.create({
+      coachId: pack.coach.id,
+      title: `New Package Subscription`,
+      message: `User ${user.fullName} has subscribed to your package ${pack.id}`,
+    });
+
+    this.notificationService.create({
+      userId: user.id,
+      title: `Successful Package Subscription`,
+      message: `You have successfully subscribed to package ${pack.id}!`,
+    });
   }
 }
