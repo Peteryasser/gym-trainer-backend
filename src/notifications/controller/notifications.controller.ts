@@ -25,9 +25,9 @@ export class NotificationsController {
     else return this.notificationService.getCoachNotifications(user.id);
   }
 
-  @Get(':id')
-  async getById(@Param('id') id: number): Promise<AppNotification> {
-    return this.notificationService.getById(id);
+  @Get('unread_count')
+  async getUnreadCount(@GetUser() user: User | Coach): Promise<number> {
+    return this.notificationService.getUnreadCount(user);
   }
 
   @Patch(':id/read')

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { User } from '../../entity/user.entity';
 import { Coach } from '../../entity/coach.entity';
 import { AppNotification } from '../../entity/notification';
@@ -12,11 +12,11 @@ export class NotificationsService {
     private readonly notificationRepository: Repository<AppNotification>,
   ) {}
 
-  async createNotification(data: {
+  async create(data: {
     userId?: number;
     coachId?: number;
     title: string;
-    content: string;
+    message: string;
     link?: string;
   }): Promise<AppNotification> {
     const notification = this.notificationRepository.create(data);
@@ -31,6 +31,16 @@ export class NotificationsService {
     return this.notificationRepository.find({ where: { coachId } });
   }
 
+  async getUnreadCount(user: User | Coach): Promise<number> {
+    const query = this.notificationRepository.createQueryBuilder();
+    query.andWhere({ isRead: false });
+
+    if (user instanceof User) query.andWhere({ user: user });
+    else query.andWhere({ coach: user });
+
+    return await query.getCount();
+  }
+
   async markAsRead(
     id: number,
     currentUser: User | Coach,
@@ -38,16 +48,10 @@ export class NotificationsService {
     let coach = null;
     let user = null;
 
-    if (currentUser instanceof User) user = currentUser;
-    else coach = currentUser;
+    if (currentUser instanceof User) user = currentUser.id;
+    else coach = currentUser.id;
 
-    const result = await this.notificationRepository.update(
-      { id: id, user: user, coach: coach },
-      { isRead: true },
-    );
-    if (result.affected == 0) {
-      throw new NotFoundException('Notification not found');
-    }
+    await this.executeQuery(null, user, coach, { isRead: true }, 'update');
 
     return await this.getById(id);
   }
@@ -56,13 +60,10 @@ export class NotificationsService {
     let coach = null;
     let user = null;
 
-    if (currentUser instanceof User) user = currentUser;
-    else coach = currentUser;
+    if (currentUser instanceof User) user = currentUser.id;
+    else coach = currentUser.id;
 
-    await this.notificationRepository.update(
-      { user: user, coach: coach },
-      { isRead: true },
-    );
+    await this.executeQuery(null, user, coach, { isRead: true }, 'update');
   }
 
   async markAsUnread(
@@ -72,16 +73,10 @@ export class NotificationsService {
     let coach = null;
     let user = null;
 
-    if (currentUser instanceof User) user = currentUser;
-    else coach = currentUser;
+    if (currentUser instanceof User) user = currentUser.id;
+    else coach = currentUser.id;
 
-    const result = await this.notificationRepository.update(
-      { id: id, user: user, coach: coach },
-      { isRead: false },
-    );
-    if (result.affected == 0) {
-      throw new NotFoundException('Notification not found');
-    }
+    await this.executeQuery(id, user, coach, { isRead: false }, 'update');
 
     return await this.getById(id);
   }
@@ -99,14 +94,46 @@ export class NotificationsService {
     let coach = null;
     let user = null;
 
-    if (currentUser instanceof User) user = currentUser;
-    else coach = currentUser;
+    if (currentUser instanceof User) user = currentUser.id;
+    else coach = currentUser.id;
 
-    const result = await this.notificationRepository.delete({
-      id: id,
-      coach: coach,
-      user: user,
-    });
-    if (!result.affected) throw new NotFoundException('Notification not found');
+    await this.executeQuery(id, user, coach, {}, 'delete');
+  }
+
+  private async executeQuery(
+    id: number,
+    userId: number,
+    coachId: number,
+    updateData: Partial<AppNotification>,
+    operation: 'update' | 'delete',
+  ): Promise<void> {
+    const query = this.notificationRepository.createQueryBuilder();
+
+    if (id !== null) {
+      query.andWhere('id = :id', { id });
+    }
+
+    if (userId === null) {
+      query.andWhere('userId IS NULL');
+    } else {
+      query.andWhere('userId = :userId', { userId });
+    }
+
+    if (coachId === null) {
+      query.andWhere('coachId IS NULL');
+    } else {
+      query.andWhere('coachId = :coachId', { coachId });
+    }
+
+    let result: UpdateResult | DeleteResult;
+    if (operation === 'update') {
+      result = await query.update(AppNotification).set(updateData).execute();
+    } else if (operation === 'delete') {
+      result = await query.delete().from(AppNotification).execute();
+    }
+
+    if (!result.affected) {
+      throw new NotFoundException('Notification not found');
+    }
   }
 }
