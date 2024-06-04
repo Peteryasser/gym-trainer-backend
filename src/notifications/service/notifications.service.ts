@@ -51,7 +51,7 @@ export class NotificationsService {
     if (currentUser instanceof User) user = currentUser.id;
     else coach = currentUser.id;
 
-    await this.executeQuery(null, user, coach, { isRead: true }, 'update');
+    await this.executeQuery(id, user, coach, { isRead: true }, 'update');
 
     return await this.getById(id);
   }
