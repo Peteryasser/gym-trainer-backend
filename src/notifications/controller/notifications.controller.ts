@@ -10,7 +10,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 import { NotificationsService } from '../service/notifications.service';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { Coach } from 'src/entity/coach.entity';
-import { AppNotification } from 'src/entity/notification';
+import { AppNotification } from 'src/entity/app-notification.entity';
 import { User } from 'src/entity/user.entity';
 
 @UseGuards(JwtAuthGuard)

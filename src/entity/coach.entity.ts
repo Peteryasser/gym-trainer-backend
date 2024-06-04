@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Package } from './coach-package.entity';
-import { AppNotification } from './notification';
+import { AppNotification } from './app-notification.entity';
 
 @Entity('coaches')
 export class Coach {

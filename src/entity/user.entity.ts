@@ -8,7 +8,7 @@ import {
 import { Device } from './device.entity';
 import { Coach } from './coach.entity';
 import { UserSubscription } from './user-subscription.entity';
-import { AppNotification } from './notification';
+import { AppNotification } from './app-notification.entity';
 
 @Entity('users')
 export class User {

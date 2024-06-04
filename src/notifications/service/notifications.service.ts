@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { User } from '../../entity/user.entity';
 import { Coach } from '../../entity/coach.entity';
-import { AppNotification } from '../../entity/notification';
+import { AppNotification } from '../../entity/app-notification.entity';
 
 @Injectable()
 export class NotificationsService {
