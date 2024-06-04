@@ -4,6 +4,7 @@ import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { User } from '../../entity/user.entity';
 import { Coach } from '../../entity/coach.entity';
 import { AppNotification } from '../../entity/app-notification.entity';
+import { NotificationTypeEnum } from '../enums/notification-type.enum';
 
 @Injectable()
 export class NotificationsService {
@@ -15,9 +16,8 @@ export class NotificationsService {
   async create(data: {
     userId?: number;
     coachId?: number;
-    title: string;
+    type: NotificationTypeEnum;
     message: string;
-    link?: string;
   }): Promise<AppNotification> {
     const notification = this.notificationRepository.create(data);
     return this.notificationRepository.save(notification);
