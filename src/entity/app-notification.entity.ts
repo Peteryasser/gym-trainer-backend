@@ -12,6 +12,7 @@ import {
 import { User } from './user.entity';
 import { Coach } from './coach.entity';
 import { validateOrReject } from 'class-validator';
+import { NotificationTypeEnum } from 'src/notifications/enums/notification-type.enum';
 
 @Entity('notifications')
 export class AppNotification {
@@ -38,17 +39,18 @@ export class AppNotification {
   @JoinColumn({ name: 'coachId' })
   coach: Coach;
 
-  @Column()
-  title: string;
+  @Column({
+    type: 'enum',
+    enum: NotificationTypeEnum,
+    nullable: false,
+  })
+  type: NotificationTypeEnum;
 
   @Column({ type: 'text' })
   message: string;
 
   @Column({ default: false })
   isRead: boolean;
-
-  @Column({ nullable: true })
-  link: string;
 
   @CreateDateColumn()
   createdAt: Date;
