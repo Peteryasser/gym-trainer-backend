@@ -18,7 +18,8 @@ import { SubscriptionFilterDto } from '../dtos/subscription-filter.dto';
 import { PaginatedResultDto } from '../../dtos/paginatied-result.dto';
 import { paginate } from '../../utils/pagination/pagination.util';
 import { NotificationsService } from 'src/notifications/service/notifications.service';
-import { Package } from 'src/entity/coach-package.entity';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { NewUserSubscriptionEvent } from 'src/notifications/events/user-activity-events';
 
 @Injectable()
 export class UserSubscriptionsService {
@@ -27,6 +28,7 @@ export class UserSubscriptionsService {
     private readonly subscriptionRepository: Repository<UserSubscription>,
     private readonly packageService: PackagesService,
     private readonly notificationService: NotificationsService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async createSubscription(
@@ -75,7 +77,16 @@ export class UserSubscriptionsService {
     const savedSubscription =
       await this.subscriptionRepository.save(newSubscription);
 
-    this.notifySubscriptionObservers(user, packageEntity);
+    this.eventEmitter.emit(
+      'new.user.subscription',
+      new NewUserSubscriptionEvent(
+        user.id,
+        user.fullName,
+        packageEntity.coach.id,
+        (await packageEntity.coach.user).fullName,
+        packageId,
+      ),
+    );
 
     return await this.getById(savedSubscription.id, user);
   }
@@ -205,19 +216,5 @@ export class UserSubscriptionsService {
         );
       }
     }
-  }
-
-  private notifySubscriptionObservers(user: User, pack: Package): void {
-    this.notificationService.create({
-      coachId: pack.coach.id,
-      title: `New Package Subscription`,
-      message: `User ${user.fullName} has subscribed to your package ${pack.id}`,
-    });
-
-    this.notificationService.create({
-      userId: user.id,
-      title: `Successful Package Subscription`,
-      message: `You have successfully subscribed to package ${pack.id}!`,
-    });
   }
 }
