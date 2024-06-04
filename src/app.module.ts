@@ -21,6 +21,7 @@ import { PackagesModule } from './packages/packages.module';
 import { UserSubscriptionsModule } from './user_subscriptions/user_subscriptions.module';
 import { CoachesModule } from './users/coaches/coaches.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -33,6 +34,8 @@ import { NotificationsModule } from './notifications/notifications.module';
       useFactory: async (configService: ConfigService) =>
         configService.get('typeorm'),
     }),
+
+    EventEmitterModule.forRoot(),
 
     CloudinaryModule,
     ExerciseModule,
