@@ -16,7 +16,7 @@ export class Package {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Coach, (coach) => coach.packages)
+  @ManyToOne(() => Coach, (coach) => coach.packages, { eager: true })
   @JoinColumn({ name: 'coachId' })
   coach: Coach;
 

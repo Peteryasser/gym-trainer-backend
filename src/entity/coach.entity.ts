@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Package } from './coach-package.entity';
+import { AppNotification } from './app-notification.entity';
 
 @Entity('coaches')
 export class Coach {
@@ -19,4 +20,7 @@ export class Coach {
 
   @OneToMany(() => Package, (packs) => packs.coach, { cascade: true })
   packages: Package[];
+
+  @OneToMany(() => AppNotification, (notifications) => notifications.coach)
+  notifications: AppNotification[];
 }
