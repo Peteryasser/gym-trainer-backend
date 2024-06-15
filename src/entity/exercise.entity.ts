@@ -1,5 +1,16 @@
 // Exercise Entity
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, ManyToMany, JoinTable, Unique, OneToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+  Unique,
+  OneToOne,
+} from 'typeorm';
 import { BodyPart } from './bodyPart';
 import { Muscle } from './muscle';
 import { Instruction } from './instruction';
@@ -9,47 +20,56 @@ import { join } from 'path';
 import { UserExerciseHistory } from './user-exercise-history';
 
 @Entity({ name: 'exercises' }) // Specify the table name (optional)
-@Unique(["idApi"])
+@Unique(['idApi'])
 export class Exercise {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 255 }) 
+  @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   idApi: string;
 
-  @ManyToOne(() => BodyPart, (bodyPart) => bodyPart.exercises,{cascade:true})
+  @ManyToOne(() => BodyPart, (bodyPart) => bodyPart.exercises, {
+    cascade: true,
+  })
   @JoinColumn()
   bodyPart: BodyPart;
 
   @Column({ type: 'varchar', length: 255 })
   gifUrl: string;
 
-  @ManyToOne(() => Muscle, (muscle) => muscle.mainFocusExercises,{cascade:true})
+  @ManyToOne(() => Muscle, (muscle) => muscle.mainFocusExercises, {
+    cascade: true,
+  })
   @JoinColumn()
   targetMuscle: Muscle;
 
-  @ManyToMany(() => Muscle, (muscle) => muscle.secondaryFocusExercises,{cascade:true})
+  @ManyToMany(() => Muscle, (muscle) => muscle.secondaryFocusExercises, {
+    cascade: true,
+  })
   @JoinTable()
   secondaryMuscles: Muscle[];
 
-  @OneToMany(() => Instruction, instruction => instruction.exercise, { cascade: true })
+  @OneToMany(() => Instruction, (instruction) => instruction.exercise, {
+    cascade: ['insert', 'update', 'remove'],
+  })
   instructions: Instruction[];
 
-  @ManyToMany(() => Equipment, (equipment) => equipment.exercises, { cascade: true })
+  @ManyToMany(() => Equipment, (equipment) => equipment.exercises, {
+    cascade: true,
+  })
   @JoinTable()
   equipments: Equipment[];
 
-  @ManyToOne(() => User, user => user.id, { nullable: true })
+  @ManyToOne(() => User, (user) => user.exercises, { nullable: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
   @Column({ type: 'boolean', default: false })
   type: boolean;
 
-
-  @OneToMany(() => UserExerciseHistory, history => history.exercise)
+  @OneToMany(() => UserExerciseHistory, (history) => history.exercise)
   userHistory: UserExerciseHistory[];
 }

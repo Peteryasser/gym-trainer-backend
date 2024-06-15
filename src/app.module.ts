@@ -42,7 +42,7 @@ import { ExerciseController } from './workout_side/exercise/exercise.controller'
     WorkoutController,
     IngredientController,
     RoutesController,
-    ExerciseController
+    ExerciseController,
   ],
   providers: [AppService, ImageService, ExerciseService, IngredientService],
 })

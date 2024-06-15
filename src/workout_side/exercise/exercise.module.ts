@@ -9,16 +9,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExerciseController } from './exercise.controller';
 
 @Module({
-    
-    imports: [TypeOrmModule.forFeature([
-        Exercise,
-        Equipment,
-        BodyPart,
-        Instruction,
-        Muscle,
-    ])],
-    
-    providers: [ExerciseService],
-    controllers: [ExerciseController],
+  imports: [
+    TypeOrmModule.forFeature([
+      Exercise,
+      Equipment,
+      BodyPart,
+      Instruction,
+      Muscle,
+    ]),
+  ],
+
+  providers: [ExerciseService],
+  controllers: [ExerciseController],
 })
 export class ExerciseModule {}
