@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import axios from 'axios';
 import { config as dotenvConfig } from 'dotenv';
@@ -14,6 +15,7 @@ import { Instruction } from 'src/entity/instruction';
 import { Muscle } from 'src/entity/muscle';
 import { DTORequest } from './dtos/exercise_dto_request';
 import { User } from 'src/entity/user.entity';
+import { UpdateExerciseDto } from './dtos/exercise_dto_update';
 
 dotenvConfig({ path: '.env' });
 @Injectable()
@@ -34,11 +36,11 @@ export class ExerciseService {
 
   async getExercisesByUser(user: User): Promise<Exercise[]> {
     const connection = await ConnectionManager.getConnection();
-    
+
     console.log('Fetching exercises for user ID:', user.id);
     const exercises = await connection.manager.query(
       'SELECT * FROM exercises WHERE user_id = $1',
-      [user.id]
+      [user.id],
     );
     // Find all exercises created by the user
     // const exercises = await connection.manager.find(Exercise, {
@@ -63,7 +65,6 @@ export class ExerciseService {
 
     ex.name = dto.name;
     ex.gifUrl = dto.gifUrl;
-    ex.idApi = Math.random().toString(36).substring(7);
 
     // Check if BodyPart already exists
     let bodyPart = await connection.manager.findOne(BodyPart, {
@@ -136,7 +137,7 @@ export class ExerciseService {
     // Fetch the exercise to be deleted
     const exercises = await connection.manager.query(
       'SELECT * FROM exercises WHERE id = $1 AND user_id = $2',
-      [id, user.id]
+      [id, user.id],
     );
 
     if (exercises.length === 0) {
@@ -247,6 +248,150 @@ export class ExerciseService {
       console.error('Error fetching all exercises:', error.message);
       throw new Error('Failed to fetch all exercises');
     }
+  }
+
+  async update(
+    user: User,
+    exerciseId: number,
+    updateExerciseDto: UpdateExerciseDto,
+  ): Promise<Exercise> {
+    console.log('Updating exercise with ID:', exerciseId);
+    console.log('Update DTO:', updateExerciseDto);
+
+    const connection = await ConnectionManager.getConnection();
+    const exerciseRepository = connection.getRepository(Exercise);
+    const exercise = await exerciseRepository.findOne({
+      where: { id: exerciseId, user: { id: user.id } },
+      relations: [
+        'bodyPart',
+        'targetMuscle',
+        'secondaryMuscles',
+        'instructions',
+        'equipments',
+      ],
+    });
+
+    if (!exercise) {
+      throw new NotFoundException(`Exercise with ID ${exerciseId} not found`);
+    }
+
+    if (exercise.user && exercise.user.id !== user.id) {
+      throw new UnauthorizedException(
+        `User with ID ${user.id} is not authorized to update this exercise`,
+      );
+    }
+
+    if (updateExerciseDto.name) {
+      console.log('Updating exercise name:', updateExerciseDto.name);
+      exercise.name = updateExerciseDto.name;
+      console.log('after update ', exercise);
+    }
+
+    if (updateExerciseDto.gifUrl) {
+      exercise.gifUrl = updateExerciseDto.gifUrl;
+    }
+
+    if (updateExerciseDto.bodyPart) {
+      let bodyPart = await connection.manager.findOne(BodyPart, {
+        where: { name: updateExerciseDto.bodyPart },
+      });
+      if (!bodyPart) {
+        bodyPart = connection.manager.create(BodyPart, {
+          name: updateExerciseDto.bodyPart,
+        });
+        await connection.manager.save(bodyPart);
+      }
+      exercise.bodyPart = bodyPart;
+    }
+
+    if (updateExerciseDto.target) {
+      let targetMuscle = await connection.manager.findOne(Muscle, {
+        where: { name: updateExerciseDto.target },
+      });
+      if (!targetMuscle) {
+        targetMuscle = connection.manager.create(Muscle, {
+          name: updateExerciseDto.target,
+        });
+        await connection.manager.save(targetMuscle);
+      }
+      exercise.targetMuscle = targetMuscle;
+    }
+
+    if (updateExerciseDto.secondaryMuscles) {
+      const existingSecondaryMuscles = exercise.secondaryMuscles || [];
+      const updatedSecondaryMuscles = [];
+
+      for (const muscleName of updateExerciseDto.secondaryMuscles) {
+        let muscle = existingSecondaryMuscles.find(
+          (m) => m.name === muscleName,
+        );
+        if (!muscle) {
+          muscle = await connection.manager.findOne(Muscle, {
+            where: { name: muscleName },
+          });
+          if (!muscle) {
+            muscle = connection.manager.create(Muscle, { name: muscleName });
+            await connection.manager.save(muscle);
+          }
+        }
+        updatedSecondaryMuscles.push(muscle);
+      }
+
+      exercise.secondaryMuscles = updatedSecondaryMuscles;
+    }
+
+    if (updateExerciseDto.instructions) {
+      const existingInstructions = exercise.instructions || [];
+      const updatedInstructions = [];
+
+      for (const instructionDescription of updateExerciseDto.instructions) {
+        let instruction = existingInstructions.find(
+          (i) => i.description === instructionDescription,
+        );
+        if (!instruction) {
+          instruction = await connection.manager.findOne(Instruction, {
+            where: { description: instructionDescription },
+          });
+          if (!instruction) {
+            instruction = connection.manager.create(Instruction, {
+              description: instructionDescription,
+            });
+            await connection.manager.save(instruction);
+          }
+        }
+        updatedInstructions.push(instruction);
+      }
+
+      exercise.instructions = updatedInstructions;
+    }
+    if (updateExerciseDto.equipments) {
+      const existingEquipments = exercise.equipments || [];
+      const updatedEquipments = [];
+
+      for (const equipmentName of updateExerciseDto.equipments) {
+        let equipment = existingEquipments.find(
+          (e) => e.name === equipmentName,
+        );
+        if (!equipment) {
+          equipment = await connection.manager.findOne(Equipment, {
+            where: { name: equipmentName },
+          });
+          if (!equipment) {
+            equipment = connection.manager.create(Equipment, {
+              name: equipmentName,
+            });
+            await connection.manager.save(equipment);
+          }
+        }
+        updatedEquipments.push(equipment);
+      }
+
+      exercise.equipments = updatedEquipments;
+    }
+
+    console.log('Saving updated exercise:', exercise);
+
+    return connection.manager.save(exercise);
   }
 }
 

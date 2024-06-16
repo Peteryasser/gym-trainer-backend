@@ -6,10 +6,12 @@ import {
   UseGuards,
   Delete,
   Param,
+  Patch,
 } from '@nestjs/common';
 import { ExerciseService } from './exercise.service';
 import { Exercise } from 'src/entity/exercise.entity';
 // import { ExerciseDTO } from './dtos/exercise.dto';
+import { UpdateExerciseDto } from './dtos/exercise_dto_update';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { DTORequest } from './dtos/exercise_dto_request';
 import { User } from 'src/entity/user.entity';
@@ -49,6 +51,16 @@ export class ExerciseController {
   async getMyExercise(@GetUser() user: User): Promise<Exercise[]> {
     console.log('get exercises of the user with id', user.id);
     return this.exerciseService.getExercisesByUser(user);
+  }
+
+  @Patch('update/:id')
+  async updateExercise(
+    @GetUser() user: User,
+    @Param('id') id: number,
+    @Body() dto: UpdateExerciseDto,
+  ): Promise<Exercise> {
+    console.log('updateExercise');
+    return this.exerciseService.update(user, id, dto);
   }
 
   @Get('test')

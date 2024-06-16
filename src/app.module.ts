@@ -18,6 +18,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PopulationModule } from './population/population.module';
 import { ExerciseController } from './workout_side/exercise/exercise.controller';
+import { WorkoutModule } from './workout_side/workout/workout.module';
+import { WorkoutService } from './workout_side/workout/workout.service';
 
 @Module({
   imports: [
@@ -36,6 +38,7 @@ import { ExerciseController } from './workout_side/exercise/exercise.controller'
     AuthModule,
     UsersModule,
     PopulationModule,
+    WorkoutModule,
   ],
   controllers: [
     AppController,
@@ -43,7 +46,14 @@ import { ExerciseController } from './workout_side/exercise/exercise.controller'
     IngredientController,
     RoutesController,
     ExerciseController,
+    WorkoutController,
   ],
-  providers: [AppService, ImageService, ExerciseService, IngredientService],
+  providers: [
+    AppService,
+    ImageService,
+    ExerciseService,
+    IngredientService,
+    WorkoutService,
+  ],
 })
 export class AppModule {}

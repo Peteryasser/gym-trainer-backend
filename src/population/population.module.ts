@@ -16,6 +16,8 @@ import { WorkoutController } from 'src/workout_side/workout/workout.controller';
 import { AppService } from 'src/app.service';
 import { CSVReaderService } from 'src/utils/Readers/csv_reader.service';
 import { ExerciseController } from 'src/workout_side/exercise/exercise.controller';
+import { WorkoutModule } from 'src/workout_side/workout/workout.module';
+import { WorkoutService } from 'src/workout_side/workout/workout.service';
 
 @Module({
   imports: [
@@ -32,8 +34,23 @@ import { ExerciseController } from 'src/workout_side/exercise/exercise.controlle
     CloudinaryModule,
     ExerciseModule,
     UsersModule,
+    WorkoutModule,
   ],
-  controllers: [PopulationController, WorkoutController, IngredientController, RoutesController, ExerciseController],
-  providers: [AppService, ImageService, ExerciseService, IngredientService, CSVReaderService],
+  controllers: [
+    PopulationController,
+    WorkoutController,
+    IngredientController,
+    RoutesController,
+    ExerciseController,
+    WorkoutController,
+  ],
+  providers: [
+    AppService,
+    ImageService,
+    ExerciseService,
+    IngredientService,
+    CSVReaderService,
+    WorkoutService,
+  ],
 })
 export class PopulationModule {}
