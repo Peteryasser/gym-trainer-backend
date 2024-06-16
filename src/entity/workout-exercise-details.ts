@@ -6,17 +6,19 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { WorkoutExercise } from './workout-exercise';
-import { Workout } from './workout.entity';
-import { Exercise } from './exercise.entity';
 
 @Entity({ name: 'workout_exercise_details' })
 export class WorkoutExerciseDetails {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => WorkoutExercise, (workoutExercise) => workoutExercise.id, {
-    nullable: false,
-  })
+  @ManyToOne(
+    () => WorkoutExercise,
+    (workoutExercise) => workoutExercise.workoutExerciseDetails,
+    {
+      nullable: false,
+    },
+  )
   @JoinColumn({ name: 'workout_exercise_id' })
   workoutExercise: WorkoutExercise;
 

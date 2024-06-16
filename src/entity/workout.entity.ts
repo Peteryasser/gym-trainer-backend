@@ -7,9 +7,9 @@ import {
   OneToMany,
 } from 'typeorm';
 import { User } from './user.entity';
-
 import { SavedWorkout } from './saved-workouts';
 import { WorkoutPlanDetails } from './workout-plan-details';
+import { WorkoutExercise } from './workout-exercise';
 
 @Entity({ name: 'workouts' })
 export class Workout {
@@ -22,7 +22,7 @@ export class Workout {
   @Column({ type: 'varchar', length: 255 })
   description: string;
 
-  @ManyToOne(() => User, (user) => user.id, { nullable: true })
+  @ManyToOne(() => User, (user) => user.workouts, { nullable: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
@@ -37,4 +37,13 @@ export class Workout {
     cascade: true,
   })
   savedWorkouts: SavedWorkout[];
+
+  @OneToMany(
+    () => WorkoutExercise,
+    (workoutExercise) => workoutExercise.workout,
+    {
+      cascade: true,
+    },
+  )
+  workoutExercises: WorkoutExercise[];
 }

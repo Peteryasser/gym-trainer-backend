@@ -18,6 +18,7 @@ import { Equipment } from './equipment';
 import { User } from './user.entity';
 import { join } from 'path';
 import { UserExerciseHistory } from './user-exercise-history';
+import { WorkoutExercise } from './workout-exercise';
 
 @Entity({ name: 'exercises' }) // Specify the table name (optional)
 @Unique(['idApi'])
@@ -72,4 +73,10 @@ export class Exercise {
 
   @OneToMany(() => UserExerciseHistory, (history) => history.exercise)
   userHistory: UserExerciseHistory[];
+
+  @OneToMany(
+    () => WorkoutExercise,
+    (workoutExercise) => workoutExercise.exercise,
+  )
+  workoutExercises: WorkoutExercise[];
 }

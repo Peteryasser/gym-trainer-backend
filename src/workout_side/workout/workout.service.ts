@@ -12,6 +12,70 @@ dotenvConfig({ path: '.env' });
 @Injectable()
 export class WorkoutService {
   constructor() {}
+
+  async getMyWorkouts(user: User): Promise<Workout[]> {
+    const connection = await ConnectionManager.getConnection();
+
+    const workouts = await connection.manager.find(Workout, {
+      where: { user: { id: user.id } },
+      relations: [
+        'workoutExercises',
+        'workoutExercises.exercise',
+        'workoutExercises.workoutExerciseDetails',
+      ],
+    });
+
+    return workouts;
+  }
+
+  async deleteWorkout(user: User, workoutId: number): Promise<void> {
+    const connection = await ConnectionManager.getConnection();
+
+    const workout = await connection.manager.findOne(Workout, {
+      where: { id: workoutId, user: { id: user.id } },
+      relations: [
+        'workoutExercises',
+        'workoutExercises.workoutExerciseDetails',
+      ],
+    });
+
+    if (!workout) {
+      throw new NotFoundException('Workout not found');
+    }
+
+    // if (workout.user.id !== user.id) {
+    //   throw new ForbiddenException(
+    //     'You are not authorized to delete this workout',
+    //   );
+    // }
+
+    // Delete related workout_exercise_details
+    for (const workoutExercise of workout.workoutExercises) {
+      await connection.manager.remove(
+        WorkoutExerciseDetails,
+        workoutExercise.workoutExerciseDetails,
+      );
+    }
+
+    // Delete related workout_exercises
+    await connection.manager.remove(WorkoutExercise, workout.workoutExercises);
+
+    // Delete the workout itself
+    await connection.manager.remove(Workout, workout);
+  }
+  async getMyWorkoutsSummary(user: User): Promise<Workout[]> {
+    const connection = await ConnectionManager.getConnection();
+
+    const workouts = await connection.manager.find(Workout, {
+      where: { user: { id: user.id } },
+      relations: [
+        'workoutExercises',
+        'workoutExercises.workoutExerciseDetails',
+      ],
+    });
+
+    return workouts;
+  }
   async createWorkout(user: User, createWorkoutDto: WorkoutDto) {
     console.log('createWorkout');
     console.log('createWorkoutDto', createWorkoutDto);
@@ -73,21 +137,5 @@ export class WorkoutService {
     }
 
     return workout;
-  }
-
-  async getWorkouts(user: User) {
-    console.log('getWorkouts');
-    console.log('user', user);
-
-    const connection = await ConnectionManager.getConnection();
-
-    const workouts = await connection.manager.find(Workout, {
-      where: { user: user },
-      relations: ['workoutPlanDetails'],
-    });
-
-    console.log('workouts', workouts);
-
-    return workouts;
   }
 }

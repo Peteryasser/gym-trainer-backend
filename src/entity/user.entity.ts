@@ -90,7 +90,7 @@ export class User {
   coach: Coach;
 
   @OneToMany(() => Exercise, (exercise) => exercise.user)
-exercises: Exercise[];
+  exercises: Exercise[];
 
   @OneToMany(() => Workout, workout => workout.user)
   workouts: Workout[];

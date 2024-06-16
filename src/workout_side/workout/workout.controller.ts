@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Post } from '@nestjs/common';
+import { Controller, Get, Body, Post, Delete, Param } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { WorkoutService } from './workout.service';
@@ -29,9 +29,25 @@ export class WorkoutController {
     return this.workoutService.createWorkout(user, createWorkoutDto);
   }
 
-  @Get('my-workouts')
-    async getMyWorkouts(@GetUser() user: User): Promise<Workout[]> {
-        console.log('getMyWorkouts');
-        return this.workoutService.getWorkoutsByUser(user);
-    }
+  @Get('my-workouts-detailed')
+  async getMyWorkouts(@GetUser() user: User): Promise<Workout[]> {
+    console.log('getMyWorkouts');
+    return this.workoutService.getMyWorkouts(user);
+  }
+
+  @Get('my-workouts-summary')
+  async getMyWorkoutsSummary(@GetUser() user: User): Promise<Workout[]> {
+    console.log('getMyWorkoutsSummary');
+    return this.workoutService.getMyWorkoutsSummary(user);
+  }
+
+  @Delete('delete/:id')
+  async deleteExercise(
+    @Param('id') id: number,
+    @GetUser() user: User,
+  ): Promise<{ message: string }> {
+    console.log('delete Workout');
+    this.workoutService.deleteWorkout(user, id);
+    return { message: 'Workout deleted successfully' };
+  }
 }
