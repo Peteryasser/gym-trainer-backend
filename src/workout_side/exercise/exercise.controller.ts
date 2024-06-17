@@ -22,12 +22,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 export class ExerciseController {
   constructor(private readonly exerciseService: ExerciseService) {}
 
-  @Get('first')
-  async getFirstExercise(): Promise<Exercise> {
-    console.log('getFirstExercise');
-    return this.exerciseService.getBackExercises();
-  }
-
   @Post('create')
   async createExercise(
     @Body() dto: DTORequest,
@@ -63,15 +57,21 @@ export class ExerciseController {
     return this.exerciseService.update(user, id, dto);
   }
 
-  @Get('test')
-  async test() {
-    console.log('Testttttttttttttttttttt');
-  }
+  // @Get('test')
+  // async test() {
+  //   console.log('Testttttttttttttttttttt');
+  // }
 
   // @Post('create')
   // async createExercise(@Body() dto: ExerciseDTO): Promise<Exercise> {
 
   //   console.log('createExercise');
   //   return this.exerciseService.createExercise(dto);
+  // }
+
+  // @Get('first')
+  // async getFirstExercise(): Promise<Exercise> {
+  //   console.log('getFirstExercise');
+  //   return this.exerciseService.getBackExercises();
   // }
 }

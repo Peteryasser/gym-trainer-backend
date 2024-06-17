@@ -12,10 +12,10 @@ import { Workout } from 'src/entity/workout.entity';
 export class WorkoutController {
   constructor(private readonly workoutService: WorkoutService) {}
 
-  @Get('test')
-  async test(): Promise<string> {
-    return 'WorkoutController test';
-  }
+  // @Get('test')
+  // async test(): Promise<string> {
+  //   return 'WorkoutController test';
+  // }
 
   @Post('create')
   async createWorkout(

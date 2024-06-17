@@ -9,6 +9,7 @@ import {
 import { User } from './user.entity';
 import { WorkoutCollectionDetails } from './workout-collection-details';
 import { WorkoutPlanDetails } from './workout-plan-details';
+import { SavedWorkoutCollection } from './saved-workout-collection';
 
 @Entity({ name: 'workout_collections' })
 export class WorkoutCollection {
@@ -48,4 +49,13 @@ export class WorkoutCollection {
     { cascade: true },
   )
   workoutPlanDetails: WorkoutPlanDetails[];
+
+  @OneToMany(
+    () => SavedWorkoutCollection,
+    (savedWorkoutCollection) => savedWorkoutCollection.workoutCollection,
+    {
+      cascade: true,
+    },
+  )
+  savedWorkoutCollections: SavedWorkoutCollection[];
 }

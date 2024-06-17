@@ -19,6 +19,7 @@ import { User } from './user.entity';
 // import { join } from 'path';
 // import { UserExerciseHistory } from './user-workout-history';
 import { WorkoutExercise } from './workout-exercise';
+import { SavedExercise } from './saved-exercises';
 
 @Entity({ name: 'exercises' }) // Specify the table name (optional)
 @Unique(['idApi'])
@@ -70,6 +71,11 @@ export class Exercise {
 
   @Column({ type: 'boolean', default: false })
   type: boolean;
+
+  @OneToMany(() => SavedExercise, (savedExercise) => savedExercise.exercise, {
+    cascade: true,
+  })
+  savedExercises: SavedExercise[];
 
   // @OneToMany(() => UserExerciseHistory, (history) => history.exercise)
   // userHistory: UserExerciseHistory[];

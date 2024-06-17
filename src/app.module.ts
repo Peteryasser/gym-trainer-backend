@@ -21,9 +21,11 @@ import { ExerciseController } from './workout_side/exercise/exercise.controller'
 import { WorkoutModule } from './workout_side/workout/workout.module';
 import { WorkoutService } from './workout_side/workout/workout.service';
 import { WorkoutHistoryModule } from './workout_side/history/workoutHistory.module';
-import { Workout } from './entity/workout.entity';
 import { WorkoutHistoryController } from './workout_side/history/workoutHistory.controller';
 import { WorkoutHistoryService } from './workout_side/history/workoutHistory.service';
+import { SaveModule } from './workout_side/Save/save.module';
+import { SaveController } from './workout_side/Save/save.controller';
+import { SaveService } from './workout_side/Save/save.service';
 
 @Module({
   imports: [
@@ -44,6 +46,7 @@ import { WorkoutHistoryService } from './workout_side/history/workoutHistory.ser
     PopulationModule,
     WorkoutModule,
     WorkoutHistoryModule,
+    SaveModule,
   ],
   controllers: [
     AppController,
@@ -53,6 +56,7 @@ import { WorkoutHistoryService } from './workout_side/history/workoutHistory.ser
     ExerciseController,
     WorkoutController,
     WorkoutHistoryController,
+    SaveController,
   ],
   providers: [
     AppService,
@@ -61,6 +65,7 @@ import { WorkoutHistoryService } from './workout_side/history/workoutHistory.ser
     IngredientService,
     WorkoutService,
     WorkoutHistoryService,
+    SaveService,
   ],
 })
 export class AppModule {}

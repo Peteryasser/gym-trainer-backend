@@ -14,6 +14,8 @@ import { SavedWorkout } from './saved-workouts';
 import { UserPackageWorkoutPlan } from './user-package-workoutPlan';
 import { Exercise } from './exercise.entity';
 import { WorkoutCollection } from './workout-collection';
+import { SavedExercise } from './saved-exercises';
+import { SavedWorkoutCollection } from './saved-workout-collection';
 
 @Entity('users')
 export class User {
@@ -104,6 +106,15 @@ export class User {
 
   @OneToMany(() => SavedWorkout, (savedWorkout) => savedWorkout.user)
   savedWorkouts: SavedWorkout[];
+
+  @OneToMany(() => SavedExercise, (savedExercise) => savedExercise.user)
+  savedExercises: SavedExercise[];
+
+  @OneToMany(
+    () => SavedWorkoutCollection,
+    (savedWorkoutCollection) => savedWorkoutCollection.user,
+  )
+  savedWorkoutCollections: SavedWorkoutCollection[];
 
   @OneToMany(
     () => UserPackageWorkoutPlan,
