@@ -13,6 +13,7 @@ import { WorkoutPlan } from './workout-plan';
 import { SavedWorkout } from './saved-workouts';
 import { UserPackageWorkoutPlan } from './user-package-workoutPlan';
 import { Exercise } from './exercise.entity';
+import { WorkoutCollection } from './workout-collection';
 
 @Entity('users')
 export class User {
@@ -109,4 +110,7 @@ export class User {
     (userPackageWorkoutPlan) => userPackageWorkoutPlan.user,
   )
   userPackageWorkoutPlans: UserPackageWorkoutPlan[];
+
+  @OneToMany(() => WorkoutCollection, (collection) => collection.user)
+  workoutCollections: WorkoutCollection[];
 }

@@ -8,9 +8,10 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { SavedWorkout } from './saved-workouts';
-import { WorkoutPlanDetails } from './workout-plan-details';
+// import { WorkoutPlanDetails } from './workout-plan-details';
 import { WorkoutExercise } from './workout-exercise';
 import { WorkoutHistory } from './user-workout-history';
+import { WorkoutCollectionDetails } from './workout-collection-details';
 
 @Entity({ name: 'workouts' })
 export class Workout {
@@ -27,12 +28,12 @@ export class Workout {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @OneToMany(
-    () => WorkoutPlanDetails,
-    (workoutPlanDetails) => workoutPlanDetails.workout,
-    { cascade: true },
-  )
-  workoutPlanDetails: WorkoutPlanDetails[];
+  // @OneToMany(
+  //   () => WorkoutPlanDetails,
+  //   (workoutPlanDetails) => workoutPlanDetails.workout,
+  //   { cascade: true },
+  // )
+  // workoutPlanDetails: WorkoutPlanDetails[];
 
   @OneToMany(() => SavedWorkout, (savedWorkout) => savedWorkout.workout, {
     cascade: true,
@@ -50,4 +51,7 @@ export class Workout {
 
   @OneToMany(() => WorkoutHistory, (history) => history.workout)
   userHistory: WorkoutHistory[]; // New relationship
+
+  @OneToMany(() => WorkoutCollectionDetails, (details) => details.workout)
+  workoutCollectionDetails: WorkoutCollectionDetails[];
 }
