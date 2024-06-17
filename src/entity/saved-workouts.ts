@@ -7,11 +7,17 @@ export class SavedWorkout {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, user => user.savedWorkouts, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.savedWorkouts, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Workout, workout => workout.savedWorkouts, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => Workout, (workout) => workout.savedWorkouts, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'workout_id' })
   workout: Workout;
 }

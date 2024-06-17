@@ -25,6 +25,9 @@ export class WorkoutExerciseDetails {
   @Column({ type: 'int' })
   sets: number;
 
+  @Column('float', { array: true, default: [] })
+  weights: number[];
+
   @Column({ type: 'int' })
   reps: number;
 

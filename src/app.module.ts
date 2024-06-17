@@ -20,6 +20,10 @@ import { PopulationModule } from './population/population.module';
 import { ExerciseController } from './workout_side/exercise/exercise.controller';
 import { WorkoutModule } from './workout_side/workout/workout.module';
 import { WorkoutService } from './workout_side/workout/workout.service';
+import { WorkoutHistoryModule } from './workout_side/history/workoutHistory.module';
+import { Workout } from './entity/workout.entity';
+import { WorkoutHistoryController } from './workout_side/history/workoutHistory.controller';
+import { WorkoutHistoryService } from './workout_side/history/workoutHistory.service';
 
 @Module({
   imports: [
@@ -39,6 +43,7 @@ import { WorkoutService } from './workout_side/workout/workout.service';
     UsersModule,
     PopulationModule,
     WorkoutModule,
+    WorkoutHistoryModule,
   ],
   controllers: [
     AppController,
@@ -47,6 +52,7 @@ import { WorkoutService } from './workout_side/workout/workout.service';
     RoutesController,
     ExerciseController,
     WorkoutController,
+    WorkoutHistoryController,
   ],
   providers: [
     AppService,
@@ -54,6 +60,7 @@ import { WorkoutService } from './workout_side/workout/workout.service';
     ExerciseService,
     IngredientService,
     WorkoutService,
+    WorkoutHistoryService,
   ],
 })
 export class AppModule {}

@@ -8,15 +8,26 @@ export class UserPackageWorkoutPlan {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, user => user.userPackageWorkoutPlans, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.userPackageWorkoutPlans, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => WorkoutPlan, workoutPlan => workoutPlan.userPackageWorkoutPlans, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(
+    () => WorkoutPlan,
+    (workoutPlan) => workoutPlan.userPackageWorkoutPlans,
+    { nullable: false, onDelete: 'CASCADE' },
+  )
   @JoinColumn({ name: 'workoutplan_id' })
   workoutPlan: WorkoutPlan;
 
-  @ManyToOne(() => Package, packageEntity => packageEntity.userPackageWorkoutPlans, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(
+    () => Package,
+    (packageEntity) => packageEntity.userPackageWorkoutPlans,
+    { nullable: false, onDelete: 'CASCADE' },
+  )
   @JoinColumn({ name: 'package_id' })
   package: Package;
 }

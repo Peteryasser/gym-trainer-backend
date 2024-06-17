@@ -10,6 +10,7 @@ import { User } from './user.entity';
 import { SavedWorkout } from './saved-workouts';
 import { WorkoutPlanDetails } from './workout-plan-details';
 import { WorkoutExercise } from './workout-exercise';
+import { WorkoutHistory } from './user-workout-history';
 
 @Entity({ name: 'workouts' })
 export class Workout {
@@ -46,4 +47,7 @@ export class Workout {
     },
   )
   workoutExercises: WorkoutExercise[];
+
+  @OneToMany(() => WorkoutHistory, (history) => history.workout)
+  userHistory: WorkoutHistory[]; // New relationship
 }

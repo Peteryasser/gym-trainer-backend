@@ -18,6 +18,9 @@ import { CSVReaderService } from 'src/utils/Readers/csv_reader.service';
 import { ExerciseController } from 'src/workout_side/exercise/exercise.controller';
 import { WorkoutModule } from 'src/workout_side/workout/workout.module';
 import { WorkoutService } from 'src/workout_side/workout/workout.service';
+import { WorkoutHistoryModule } from 'src/workout_side/history/workoutHistory.module';
+import { WorkoutHistoryController } from 'src/workout_side/history/workoutHistory.controller';
+import { WorkoutHistoryService } from 'src/workout_side/history/workoutHistory.service';
 
 @Module({
   imports: [
@@ -35,6 +38,7 @@ import { WorkoutService } from 'src/workout_side/workout/workout.service';
     ExerciseModule,
     UsersModule,
     WorkoutModule,
+    WorkoutHistoryModule,
   ],
   controllers: [
     PopulationController,
@@ -43,6 +47,7 @@ import { WorkoutService } from 'src/workout_side/workout/workout.service';
     RoutesController,
     ExerciseController,
     WorkoutController,
+    WorkoutHistoryController,
   ],
   providers: [
     AppService,
@@ -51,6 +56,7 @@ import { WorkoutService } from 'src/workout_side/workout/workout.service';
     IngredientService,
     CSVReaderService,
     WorkoutService,
+    WorkoutHistoryService,
   ],
 })
 export class PopulationModule {}

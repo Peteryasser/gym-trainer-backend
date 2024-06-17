@@ -123,6 +123,7 @@ export class WorkoutService {
     workoutExerciseDetails.workoutExercise = workoutExercise;
     workoutExerciseDetails.sets = createWorkoutDto.setsNumber;
     workoutExerciseDetails.reps = createWorkoutDto.repsNumber;
+    workoutExerciseDetails.weights = createWorkoutDto.weights;
     workoutExerciseDetails.duration = createWorkoutDto.duration;
     workoutExerciseDetails.durationUnit = createWorkoutDto.durationUnit;
 

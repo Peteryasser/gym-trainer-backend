@@ -8,7 +8,7 @@ import {
 import { Device } from './device.entity';
 import { Coach } from './coach.entity';
 import { Workout } from './workout.entity';
-import { UserExerciseHistory } from './user-exercise-history';
+import { WorkoutHistory } from './user-workout-history';
 import { WorkoutPlan } from './workout-plan';
 import { SavedWorkout } from './saved-workouts';
 import { UserPackageWorkoutPlan } from './user-package-workoutPlan';
@@ -92,18 +92,21 @@ export class User {
   @OneToMany(() => Exercise, (exercise) => exercise.user)
   exercises: Exercise[];
 
-  @OneToMany(() => Workout, workout => workout.user)
+  @OneToMany(() => Workout, (workout) => workout.user)
   workouts: Workout[];
 
-  @OneToMany(() => UserExerciseHistory, history => history.user)
-  exerciseHistory: UserExerciseHistory[];
+  @OneToMany(() => WorkoutHistory, (history) => history.user)
+  workoutHistories: WorkoutHistory[];
 
-  @OneToMany(() => WorkoutPlan, workoutPlan => workoutPlan.user)
+  @OneToMany(() => WorkoutPlan, (workoutPlan) => workoutPlan.user)
   workoutPlans: WorkoutPlan[];
 
-  @OneToMany(() => SavedWorkout, savedWorkout => savedWorkout.user)
+  @OneToMany(() => SavedWorkout, (savedWorkout) => savedWorkout.user)
   savedWorkouts: SavedWorkout[];
 
-  @OneToMany(() => UserPackageWorkoutPlan, userPackageWorkoutPlan => userPackageWorkoutPlan.user)
+  @OneToMany(
+    () => UserPackageWorkoutPlan,
+    (userPackageWorkoutPlan) => userPackageWorkoutPlan.user,
+  )
   userPackageWorkoutPlans: UserPackageWorkoutPlan[];
 }
