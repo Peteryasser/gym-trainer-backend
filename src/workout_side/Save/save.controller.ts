@@ -4,13 +4,12 @@ import { SaveService } from './save.service';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'src/entity/user.entity';
 
-@Controller('save')
-@Controller('unsave')
+@Controller('favorites')
 @UseGuards(JwtAuthGuard)
 export class SaveController {
   constructor(private readonly saveService: SaveService) {}
 
-  @Post('exercise/:id')
+  @Post('save/exercise/:id')
   async saveExercise(
     @Param('id') id: number,
     @GetUser() user: User,
@@ -20,7 +19,7 @@ export class SaveController {
     return { message: 'Exercise saved successfully' };
   }
 
-  @Delete('exercise/:id')
+  @Delete('unsave/exercise/:id')
   async unsaveExercise(
     @Param('id') id: number,
     @GetUser() user: User,
@@ -30,7 +29,7 @@ export class SaveController {
     return { message: 'Exercise unsaved successfully' };
   }
 
-  @Post('workout/:id')
+  @Post('save/workout/:id')
   async saveWorkout(
     @Param('id') id: number,
     @GetUser() user: User,
@@ -40,7 +39,7 @@ export class SaveController {
     return { message: 'Workout saved successfully' };
   }
 
-  @Delete('workout/:id')
+  @Delete('unsave/workout/:id')
   async unsaveWorkout(
     @Param('id') id: number,
     @GetUser() user: User,
@@ -50,7 +49,7 @@ export class SaveController {
     return { message: 'Workout unsaved successfully' };
   }
 
-  @Post('workoutCollection/:id')
+  @Post('save/workoutCollection/:id')
   async saveWorkoutCollection(
     @Param('id') id: number,
     @GetUser() user: User,
@@ -60,7 +59,7 @@ export class SaveController {
     return { message: 'Workout Collection saved successfully' };
   }
 
-  @Delete('workoutCollection/:id')
+  @Delete('unsave/workoutCollection/:id')
   async unsaveWorkoutCollection(
     @Param('id') id: number,
     @GetUser() user: User,

@@ -29,6 +29,8 @@ export class SaveService {
     savedExercise.user = user;
     savedExercise.exercise = exercise;
 
+    console.log('savedExercise', savedExercise);
+
     await connection.manager.save(savedExercise);
   }
 

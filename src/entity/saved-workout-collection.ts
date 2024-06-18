@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user.entity';
 import { WorkoutCollection } from './workout-collection';
 
-@Entity({ name: 'saved_workouts-collection' })
+@Entity({ name: 'save_workout-collection' })
 export class SavedWorkoutCollection {
   @PrimaryGeneratedColumn()
   id: number;
