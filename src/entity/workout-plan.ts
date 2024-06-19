@@ -34,7 +34,11 @@ export class WorkoutPlan {
   @OneToMany(
     () => WorkoutPlanDetails,
     (workoutPlanDetails) => workoutPlanDetails.workoutPlan,
-    { cascade: true },
+    {
+      cascade: ['insert', 'update', 'remove'],
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    },
   )
   workoutPlanDetails: WorkoutPlanDetails[];
 
