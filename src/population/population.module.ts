@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { PopulationController } from './controller/population.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from 'src/auth/auth.module';
+// import { AuthModule } from 'src/auth/auth.module';
 import typeorm from 'src/config/typeorm';
 import { IngredientController } from 'src/nutrition_side/ingredient/ingredient.controller';
 import { IngredientService } from 'src/nutrition_side/ingredient/ingredient.service';
@@ -21,16 +21,18 @@ import { WorkoutService } from 'src/workout_side/workout/workout.service';
 import { WorkoutHistoryModule } from 'src/workout_side/history/workoutHistory.module';
 import { WorkoutHistoryController } from 'src/workout_side/history/workoutHistory.controller';
 import { WorkoutHistoryService } from 'src/workout_side/history/workoutHistory.service';
-import { SaveModule } from 'src/workout_side/Save/save.module';
-import { SaveController } from 'src/workout_side/Save/save.controller';
-import { SaveService } from 'src/workout_side/Save/save.service';
+import { SaveModule } from 'src/workout_side/save/save.module';
+import { SaveController } from 'src/workout_side/save/save.controller';
+import { SaveService } from 'src/workout_side/save/save.service';
 import { WorkoutCollectionModule } from 'src/workout_side/workout_collection/workoutcollection.module';
 import { WorkoutCollectionController } from 'src/workout_side/workout_collection/workoutcollection.controller';
 import { WorkoutCollectionService } from 'src/workout_side/workout_collection/workoutcollection.service';
-import { Workout } from 'src/entity/workout.entity';
 import { WorkoutPlanModule } from 'src/workout_side/workout_plan/workoutplan.module';
 import { WorkoutPlanController } from 'src/workout_side/workout_plan/workoutplan.controller';
 import { WorkoutPlanService } from 'src/workout_side/workout_plan/workoutplan.service';
+import { WorkoutPlanPackegeModule } from 'src/workout_side/workout-package/workoutpackage.module';
+import { WorkoutPlanPackageController } from 'src/workout_side/workout-package/workoutpackage.controller';
+import { WorkoutPlanPackageService } from 'src/workout_side/workout-package/workoutpackage.service';
 
 @Module({
   imports: [
@@ -52,6 +54,7 @@ import { WorkoutPlanService } from 'src/workout_side/workout_plan/workoutplan.se
     SaveModule,
     WorkoutCollectionModule,
     WorkoutPlanModule,
+    WorkoutPlanPackegeModule,
   ],
   controllers: [
     PopulationController,
@@ -64,6 +67,7 @@ import { WorkoutPlanService } from 'src/workout_side/workout_plan/workoutplan.se
     SaveController,
     WorkoutCollectionController,
     WorkoutPlanController,
+    WorkoutPlanPackageController,
   ],
   providers: [
     AppService,
@@ -76,6 +80,7 @@ import { WorkoutPlanService } from 'src/workout_side/workout_plan/workoutplan.se
     SaveService,
     WorkoutCollectionService,
     WorkoutPlanService,
+    WorkoutPlanPackageService,
   ],
 })
 export class PopulationModule {}

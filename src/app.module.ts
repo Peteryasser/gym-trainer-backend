@@ -23,15 +23,18 @@ import { WorkoutService } from './workout_side/workout/workout.service';
 import { WorkoutHistoryModule } from './workout_side/history/workoutHistory.module';
 import { WorkoutHistoryController } from './workout_side/history/workoutHistory.controller';
 import { WorkoutHistoryService } from './workout_side/history/workoutHistory.service';
-import { SaveModule } from './workout_side/Save/save.module';
-import { SaveController } from './workout_side/Save/save.controller';
-import { SaveService } from './workout_side/Save/save.service';
+import { SaveModule } from './workout_side/save/save.module';
+import { SaveController } from './workout_side/save/save.controller';
+import { SaveService } from './workout_side/save/save.service';
 import { WorkoutCollectionModule } from './workout_side/workout_collection/workoutcollection.module';
 import { WorkoutCollectionController } from './workout_side/workout_collection/workoutcollection.controller';
 import { WorkoutCollectionService } from './workout_side/workout_collection/workoutcollection.service';
 import { WorkoutPlanModule } from './workout_side/workout_plan/workoutplan.module';
 import { WorkoutPlanController } from './workout_side/workout_plan/workoutplan.controller';
 import { WorkoutPlanService } from './workout_side/workout_plan/workoutplan.service';
+import { WorkoutPlanPackegeModule } from './workout_side/workout-package/workoutpackage.module';
+import { WorkoutPlanPackageController } from './workout_side/workout-package/workoutpackage.controller';
+import { WorkoutPlanPackageService } from './workout_side/workout-package/workoutpackage.service';
 
 @Module({
   imports: [
@@ -55,6 +58,7 @@ import { WorkoutPlanService } from './workout_side/workout_plan/workoutplan.serv
     SaveModule,
     WorkoutCollectionModule,
     WorkoutPlanModule,
+    WorkoutPlanPackegeModule,
   ],
   controllers: [
     AppController,
@@ -67,6 +71,7 @@ import { WorkoutPlanService } from './workout_side/workout_plan/workoutplan.serv
     SaveController,
     WorkoutCollectionController,
     WorkoutPlanController,
+    WorkoutPlanPackageController,
   ],
   providers: [
     AppService,
@@ -78,6 +83,7 @@ import { WorkoutPlanService } from './workout_side/workout_plan/workoutplan.serv
     SaveService,
     WorkoutCollectionService,
     WorkoutPlanService,
+    WorkoutPlanPackageService,
   ],
 })
 export class AppModule {}
