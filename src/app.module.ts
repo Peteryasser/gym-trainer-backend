@@ -21,6 +21,7 @@ import { UserSubscriptionsModule } from './user_subscriptions/user_subscriptions
 import { CoachesModule } from './users/coaches/coaches.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { CoachSocialMediaModule } from './coach_social_media/coach_social_media.module';
 
 @Module({
   imports: [
@@ -45,12 +46,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     PackagesModule,
     UserSubscriptionsModule,
     NotificationsModule,
+    CoachSocialMediaModule,
   ],
-  controllers: [
-    AppController,
-    WorkoutController,
-    IngredientController,
-  ],
+  controllers: [AppController, WorkoutController, IngredientController],
   providers: [AppService, ImageService, ExerciseService, IngredientService],
 })
 export class AppModule {}
