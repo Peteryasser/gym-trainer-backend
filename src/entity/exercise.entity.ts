@@ -9,15 +9,12 @@ import {
   ManyToMany,
   JoinTable,
   Unique,
-  // OneToOne,
 } from 'typeorm';
 import { BodyPart } from './bodyPart';
 import { Muscle } from './muscle';
 import { Instruction } from './instruction';
 import { Equipment } from './equipment';
 import { User } from './user.entity';
-// import { join } from 'path';
-// import { UserExerciseHistory } from './user-workout-history';
 import { WorkoutExercise } from './workout-exercise';
 import { SavedExercise } from './saved-exercises';
 
@@ -76,9 +73,6 @@ export class Exercise {
     cascade: true,
   })
   savedExercises: SavedExercise[];
-
-  // @OneToMany(() => UserExerciseHistory, (history) => history.exercise)
-  // userHistory: UserExerciseHistory[];
 
   @OneToMany(
     () => WorkoutExercise,

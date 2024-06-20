@@ -28,18 +28,6 @@ export class Workout {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  // @OneToMany(
-  //   () => WorkoutPlanDetails,
-  //   (workoutPlanDetails) => workoutPlanDetails.workout,
-  //   { cascade: true },
-  // )
-  // workoutPlanDetails: WorkoutPlanDetails[];
-
-  @OneToMany(() => SavedWorkout, (savedWorkout) => savedWorkout.workout, {
-    cascade: true,
-  })
-  savedWorkouts: SavedWorkout[];
-
   @OneToMany(
     () => WorkoutExercise,
     (workoutExercise) => workoutExercise.workout,
@@ -51,6 +39,11 @@ export class Workout {
 
   @OneToMany(() => WorkoutHistory, (history) => history.workout)
   userHistory: WorkoutHistory[]; // New relationship
+
+  @OneToMany(() => SavedWorkout, (savedWorkout) => savedWorkout.workout, {
+    cascade: true,
+  })
+  savedWorkouts: SavedWorkout[];
 
   @OneToMany(() => WorkoutCollectionDetails, (details) => details.workout)
   workoutCollectionDetails: WorkoutCollectionDetails[];

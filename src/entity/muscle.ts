@@ -1,19 +1,26 @@
 // Muscle Entity
-import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToMany, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  Unique,
+  ManyToMany,
+  OneToMany,
+} from 'typeorm';
 import { Exercise } from './exercise.entity';
 
 @Entity('Muscles') // Specify the table name (optional)
-@Unique(["name"])
+@Unique(['name'])
 export class Muscle {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({ type: 'varchar', length: 45 })
-    name: string;
+  @Column({ type: 'varchar', length: 45 })
+  name: string;
 
-    @OneToMany(() => Exercise, (exercise) => exercise.targetMuscle)
-    mainFocusExercises: Exercise[];
+  @OneToMany(() => Exercise, (exercise) => exercise.targetMuscle)
+  mainFocusExercises: Exercise[];
 
-    @ManyToMany(() => Exercise, (exercise) => exercise.secondaryMuscles)
-    secondaryFocusExercises: Exercise[];
+  @ManyToMany(() => Exercise, (exercise) => exercise.secondaryMuscles)
+  secondaryFocusExercises: Exercise[];
 }

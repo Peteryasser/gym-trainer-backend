@@ -33,6 +33,9 @@ import { WorkoutPlanService } from 'src/workout_side/workout_plan/workoutplan.se
 import { WorkoutPlanPackegeModule } from 'src/workout_side/workout-package/workoutpackage.module';
 import { WorkoutPlanPackageController } from 'src/workout_side/workout-package/workoutpackage.controller';
 import { WorkoutPlanPackageService } from 'src/workout_side/workout-package/workoutpackage.service';
+import { ExerciseFilterModule } from 'src/workout_side/exercise/filter/filter.module';
+import { ExerciseFilterController } from 'src/workout_side/exercise/filter/filter.controller';
+import { ExerciseFilterService } from 'src/workout_side/exercise/filter/filter.service';
 
 @Module({
   imports: [
@@ -55,6 +58,7 @@ import { WorkoutPlanPackageService } from 'src/workout_side/workout-package/work
     WorkoutCollectionModule,
     WorkoutPlanModule,
     WorkoutPlanPackegeModule,
+    ExerciseFilterModule,
   ],
   controllers: [
     PopulationController,
@@ -68,6 +72,7 @@ import { WorkoutPlanPackageService } from 'src/workout_side/workout-package/work
     WorkoutCollectionController,
     WorkoutPlanController,
     WorkoutPlanPackageController,
+    ExerciseFilterController,
   ],
   providers: [
     AppService,
@@ -81,6 +86,7 @@ import { WorkoutPlanPackageService } from 'src/workout_side/workout-package/work
     WorkoutCollectionService,
     WorkoutPlanService,
     WorkoutPlanPackageService,
+    ExerciseFilterService,
   ],
 })
 export class PopulationModule {}

@@ -16,6 +16,9 @@ import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { DTORequest } from './dtos/exercise_dto_request';
 import { User } from 'src/entity/user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { BodyPart } from 'src/entity/bodyPart';
+import { Equipment } from 'src/entity/equipment';
+import { Muscle } from 'src/entity/muscle';
 
 @Controller('exercises')
 @UseGuards(JwtAuthGuard)
@@ -55,6 +58,24 @@ export class ExerciseController {
   ): Promise<Exercise> {
     console.log('updateExercise');
     return this.exerciseService.update(user, id, dto);
+  }
+
+  @Get('body-parts')
+  async getBodyParts(): Promise<BodyPart[]> {
+    console.log('getBodyParts');
+    return this.exerciseService.getBodyParts();
+  }
+
+  @Get('equipments')
+  async getEquipments(): Promise<Equipment[]> {
+    console.log('getEquipments');
+    return this.exerciseService.getEquipments();
+  }
+
+  @Get('muscles')
+  async getMuscles(): Promise<Muscle[]> {
+    console.log('getMuscles');
+    return this.exerciseService.getMuscles();
   }
 
   // @Get('test')

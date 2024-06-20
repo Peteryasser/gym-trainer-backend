@@ -393,6 +393,25 @@ export class ExerciseService {
 
     return connection.manager.save(exercise);
   }
+
+  async getBodyParts(): Promise<BodyPart[]> {
+    const connection = await ConnectionManager.getConnection();
+    // get all distinct body part elements
+
+    return connection.manager.find(BodyPart);
+  }
+
+  async getEquipments(): Promise<Equipment[]> {
+    const connection = await ConnectionManager.getConnection();
+    // get all distinct equipment elements
+    return connection.manager.find(Equipment);
+  }
+
+  async getMuscles(): Promise<Muscle[]> {
+    const connection = await ConnectionManager.getConnection();
+    // get all distinct muscle elements
+    return connection.manager.find(Muscle);
+  }
 }
 
 // async createExercise(dto: ExerciseDTO) {
