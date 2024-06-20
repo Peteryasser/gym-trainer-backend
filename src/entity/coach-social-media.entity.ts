@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 import { Coach } from './coach.entity';
-import { SocialMediaSourceEnum } from 'src/coach_social_media/enums/social-media-source.enum';
+import { SocialMediaPlatformEnum } from 'src/coach_social_media/enums/social-media-platform.enum';
 
 @Entity('coach_social_media_accounts')
 export class CoachSocialMedia {
@@ -25,13 +25,13 @@ export class CoachSocialMedia {
 
   @Column({
     type: 'enum',
-    enum: SocialMediaSourceEnum,
+    enum: SocialMediaPlatformEnum,
     nullable: false,
   })
-  source: SocialMediaSourceEnum;
+  platform: SocialMediaPlatformEnum;
 
   @Column({ type: 'varchar', length: 255 })
-  accountUrl: string;
+  handle: string;
 
   @CreateDateColumn()
   createdAt: Date;

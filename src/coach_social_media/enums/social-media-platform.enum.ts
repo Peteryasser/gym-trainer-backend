@@ -1,6 +1,6 @@
-export enum SocialMediaSourceEnum {
+export enum SocialMediaPlatformEnum {
   FACEBOOK = 'facebook',
-  INSTAGRAM = 'instragram',
+  INSTAGRAM = 'instagram',
   X = 'x',
   DISCORD = 'discord',
   OTHER = 'other',
