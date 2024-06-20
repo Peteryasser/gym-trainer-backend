@@ -21,13 +21,13 @@ export class CreateCoachSocialMedia1718464564399 implements MigrationInterface {
 
           { name: 'coachId', type: 'int', isNullable: false },
           {
-            name: 'account_url',
+            name: 'handle',
             type: 'varchar',
             length: '255',
             isNullable: false,
           },
           {
-            name: 'source',
+            name: 'platform',
             type: 'enum',
             enum: ['facebook', 'instagram', 'x', 'discord', 'other'],
             isNullable: false,
