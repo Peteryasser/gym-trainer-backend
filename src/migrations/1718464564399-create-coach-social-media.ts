@@ -29,7 +29,7 @@ export class CreateCoachSocialMedia1718464564399 implements MigrationInterface {
           {
             name: 'source',
             type: 'enum',
-            enum: ['facebook', 'instagram', 'twitter', 'discord'],
+            enum: ['facebook', 'instagram', 'x', 'discord', 'other'],
             isNullable: false,
           },
           {
