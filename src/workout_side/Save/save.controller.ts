@@ -1,4 +1,11 @@
-import { Controller, Post, UseGuards, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseGuards,
+  Param,
+  Delete,
+  Get,
+} from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 import { SaveService } from './save.service';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
@@ -29,6 +36,12 @@ export class SaveController {
     return { message: 'Exercise unsaved successfully' };
   }
 
+  @Get('get/exercises')
+  async getSavedExercises(@GetUser() user: User) {
+    console.log('getSavedExercises');
+    return this.saveService.getSavedExercises(user);
+  }
+
   @Post('save/workout/:id')
   async saveWorkout(
     @Param('id') id: number,
@@ -49,6 +62,12 @@ export class SaveController {
     return { message: 'Workout unsaved successfully' };
   }
 
+  @Get('get/workouts')
+  async getSavedWorkouts(@GetUser() user: User) {
+    console.log('getSavedExercises');
+    return this.saveService.getSavedWorkouts(user);
+  }
+
   @Post('save/workoutCollection/:id')
   async saveWorkoutCollection(
     @Param('id') id: number,
@@ -67,5 +86,11 @@ export class SaveController {
     console.log('unsaveWorkoutCollection');
     this.saveService.unsaveWorkoutCollection(id, user);
     return { message: 'Workout Collection unsaved successfully' };
+  }
+
+  @Get('get/workoutCollections')
+  async getSavedWorkoutCollections(@GetUser() user: User) {
+    console.log('getSavedWorkoutCollections');
+    return this.saveService.getSavedWorkoutCollections(user);
   }
 }
