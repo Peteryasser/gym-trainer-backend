@@ -15,6 +15,7 @@ import { UserMealsHistory } from './user_meals_history.entity';
 import { SavedRecipes } from './saved_recipes.entity';
 import { SavedIngredients } from './saved_ingredients.entity';
 import { AppNotification } from './app-notification.entity';
+import { UserPackageMealPlans } from './user_package_meal_plans.entity';
 
 @Entity('users')
 export class User {
@@ -117,4 +118,7 @@ export class User {
 
   @OneToMany(() => SavedIngredients, savedIngredient => savedIngredient.user)
   savedIngredients: SavedIngredients[];
+
+  @OneToMany(() => UserPackageMealPlans, userPackageMealPlan => userPackageMealPlan.user)
+  userPackageMealPlans: UserPackageMealPlans[];
 }

@@ -10,6 +10,7 @@ import { DurationUnitEnum } from '../packages/duration-unit.enum';
 import { Coach } from './coach.entity';
 import { PackageDiscount } from './package-discount.entity';
 import { UserSubscription } from './user-subscription.entity';
+import { UserPackageMealPlans } from './user_package_meal_plans.entity';
 
 @Entity('coach_packages')
 export class Package {
@@ -48,4 +49,10 @@ export class Package {
 
   @OneToMany(() => UserSubscription, (subscription) => subscription.package)
   subscriptions: UserSubscription[];
+
+  @OneToMany(
+    () => UserPackageMealPlans,
+    (userPackageWorkoutPlan) => userPackageWorkoutPlan.package,
+  )
+  userPackageMealPlans: UserPackageMealPlans[];
 }

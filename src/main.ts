@@ -5,7 +5,6 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(bodyParser.json());
   app.setGlobalPrefix('api');
   app.enableVersioning({
     type: VersioningType.URI,
@@ -21,4 +20,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-
