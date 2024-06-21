@@ -9,17 +9,14 @@ import { ImageService } from './utils/image/image.service';
 import { WorkoutController } from './workout_side/workout/workout.controller';
 import { ExerciseModule } from './workout_side/exercise/exercise.module';
 import { ExerciseService } from './workout_side/exercise/exercise.service';
-// import { Exercise } from './entity/exercise';
-// import { Ingredient } from './entity/ingredient';
-import { IngredientService } from './nutrition_side/ingredient/ingredient.service';
-import { IngredientController } from './nutrition_side/ingredient/ingredient.controller';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PopulationModule } from './population/population.module';
 import { PackagesModule } from './packages/packages.module';
 import { UserSubscriptionsModule } from './user_subscriptions/user_subscriptions.module';
 import { CoachesModule } from './users/coaches/coaches.module';
-
+import { IngredientModule } from './nutrition_side/ingredient/ingredient.module';
+import { RecipeModule } from './nutrition_side/recipe/recipe.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -40,12 +37,13 @@ import { CoachesModule } from './users/coaches/coaches.module';
     PopulationModule,
     PackagesModule,
     UserSubscriptionsModule,
+    IngredientModule,
+    RecipeModule
   ],
   controllers: [
     AppController,
     WorkoutController,
-    IngredientController,
-  ],
-  providers: [AppService, ImageService, ExerciseService, IngredientService],
+    ],
+  providers: [AppService, ImageService, ExerciseService],
 })
 export class AppModule {}

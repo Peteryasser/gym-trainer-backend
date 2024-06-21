@@ -4,8 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import typeorm from 'src/config/typeorm';
-import { IngredientController } from 'src/nutrition_side/ingredient/ingredient.controller';
-import { IngredientService } from 'src/nutrition_side/ingredient/ingredient.service';
+
 import { UsersModule } from 'src/users/users.module';
 import { CloudinaryModule } from 'src/utils/cloudinary/cloudinary.module';
 import { ImageService } from 'src/utils/image/image.service';
@@ -31,7 +30,7 @@ import { CSVReaderService } from 'src/utils/Readers/csv_reader.service';
     ExerciseModule,
     UsersModule,
   ],
-  controllers: [PopulationController, WorkoutController, IngredientController],
-  providers: [AppService, ImageService, ExerciseService, IngredientService, CSVReaderService],
+  controllers: [PopulationController, WorkoutController],
+  providers: [AppService, ImageService, ExerciseService, CSVReaderService],
 })
 export class PopulationModule {}

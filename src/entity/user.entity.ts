@@ -8,6 +8,12 @@ import {
 import { Device } from './device.entity';
 import { Coach } from './coach.entity';
 import { UserSubscription } from './user-subscription.entity';
+import { SavedMeals } from './saved_meals.entity';
+import { Meals } from './meals.entity';
+import { Recipes } from './recipes.entity';
+import { UserMealsHistory } from './user_meals_history.entity';
+import { SavedRecipes } from './saved_recipes.entity';
+import { SavedIngredients } from './saved_ingredients.entity';
 
 @Entity('users')
 export class User {
@@ -90,4 +96,21 @@ export class User {
   public get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }
+  @OneToMany(() => SavedMeals, savedMeal => savedMeal.user)
+  savedMeals: SavedMeals[];
+
+  @OneToMany(() => Meals, meal => meal.user)
+  meals: Meals[];
+
+  @OneToMany(() => Recipes, recipe => recipe.user)
+  recipes: Recipes[];
+
+  @OneToMany(() => UserMealsHistory, mealsHistory => mealsHistory.user)
+  mealsHistory: UserMealsHistory[];
+
+  @OneToMany(() => SavedRecipes, savedRecipe => savedRecipe.user)
+  savedRecipes: SavedRecipes[];
+
+  @OneToMany(() => SavedIngredients, savedIngredient => savedIngredient.user)
+  savedIngredients: SavedIngredients[];
 }
