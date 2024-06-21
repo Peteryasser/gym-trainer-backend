@@ -172,7 +172,7 @@ export class IngredientController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('get-saved')
+    @Get('get-saved-ingredients')
     async getAllSaved(@GetUser() user: User):Promise<Ingredient[]>{
         return this.ingredientService.getAllSaved(user)
     }

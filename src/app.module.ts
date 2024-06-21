@@ -27,6 +27,7 @@ import { CoachSocialMediaModule } from './coach_social_media/coach_social_media.
       isGlobal: true,
       load: [typeorm],
     }),
+    
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) =>
