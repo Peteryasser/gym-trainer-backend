@@ -42,17 +42,6 @@ export class ExerciseService {
       'SELECT * FROM exercises WHERE user_id = $1',
       [user.id],
     );
-    // Find all exercises created by the user
-    // const exercises = await connection.manager.find(Exercise, {
-    //   where: { user: user },
-    //   relations: [
-    //     'bodyPart',
-    //     'targetMuscle',
-    //     'secondaryMuscles',
-    //     'instructions',
-    //     'equipments',
-    //   ],
-    // });
 
     return exercises;
   }
@@ -124,15 +113,16 @@ export class ExerciseService {
     // Save the exercise
     try {
       await connection.manager.save(ex); // Inserting a new record into the database
-      console.log('Exercise created successfully');
+      return 'Exercise created successfully';
     } catch (e) {
       console.log(e);
     }
-    return ex;
+    return 'a problem happened';
   }
 
-  async deleteExerciseByUser(id: number, user: User): Promise<void> {
+  async deleteExerciseByUser(id: number, user: User) {
     const connection = await ConnectionManager.getConnection();
+    let message = '';
 
     // Fetch the exercise to be deleted
     const exercises = await connection.manager.query(
@@ -141,19 +131,24 @@ export class ExerciseService {
     );
 
     if (exercises.length === 0) {
-      throw new NotFoundException('Exercise not found');
+      message = 'Exercise not found';
+      return message;
     }
 
     const exercise = exercises[0]; // Assuming id is unique, should ideally be fetched from findOne
 
     if (exercise.user_id !== user.id) {
-      throw new ForbiddenException(
-        'You are not authorized to delete this exercise',
-      );
+      // throw new ForbiddenException(
+      //   'You are not authorized to delete this exercise',
+      // );
+      message = 'You are not authorized to delete this exercise';
+      return message;
     }
 
     // Delete the exercise
     await connection.manager.delete(Exercise, id);
+    message = 'Exercise deleted successfully';
+    return message;
   }
 
   async createExercise(dto: ExerciseDTO) {
@@ -254,9 +249,11 @@ export class ExerciseService {
     user: User,
     exerciseId: number,
     updateExerciseDto: UpdateExerciseDto,
-  ): Promise<Exercise> {
+  ) {
     console.log('Updating exercise with ID:', exerciseId);
     console.log('Update DTO:', updateExerciseDto);
+
+    let message = '';
 
     const connection = await ConnectionManager.getConnection();
     const exerciseRepository = connection.getRepository(Exercise);
@@ -272,13 +269,13 @@ export class ExerciseService {
     });
 
     if (!exercise) {
-      throw new NotFoundException(`Exercise with ID ${exerciseId} not found`);
+      message = `Exercise with ID ${exerciseId} not found`;
+      return message;
     }
 
     if (exercise.user && exercise.user.id !== user.id) {
-      throw new UnauthorizedException(
-        `User with ID ${user.id} is not authorized to update this exercise`,
-      );
+      message = `User with ID ${user.id} is not authorized to update this exercise`;
+      return message;
     }
 
     if (updateExerciseDto.name) {
@@ -390,9 +387,11 @@ export class ExerciseService {
       exercise.equipments = updatedEquipments;
     }
 
-    console.log('Saving updated exercise:', exercise);
+    // console.log('Saving updated exercise:', exercise);
 
-    return connection.manager.save(exercise);
+     connection.manager.save(exercise);
+     message = 'Exercise updated successfully';
+     return message;
   }
 
   async getBodyParts(): Promise<BodyPart[]> {

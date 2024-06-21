@@ -29,8 +29,9 @@ export class WorkoutService {
     return workouts;
   }
 
-  async deleteWorkout(user: User, workoutId: number): Promise<void> {
+  async deleteWorkout(user: User, workoutId: number) {
     const connection = await ConnectionManager.getConnection();
+    let message = '';
 
     const workout = await connection.manager.findOne(Workout, {
       where: { id: workoutId, user: { id: user.id } },
@@ -41,7 +42,9 @@ export class WorkoutService {
     });
 
     if (!workout) {
-      throw new NotFoundException('Workout not found');
+      // throw new NotFoundException('Workout not found');
+      message = 'Workout not found';
+      return message;
     }
 
     // if (workout.user.id !== user.id) {
@@ -63,6 +66,7 @@ export class WorkoutService {
 
     // Delete the workout itself
     await connection.manager.remove(Workout, workout);
+    return 'Workout deleted successfully';
   }
   async getMyWorkoutsSummary(user: User): Promise<Workout[]> {
     const connection = await ConnectionManager.getConnection();
@@ -83,16 +87,15 @@ export class WorkoutService {
     console.log('user', user);
 
     const connection = await ConnectionManager.getConnection();
-
+    let message = '';
     // Find the exercise by id
     const exercise = await connection.manager.findOne(Exercise, {
       where: { id: createWorkoutDto.exerciseId },
     });
 
     if (!exercise) {
-      throw new NotFoundException(
-        `Exercise with ID ${createWorkoutDto.exerciseId} not found`,
-      );
+      message = `Exercise with ID ${createWorkoutDto.exerciseId} not found`;
+      return message;
     }
 
     const workout = new Workout();
@@ -138,7 +141,7 @@ export class WorkoutService {
       console.log(e);
     }
 
-    return workout;
+    return 'Workout created successfully';
   }
 
   async update(user: User, workoutid: number, updatedto: WorkoutUpdateDto) {

@@ -20,20 +20,19 @@ export class SaveController {
   async saveExercise(
     @Param('id') id: number,
     @GetUser() user: User,
-  ): Promise<{ message: string }> {
+  ): Promise<String> {
     console.log('saveExercise');
-    this.saveService.saveExercise(id, user);
-    return { message: 'Exercise saved successfully' };
+    return this.saveService.saveExercise(id, user);
   }
 
   @Delete('unsave/exercise/:id')
   async unsaveExercise(
     @Param('id') id: number,
     @GetUser() user: User,
-  ): Promise<{ message: string }> {
+  ): Promise<String> {
     console.log('unsaveExercise');
-    this.saveService.unsaveExercise(id, user);
-    return { message: 'Exercise unsaved successfully' };
+    return this.saveService.unsaveExercise(id, user);
+    // return { message: 'Exercise unsaved successfully' };
   }
 
   @Get('get/exercises')
@@ -46,20 +45,18 @@ export class SaveController {
   async saveWorkout(
     @Param('id') id: number,
     @GetUser() user: User,
-  ): Promise<{ message: string }> {
+  ): Promise<String> {
     console.log('saveWorkout');
-    this.saveService.saveWorkout(id, user);
-    return { message: 'Workout saved successfully' };
+    return this.saveService.saveWorkout(id, user);
   }
 
   @Delete('unsave/workout/:id')
   async unsaveWorkout(
     @Param('id') id: number,
     @GetUser() user: User,
-  ): Promise<{ message: string }> {
+  ): Promise<String> {
     console.log('unsaveWorkout');
-    this.saveService.unsaveWorkout(id, user);
-    return { message: 'Workout unsaved successfully' };
+    return this.saveService.unsaveWorkout(id, user);
   }
 
   @Get('get/workouts')
@@ -72,20 +69,18 @@ export class SaveController {
   async saveWorkoutCollection(
     @Param('id') id: number,
     @GetUser() user: User,
-  ): Promise<{ message: string }> {
+  ): Promise<String> {
     console.log('saveWorkoutCollection');
-    this.saveService.saveWorkoutCollection(id, user);
-    return { message: 'Workout Collection saved successfully' };
+    return this.saveService.saveWorkoutCollection(id, user);
   }
 
   @Delete('unsave/workoutCollection/:id')
   async unsaveWorkoutCollection(
     @Param('id') id: number,
     @GetUser() user: User,
-  ): Promise<{ message: string }> {
+  ): Promise<String> {
     console.log('unsaveWorkoutCollection');
-    this.saveService.unsaveWorkoutCollection(id, user);
-    return { message: 'Workout Collection unsaved successfully' };
+    return this.saveService.unsaveWorkoutCollection(id, user);
   }
 
   @Get('get/workoutCollections')

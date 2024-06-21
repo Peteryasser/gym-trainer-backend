@@ -17,7 +17,7 @@ export class WorkoutHistoryController {
     @Param('id') workout_id: number,
     @Body() dto: WorkoutHistoryDTO,
     @GetUser() user: User,
-  ): Promise<WorkoutHistory> {
+  ): Promise<String> {
     console.log('addWorkoutHistory');
     return this.workouthistoryservice.addWorkoutHistory(dto, user, workout_id);
   }
@@ -32,9 +32,9 @@ export class WorkoutHistoryController {
   async deleteWorkoutHistory(
     @Param('id') id: number,
     @GetUser() user: User,
-  ): Promise<{ message: string }> {
+  ): Promise<String> {
     console.log('deleteWorkoutHistory');
-    await this.workouthistoryservice.deleteWorkoutHistory(id, user);
-    return { message: 'Workout History deleted successfully' };
+    return this.workouthistoryservice.deleteWorkoutHistory(id, user);
+    // return { message: 'Workout History deleted successfully' };
   }
 }

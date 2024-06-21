@@ -8,21 +8,23 @@ import { Workout } from 'src/entity/workout.entity';
 import { SavedWorkout } from 'src/entity/saved-workouts';
 import { WorkoutCollection } from 'src/entity/workout-collection';
 import { SavedWorkoutCollection } from 'src/entity/saved-workout-collection';
+import { retry } from 'rxjs';
 
 dotenvConfig({ path: '.env' });
 @Injectable()
 export class SaveService {
   constructor() {}
 
-  async saveExercise(id: number, user: User): Promise<void> {
+  async saveExercise(id: number, user: User) {
     const connection = await ConnectionManager.getConnection();
-
+    let message = '';
     const exercise = await connection.manager.findOne(Exercise, {
       where: { id },
     });
 
     if (!exercise) {
-      throw new NotFoundException('Exercise not found');
+      message = 'Exercise not found';
+      return message;
     }
 
     const savedExercise = new SavedExercise();
@@ -32,10 +34,12 @@ export class SaveService {
     console.log('savedExercise', savedExercise);
 
     await connection.manager.save(savedExercise);
+    return 'Exercise saved successfully';
   }
 
-  async unsaveExercise(id: number, user: User): Promise<void> {
+  async unsaveExercise(id: number, user: User) {
     const connection = await ConnectionManager.getConnection();
+    let message = '';
 
     // make sure that record of saved_execise with this id is have user_id of the user
     const savedExercise = await connection.manager.findOne(SavedExercise, {
@@ -43,14 +47,16 @@ export class SaveService {
     });
 
     if (!savedExercise) {
-      throw new NotFoundException('Exercise not found in your saved exercises');
+      message = 'Exercise not found in your saved exercises';
+      return message;
     }
 
     // delete entity from saved_exercises table with this id
     await connection.manager.delete(SavedExercise, { id });
+    return 'Exercise unsaved successfully';
   }
 
-  async saveWorkout(id: number, user: User): Promise<void> {
+  async saveWorkout(id: number, user: User) {
     // add workout to user's saved workouts
 
     // get connection
@@ -63,7 +69,7 @@ export class SaveService {
 
     // if workout not found, throw exception
     if (!workout) {
-      throw new NotFoundException('Workout not found');
+      return 'Workout not found';
     }
 
     // create new saved_workout entity
@@ -73,9 +79,10 @@ export class SaveService {
 
     // save saved_workout entity
     await connection.manager.save(savedWorkout);
+    return 'Workout saved successfully';
   }
 
-  async unsaveWorkout(id: number, user: User): Promise<void> {
+  async unsaveWorkout(id: number, user: User) {
     // remove workout from user's saved workouts
 
     // get connection
@@ -88,14 +95,15 @@ export class SaveService {
 
     // if saved_workout entity not found, throw exception
     if (!savedWorkout) {
-      throw new NotFoundException('Workout not found in your saved workouts');
+      return 'Workout not found in your saved workouts';
     }
 
     // delete saved_workout entity with this id
     await connection.manager.delete(SavedWorkout, { id });
+    return 'Workout unsaved successfully';
   }
 
-  async saveWorkoutCollection(id: number, user: User): Promise<void> {
+  async saveWorkoutCollection(id: number, user: User) {
     // add workout collection to user's saved workouts
 
     // get connection
@@ -111,7 +119,7 @@ export class SaveService {
 
     // if workout not found, throw exception
     if (!workoutCollection) {
-      throw new NotFoundException('WorkoutCollection not found');
+      return 'WorkoutCollection not found';
     }
 
     const savedWorkoutCollection = new SavedWorkoutCollection();
@@ -119,9 +127,10 @@ export class SaveService {
     savedWorkoutCollection.workoutCollection = workoutCollection;
 
     await connection.manager.save(savedWorkoutCollection);
+    return 'WorkoutCollection saved successfully';
   }
 
-  async unsaveWorkoutCollection(id: number, user: User): Promise<void> {
+  async unsaveWorkoutCollection(id: number, user: User) {
     // remove workout collection from user's saved workouts
 
     // get connection
@@ -137,13 +146,12 @@ export class SaveService {
 
     // if saved_workout entity not found, throw exception
     if (!savedWorkoutCollection) {
-      throw new NotFoundException(
-        'WorkoutCollection not found in your saved workouts',
-      );
+      return 'WorkoutCollection not found in your saved workouts';
     }
 
     // delete saved_workout entity with this id
     await connection.manager.delete(SavedWorkoutCollection, { id });
+    return 'WorkoutCollection unsaved successfully';
   }
 
   async getSavedExercises(user: User): Promise<any[]> {

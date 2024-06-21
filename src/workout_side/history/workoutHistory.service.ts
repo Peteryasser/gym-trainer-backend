@@ -15,9 +15,10 @@ export class WorkoutHistoryService {
   async addWorkoutHistory(
     dto: WorkoutHistoryDTO,
     user: User,
-    workout_id,
-  ): Promise<WorkoutHistory> {
+    workout_id: number,
+  ) {
     const connection = await ConnectionManager.getConnection();
+    let message = '';
 
     const workout = await connection.manager.findOne(Workout, {
       where: { id: workout_id },
@@ -28,7 +29,8 @@ export class WorkoutHistoryService {
     });
 
     if (!workout) {
-      throw new NotFoundException('Workout not found');
+      message = 'Workout not found';
+      return message;
     }
 
     const workoutHistory = new WorkoutHistory();
@@ -41,7 +43,8 @@ export class WorkoutHistoryService {
     workoutHistory.durationUnit = dto.durationUnit;
 
     await connection.manager.save(workoutHistory);
-    return workoutHistory;
+    message = 'Workout History added successfully';
+    return message;
   }
 
   async getMyHistory(user: User): Promise<WorkoutHistory[]> {
@@ -55,17 +58,21 @@ export class WorkoutHistoryService {
     return workoutHistory;
   }
 
-  async deleteWorkoutHistory(id: number, user: User): Promise<void> {
+  async deleteWorkoutHistory(id: number, user: User) {
     const connection = await ConnectionManager.getConnection();
+    let message = '';
 
     const workoutHistory = await connection.manager.findOne(WorkoutHistory, {
       where: { id, user: { id: user.id } },
     });
 
     if (!workoutHistory) {
-      throw new NotFoundException('Workout History not found');
+      message = 'Workout History not found';
+      return message;
     }
 
     await connection.manager.remove(workoutHistory);
+    message = 'Workout History deleted successfully';
+    return message;
   }
 }

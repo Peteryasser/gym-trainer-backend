@@ -29,7 +29,7 @@ export class ExerciseController {
   async createExercise(
     @Body() dto: DTORequest,
     @GetUser() user: User,
-  ): Promise<Exercise> {
+  ): Promise<String> {
     console.log('createExercise');
     return this.exerciseService.createNewExerciseByUser(dto, user);
   }
@@ -38,10 +38,9 @@ export class ExerciseController {
   async deleteExercise(
     @Param('id') id: number,
     @GetUser() user: User,
-  ): Promise<{ message: string }> {
+  ): Promise<String> {
     console.log('deleteExercise');
-    await this.exerciseService.deleteExerciseByUser(id, user);
-    return { message: 'Exercise deleted successfully' };
+    return this.exerciseService.deleteExerciseByUser(id, user);
   }
 
   @Get('my-exercises')
@@ -55,7 +54,7 @@ export class ExerciseController {
     @GetUser() user: User,
     @Param('id') id: number,
     @Body() dto: UpdateExerciseDto,
-  ): Promise<Exercise> {
+  ): Promise<String> {
     console.log('updateExercise');
     return this.exerciseService.update(user, id, dto);
   }
@@ -77,22 +76,4 @@ export class ExerciseController {
     console.log('getMuscles');
     return this.exerciseService.getMuscles();
   }
-
-  // @Get('test')
-  // async test() {
-  //   console.log('Testttttttttttttttttttt');
-  // }
-
-  // @Post('create')
-  // async createExercise(@Body() dto: ExerciseDTO): Promise<Exercise> {
-
-  //   console.log('createExercise');
-  //   return this.exerciseService.createExercise(dto);
-  // }
-
-  // @Get('first')
-  // async getFirstExercise(): Promise<Exercise> {
-  //   console.log('getFirstExercise');
-  //   return this.exerciseService.getBackExercises();
-  // }
 }

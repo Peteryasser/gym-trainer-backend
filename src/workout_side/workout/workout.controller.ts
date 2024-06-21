@@ -25,7 +25,7 @@ export class WorkoutController {
   async createWorkout(
     @Body() createWorkoutDto: WorkoutDto,
     @GetUser() user: User,
-  ): Promise<Workout> {
+  ): Promise<String> {
     console.log('createWorkout');
     console.log('createWorkoutDto', createWorkoutDto);
     console.log('user', user);
@@ -49,10 +49,10 @@ export class WorkoutController {
   async deleteExercise(
     @Param('id') id: number,
     @GetUser() user: User,
-  ): Promise<{ message: string }> {
+  ): Promise<String> {
     console.log('delete Workout');
-    this.workoutService.deleteWorkout(user, id);
-    return { message: 'Workout deleted successfully' };
+    return this.workoutService.deleteWorkout(user, id);
+    // return { message: 'Workout deleted successfully' };
   }
 
   @Patch('update/:id')
