@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Exercise } from 'src/entity/exercise.entity';
-
 import { BodyPartFilter } from './filter.criterias';
 import { EquipmentFilter } from './filter.criterias';
 import { MuscleFilter } from './filter.criterias';
@@ -46,9 +43,11 @@ export class ExerciseFilterService {
       compositeFilter.addFilter(new MuscleFilter(muscleIds));
     }
 
-    const filteredQuery = compositeFilter.apply(query,user);
+    const filteredQuery = compositeFilter.apply(query, user);
 
     const exercises = await filteredQuery.getMany();
+
+    console.log('filtered output ', exercises.length);
 
     return exercises;
   }

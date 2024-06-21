@@ -364,6 +364,7 @@ export class ExerciseService {
 
       exercise.instructions = updatedInstructions;
     }
+
     if (updateExerciseDto.equipments) {
       const existingEquipments = exercise.equipments || [];
       const updatedEquipments = [];

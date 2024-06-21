@@ -1,4 +1,12 @@
-import { Controller, Get, Body, Post, Delete, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Post,
+  Delete,
+  Param,
+  Patch,
+} from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { WorkoutService } from './workout.service';
@@ -6,16 +14,12 @@ import { WorkoutDto } from './dtos/workout.dto';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'src/entity/user.entity';
 import { Workout } from 'src/entity/workout.entity';
+import { WorkoutUpdateDto } from './dtos/workout.update.dto';
 
 @Controller('workouts')
 @UseGuards(JwtAuthGuard)
 export class WorkoutController {
   constructor(private readonly workoutService: WorkoutService) {}
-
-  // @Get('test')
-  // async test(): Promise<string> {
-  //   return 'WorkoutController test';
-  // }
 
   @Post('create')
   async createWorkout(
@@ -49,5 +53,15 @@ export class WorkoutController {
     console.log('delete Workout');
     this.workoutService.deleteWorkout(user, id);
     return { message: 'Workout deleted successfully' };
+  }
+
+  @Patch('update/:id')
+  async updateWorkout(
+    @GetUser() user: User,
+    @Param('id') id: number,
+    @Body() updatedto: WorkoutUpdateDto,
+  ): Promise<String> {
+    console.log('updateWorkout');
+    return this.workoutService.update(user, id, updatedto);
   }
 }

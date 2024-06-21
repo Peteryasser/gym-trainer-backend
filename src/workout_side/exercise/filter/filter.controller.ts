@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, UseGuards } from '@nestjs/common';
 import { ExerciseFilterService } from './filter.service';
 import { Exercise } from 'src/entity/exercise.entity';
 import { FilterExercisesDto } from './dtos/filter-exercise-dto';
@@ -13,9 +13,10 @@ export class ExerciseFilterController {
 
   @Get()
   findAll(
-    @Query() filters: FilterExercisesDto,
+    @Body() filters: FilterExercisesDto,
     @GetUser() user: User,
   ): Promise<Exercise[]> {
+    console.log('filters', filters);
     return this.exerciseService.getFilteredExercises(filters, user);
   }
 }

@@ -15,7 +15,7 @@ export class BodyPartFilter implements ExerciseFilter {
         bodyPartIds: this.bodyPartIds,
       })
       .andWhere(
-        '(exercise.type = false OR (exercise.type = true AND exercise.userId = :userId))',
+        '(exercise.type = false OR (exercise.type = true AND exercise.user_id = :userId))',
         { userId: user.id },
       );
   }
@@ -28,15 +28,17 @@ export class EquipmentFilter implements ExerciseFilter {
     query: SelectQueryBuilder<Exercise>,
     user: User,
   ): SelectQueryBuilder<Exercise> {
-    return query
-      .leftJoin('exercise.equipments', 'equipment')
-      .andWhere('equipment.id IN (:...equipmentIds)', {
-        equipmentIds: this.equipmentIds,
-      })
-      .andWhere(
-        '(exercise.type = false OR (exercise.type = true AND exercise.userId = :userId))',
-        { userId: user.id },
-      );
+    return (
+      query
+        //   .leftJoin('exercise.equipments', 'equipment')
+        .andWhere('equipments.id IN (:...equipmentIds)', {
+          equipmentIds: this.equipmentIds,
+        })
+        .andWhere(
+          '(exercise.type = false OR (exercise.type = true AND exercise.user_id = :userId))',
+          { userId: user.id },
+        )
+    );
   }
 }
 
@@ -48,15 +50,36 @@ export class MuscleFilter implements ExerciseFilter {
     user: User,
   ): SelectQueryBuilder<Exercise> {
     return query
-      .leftJoin('exercise.targetMuscle', 'targetMuscle')
-      .leftJoin('exercise.secondaryMuscles', 'secondaryMuscles')
       .andWhere(
-        'targetMuscle.id IN (:...muscleIds) OR secondaryMuscles.id IN (:...muscleIds)',
+        'secondaryMuscles.id IN(:...muscleIds) OR exercise.targetMuscleId IN (:...muscleIds)',
         { muscleIds: this.muscleIds },
       )
       .andWhere(
-        '(exercise.type = false OR (exercise.type = true AND exercise.userId = :userId))',
+        '(exercise.type = false OR (exercise.type = true AND exercise.user_id = :userId))',
         { userId: user.id },
       );
   }
 }
+
+// export class MuscleFilter implements ExerciseFilter {
+//   constructor(private muscleIds: number[]) {}
+
+//   apply(
+//     query: SelectQueryBuilder<Exercise>,
+//     user: User,
+//   ): SelectQueryBuilder<Exercise> {
+//     return query
+//       .leftJoin('exercise.targetMuscle', 'targetMuscle')
+//       .leftJoin('exercise.secondaryMuscles', 'secondaryMuscles')
+//       .andWhere(
+//         'targetMuscle.id IN (:...muscleIds) OR secondaryMuscles.id IN (:...muscleIds)',
+//         {
+//           muscleIds: this.muscleIds,
+//         },
+//       )
+//       .andWhere(
+//         '(exercise.type = false OR (exercise.type = true AND exercise.user_id = :userId))',
+//         { userId: user.id },
+//       );
+//   }
+// }
