@@ -17,6 +17,10 @@ import { UserSubscriptionsModule } from './user_subscriptions/user_subscriptions
 import { CoachesModule } from './users/coaches/coaches.module';
 import { IngredientModule } from './nutrition_side/ingredient/ingredient.module';
 import { RecipeModule } from './nutrition_side/recipe/recipe.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { CoachSocialMediaModule } from './coach_social_media/coach_social_media.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,6 +33,8 @@ import { RecipeModule } from './nutrition_side/recipe/recipe.module';
         configService.get('typeorm'),
     }),
 
+    EventEmitterModule.forRoot(),
+
     CloudinaryModule,
     ExerciseModule,
     AuthModule,
@@ -38,12 +44,14 @@ import { RecipeModule } from './nutrition_side/recipe/recipe.module';
     PackagesModule,
     UserSubscriptionsModule,
     IngredientModule,
-    RecipeModule
+    RecipeModule,
+    NotificationsModule,
+    CoachSocialMediaModule
   ],
   controllers: [
     AppController,
     WorkoutController,
     ],
-  providers: [AppService, ImageService, ExerciseService],
+  providers: [AppService, ImageService, ExerciseService ],
 })
 export class AppModule {}

@@ -14,6 +14,7 @@ import { Recipes } from './recipes.entity';
 import { UserMealsHistory } from './user_meals_history.entity';
 import { SavedRecipes } from './saved_recipes.entity';
 import { SavedIngredients } from './saved_ingredients.entity';
+import { AppNotification } from './app-notification.entity';
 
 @Entity('users')
 export class User {
@@ -92,6 +93,9 @@ export class User {
 
   @OneToMany(() => UserSubscription, (subsciption) => subsciption.user)
   subscriptions: UserSubscription[];
+
+  @OneToMany(() => AppNotification, (notification) => notification.user)
+  notifications: AppNotification[];
 
   public get fullName(): string {
     return `${this.firstName} ${this.lastName}`;

@@ -23,14 +23,14 @@
     "migration:generate": "npm run typeorm -- -d ./src/config/typeorm.ts migration:generate ./src/migrations/$npm_config_name",
     "migration:revert": "npm run typeorm -- -d ./src/config/typeorm.ts migration:revert",
     "migration:create": "cross-var ts-node node_modules/typeorm/cli.js migration:create ./src/migrations/$npm_config_name",
-    "migrate": "ts-node node_modules/typeorm/cli.js migration:run -d src/shared/utils/datasource.ts",
-    "migration:down": "ts-node node_modules/typeorm/cli.js migration:revert -d src/shared/utils/datasource.ts"
+    "migration:show": "npm run typeorm migration:show -- -d ./src/config/typeorm.ts"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.11.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.0",
     "@nestjs/core": "^10.0.0",
+    "@nestjs/event-emitter": "^2.0.4",
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
