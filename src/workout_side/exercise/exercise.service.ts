@@ -38,10 +38,17 @@ export class ExerciseService {
     const connection = await ConnectionManager.getConnection();
 
     console.log('Fetching exercises for user ID:', user.id);
-    const exercises = await connection.manager.query(
-      'SELECT * FROM exercises WHERE user_id = $1',
-      [user.id],
-    );
+
+    const exercises = await connection.manager.find(Exercise, {
+      where: { user: { id: user.id } },
+      relations: [
+        'bodyPart',
+        'targetMuscle',
+        'secondaryMuscles',
+        'instructions',
+        'equipments',
+      ],
+    });
 
     return exercises;
   }
@@ -101,6 +108,7 @@ export class ExerciseService {
       }
       secondaryMuscles.push(secondaryMuscle);
     }
+    ex.secondaryMuscles = secondaryMuscles;
 
     // Map and save instructions
     ex.instructions = dto.instructions.map((instruction, index) => {
@@ -389,9 +397,9 @@ export class ExerciseService {
 
     // console.log('Saving updated exercise:', exercise);
 
-     connection.manager.save(exercise);
-     message = 'Exercise updated successfully';
-     return message;
+    connection.manager.save(exercise);
+    message = 'Exercise updated successfully';
+    return message;
   }
 
   async getBodyParts(): Promise<BodyPart[]> {

@@ -39,10 +39,17 @@ export class WorkoutPlanPackageService {
       message = `Package with id ${workoutPlanPackageDto.package_id} not found`;
       return message;
     }
+
+    console.log('coachPackage', coachPackage);
+
+    console.log('coachPackage.coach', await coachPackage.coach);
+
     if ((await coachPackage.coach.user).id !== user.id) {
       message = `You are not authorized to add workout plan to package with id ${workoutPlanPackageDto.package_id}`;
       return message;
     }
+
+    console.log('coachPackage.coach.user', await coachPackage.coach.user);
 
     // get workout plan with workout_plan_id in dto and make sure it's exist
     const workoutPlan = await connection.manager.findOne(WorkoutPlan, {

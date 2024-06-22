@@ -71,7 +71,7 @@ export class WorkoutPlanPackageController {
     return this.workoutPlanPackageService.updateWorkoutPlanInPackage(
       id,
       workoutPackageUpdateDTO,
-      user
+      user,
     );
   }
 }
