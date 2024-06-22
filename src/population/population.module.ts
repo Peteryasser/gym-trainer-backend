@@ -4,9 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // import { AuthModule } from 'src/auth/auth.module';
 import typeorm from 'src/config/typeorm';
-import { IngredientController } from 'src/nutrition_side/ingredient/ingredient.controller';
-import { IngredientService } from 'src/nutrition_side/ingredient/ingredient.service';
-import { RoutesController } from 'src/routes/routes.controller';
+
 import { UsersModule } from 'src/users/users.module';
 import { CloudinaryModule } from 'src/utils/cloudinary/cloudinary.module';
 import { ImageService } from 'src/utils/image/image.service';
@@ -36,6 +34,8 @@ import { WorkoutPlanPackageService } from 'src/workout_side/workout-package/work
 import { ExerciseFilterModule } from 'src/workout_side/exercise/filter/filter.module';
 import { ExerciseFilterController } from 'src/workout_side/exercise/filter/filter.controller';
 import { ExerciseFilterService } from 'src/workout_side/exercise/filter/filter.service';
+import { IngredientController } from 'src/nutrition_side/ingredient/ingredient.controller';
+import { IngredientService } from 'src/nutrition_side/ingredient/ingredient.service';
 
 @Module({
   imports: [
@@ -64,7 +64,6 @@ import { ExerciseFilterService } from 'src/workout_side/exercise/filter/filter.s
     PopulationController,
     WorkoutController,
     IngredientController,
-    RoutesController,
     ExerciseController,
     WorkoutController,
     WorkoutHistoryController,

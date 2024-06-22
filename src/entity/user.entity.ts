@@ -16,6 +16,15 @@ import { Exercise } from './exercise.entity';
 import { WorkoutCollection } from './workout-collection';
 import { SavedExercise } from './saved-exercises';
 import { SavedWorkoutCollection } from './saved-workout-collection';
+import { UserSubscription } from './user-subscription.entity';
+import { SavedMeals } from './saved_meals.entity';
+import { Meals } from './meals.entity';
+import { Recipes } from './recipes.entity';
+import { UserMealsHistory } from './user_meals_history.entity';
+import { SavedRecipes } from './saved_recipes.entity';
+import { SavedIngredients } from './saved_ingredients.entity';
+import { AppNotification } from './app-notification.entity';
+import { UserPackageMealPlans } from './user_package_meal_plans.entity';
 
 @Entity('users')
 export class User {
@@ -124,4 +133,36 @@ export class User {
 
   @OneToMany(() => WorkoutCollection, (collection) => collection.user)
   workoutCollections: WorkoutCollection[];
+  @OneToMany(() => UserSubscription, (subsciption) => subsciption.user)
+  subscriptions: UserSubscription[];
+
+  @OneToMany(() => AppNotification, (notification) => notification.user)
+  notifications: AppNotification[];
+
+  public get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
+  @OneToMany(() => SavedMeals, (savedMeal) => savedMeal.user)
+  savedMeals: SavedMeals[];
+
+  @OneToMany(() => Meals, (meal) => meal.user)
+  meals: Meals[];
+
+  @OneToMany(() => Recipes, (recipe) => recipe.user)
+  recipes: Recipes[];
+
+  @OneToMany(() => UserMealsHistory, (mealsHistory) => mealsHistory.user)
+  mealsHistory: UserMealsHistory[];
+
+  @OneToMany(() => SavedRecipes, (savedRecipe) => savedRecipe.user)
+  savedRecipes: SavedRecipes[];
+
+  @OneToMany(() => SavedIngredients, (savedIngredient) => savedIngredient.user)
+  savedIngredients: SavedIngredients[];
+
+  @OneToMany(
+    () => UserPackageMealPlans,
+    (userPackageMealPlan) => userPackageMealPlan.user,
+  )
+  userPackageMealPlans: UserPackageMealPlans[];
 }

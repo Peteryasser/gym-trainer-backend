@@ -2,25 +2,29 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
+  ManyToOne,
+  JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { DurationUnitEnum } from 'src/packages/duration-unit.enum';
+import { DurationUnitEnum } from '../packages/duration-unit.enum';
 import { Coach } from './coach.entity';
-import { UserPackageWorkoutPlan } from './user-package-workoutPlan';
+import { PackageDiscount } from './package-discount.entity';
+import { UserSubscription } from './user-subscription.entity';
+import { UserPackageMealPlans } from './user_package_meal_plans.entity';
 
 @Entity('coach_packages')
 export class Package {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Coach, { cascade: true })
+  @ManyToOne(() => Coach, (coach) => coach.packages, { eager: true })
+  @JoinColumn({ name: 'coachId' })
   coach: Coach;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
   price: number;
 
-  @Column()
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
   duration: number;
 
   @Column({
@@ -28,17 +32,27 @@ export class Package {
     enum: DurationUnitEnum,
     default: DurationUnitEnum.MONTH,
   })
-  duration_unit: DurationUnitEnum;
+  durationUnit: DurationUnitEnum;
 
   @Column({ length: 255, nullable: true })
   description: string;
 
   @Column({ default: false })
-  has_nutrition: boolean;
+  hasNutrition: boolean;
 
   @OneToMany(
-    () => UserPackageWorkoutPlan,
+    () => PackageDiscount,
+    (package_discount) => package_discount.package,
+    { cascade: true },
+  )
+  discounts: PackageDiscount[];
+
+  @OneToMany(() => UserSubscription, (subscription) => subscription.package)
+  subscriptions: UserSubscription[];
+
+  @OneToMany(
+    () => UserPackageMealPlans,
     (userPackageWorkoutPlan) => userPackageWorkoutPlan.package,
   )
-  userPackageWorkoutPlans: UserPackageWorkoutPlan[];
+  userPackageMealPlans: UserPackageMealPlans[];
 }

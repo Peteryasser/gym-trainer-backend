@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entity/user.entity';
-import { Repository, UpdateResult } from 'typeorm';
+import { User } from '../../entity/user.entity';
+import { MoreThan, Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class UsersService {
@@ -55,4 +55,43 @@ export class UsersService {
     const result = await this.usersRepository.delete(id);
     if (result.affected == 0) throw new NotFoundException('User not found');
   }
+  
+  async setotp(otp, otpExpire, email) {
+    try {
+        const userRepository = this.usersRepository;
+        const updateFields: { resetPasswordToken: any; otpExpiration?: any } = { resetPasswordToken: otp };
+
+        // Include otpExpiration only if it's provided
+        if (otpExpire) {
+            updateFields.otpExpiration = otpExpire;
+        }
+        await userRepository
+        .createQueryBuilder()
+        .update(User)
+        .set(updateFields)
+        .where("email = :email", { email })
+        .execute();
+        return "Success";
+    } catch (error) {
+        console.error("Error updating OTP:", error.message); // Log the actual error message
+        return "Failed to update OTP"; // Return a generic error message
+    }
+}
+
+async checkotp(email): Promise<User>{
+    try {
+        const userRepository = this.usersRepository;
+        // Check if there's a user with the given OTP and if the OTP hasn't expired
+        const user = await userRepository.findOne({
+            where: {
+                email:email,
+                resetPasswordTokenSentAt: MoreThan(new Date()) 
+            }
+        });
+        return user;
+    } catch (err) {
+        console.error(err);
+        throw new UnauthorizedException('User not exists or otp invalid');
+    }
+}
 }
