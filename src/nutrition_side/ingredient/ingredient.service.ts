@@ -105,9 +105,17 @@ export class IngredientService {
     return nutrients.find(nutrient => nutrient.name === nutrientName) || { amount: 0 };
   }
 
+  async getAllIngredients(): Promise<Ingredient[]>{
+    const ingredients: Ingredient[] = await this.ingredientRepository.find( {
+      relations: ['category'],
+    });
+    return ingredients;
+  }
+
   async saveIngredient(id: number, user: User): Promise<void> {
-    const ingredient = await this.ingredientRepository.findOne( {
+    const ingredient: Ingredient = await this.ingredientRepository.findOne( {
       where: { id },
+      relations: ['category'],
     });
 
     if (!ingredient) {
@@ -118,7 +126,6 @@ export class IngredientService {
     savedIngredients.user = user;
     savedIngredients.ingredient = ingredient;
 
-    console.log('savedIngredient', savedIngredients);
 
     await this.savedIngredientsRepository.save(savedIngredients);
   }
@@ -137,14 +144,19 @@ export class IngredientService {
   async getAllSaved(user:User): Promise<Ingredient[]>{
     const savedIngredients = await this.savedIngredientsRepository.find({
       where: { user: { id: user.id } },
-      relations: ['ingredient'],
+      relations: ['ingredient','ingredient.category'],
     });
+    console.log("IIIIIIIIIII",savedIngredients[0].ingredient.category)
 
     if (!savedIngredients.length) {
       throw new NotFoundException('No saved ingredients found for the user');
     }
+    console.log("SSSSSSSSSSSSSSSS",savedIngredients)
 
-    return savedIngredients.map(savedIngredient => savedIngredient.ingredient);
+    return savedIngredients.map(savedIngredient => ({
+      ...savedIngredient.ingredient,
+      category: savedIngredient.ingredient.category,
+    }));
   }
 
   

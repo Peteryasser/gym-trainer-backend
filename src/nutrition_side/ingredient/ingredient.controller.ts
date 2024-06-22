@@ -135,8 +135,15 @@ export class IngredientController {
             imageStream.pipe(uploadStream);
         });
     }
-    
-    
+
+    @Get('get_all_ingredients_while_installing')
+    async gettAllForApp():Promise<Ingredient[]>{
+        try{
+            return await this.ingredientService.getAllIngredients()
+        }catch{
+            throw new Error("Error while loading ingredients");;
+        }
+    }
 
    @Get('get_all_ingredient_data')
     async getAll(@Query('ingredient') ingredient: string,@Res() res: Response): Promise<void> {
