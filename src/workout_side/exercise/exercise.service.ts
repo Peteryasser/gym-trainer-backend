@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import { MoreThan } from 'typeorm';
 import { config as dotenvConfig } from 'dotenv';
 import { ConnectionManager } from 'src/config/connection_manager';
 import { ExerciseDTO } from 'src/workout_side/exercise/dtos/exercise.dto';
@@ -398,6 +399,32 @@ export class ExerciseService {
     const connection = await ConnectionManager.getConnection();
     // get all distinct muscle elements
     return connection.manager.find(Muscle);
+  }
+
+  async getNewExerciseWithVersion(version: number): Promise<any[]> {
+    // connet data base
+    const connection = await ConnectionManager.getConnection();
+
+    // get the highest value from the version column
+    const maxVersion = await connection.manager.query(
+      'SELECT MAX(version) FROM exercises',
+    );
+
+    if (maxVersion[0].max === version) {
+      return [];
+    }
+
+    const exercises = await connection.manager.find(Exercise, {
+      where: { version: MoreThan(version) },
+      relations: [
+        'bodyPart',
+        'targetMuscle',
+        'secondaryMuscles',
+        'instructions',
+        'equipments',
+      ],
+    });
+    return exercises;
   }
 }
 

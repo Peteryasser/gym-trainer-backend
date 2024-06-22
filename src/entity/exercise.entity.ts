@@ -74,6 +74,9 @@ export class Exercise {
   })
   savedExercises: SavedExercise[];
 
+  @Column({ type: 'int', default: 1, nullable: true })
+  version: number;
+
   @OneToMany(
     () => WorkoutExercise,
     (workoutExercise) => workoutExercise.exercise,

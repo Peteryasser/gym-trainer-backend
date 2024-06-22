@@ -82,4 +82,12 @@ export class ExerciseController {
     console.log('getAllExercises');
     return this.exerciseService.getAllExercisesfromDB(user);
   }
+
+  @Get('get-new-exercises-with-version/:version')
+  async getNewExerciseWithVersion(
+    @Param('version') version: number,
+  ): Promise<any[]> {
+    console.log('getNewExerciseWithVersion');
+    return this.exerciseService.getNewExerciseWithVersion(version);
+  }
 }
