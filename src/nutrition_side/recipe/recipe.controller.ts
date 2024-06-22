@@ -1,4 +1,4 @@
-import { Controller, Get, Res, Param, Query } from '@nestjs/common';
+import { Controller, Get, Res, Param, Query,Post } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
 import axios from 'axios';
 import { Response } from 'express';
@@ -29,7 +29,7 @@ export class RecipeController {
       
     }
 
-    @Get('create-from-json')
+    @Post('create-from-json')
     async readIngredients(@Res() res: Response): Promise<any> {
         const filePath = 'src/nutrition_side/recipe/response.json';
         const allData = this.readJsonFile(filePath)['recipes']
