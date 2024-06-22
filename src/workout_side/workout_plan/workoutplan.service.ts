@@ -118,7 +118,20 @@ export class WorkoutPlanService {
 
     const workoutPlans = await connection.manager.find(WorkoutPlan, {
       where: { user: { id: user.id } },
-      relations: ['workoutPlanDetails', 'workoutPlanDetails.workoutCollection'],
+      relations: [
+        'workoutPlanDetails',
+        'workoutPlanDetails.workoutCollection',
+        'workoutPlanDetails.workoutCollection.workoutCollectionDetails',
+        'workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout',
+
+        'workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises',
+        'workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.workoutExerciseDetails',
+        'workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise',
+        'workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.bodyPart',
+        'workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.targetMuscle',
+        'workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.secondaryMuscles',
+        'workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.equipments',
+      ],
     });
 
     return workoutPlans;

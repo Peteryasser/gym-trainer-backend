@@ -52,7 +52,16 @@ export class WorkoutHistoryService {
 
     const workoutHistory = await connection.manager.find(WorkoutHistory, {
       where: { user: { id: user.id } },
-      relations: ['workout'],
+      relations: [
+        'workout',
+        'workout.workoutExercises',
+        'workout.workoutExercises.exercise',
+        'workout.workoutExercises.exercise.bodyPart',
+        'workout.workoutExercises.exercise.targetMuscle',
+        'workout.workoutExercises.exercise.secondaryMuscles',
+        'workout.workoutExercises.exercise.equipments',
+        'workout.workoutExercises.workoutExerciseDetails',
+      ],
     });
 
     return workoutHistory;

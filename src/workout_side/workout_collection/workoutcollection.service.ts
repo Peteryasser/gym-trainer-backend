@@ -112,6 +112,12 @@ export class WorkoutCollectionService {
         relations: [
           'workoutCollectionDetails',
           'workoutCollectionDetails.workout',
+          'workoutCollectionDetails.workout.workoutExercises',
+          'workoutCollectionDetails.workout.workoutExercises.exercise',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.bodyPart',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.targetMuscle',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.secondaryMuscles',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.equipments',
         ],
       },
     );
@@ -129,6 +135,12 @@ export class WorkoutCollectionService {
         relations: [
           'workoutCollectionDetails',
           'workoutCollectionDetails.workout',
+          'workoutCollectionDetails.workout.workoutExercises',
+          'workoutCollectionDetails.workout.workoutExercises.exercise',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.bodyPart',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.targetMuscle',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.secondaryMuscles',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.equipments',
         ],
       },
     );

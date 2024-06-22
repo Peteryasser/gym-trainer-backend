@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { config as dotenvConfig } from 'dotenv';
 import { ConnectionManager } from 'src/config/connection_manager';
 import { Exercise } from 'src/entity/exercise.entity';
@@ -22,6 +22,10 @@ export class WorkoutService {
       relations: [
         'workoutExercises',
         'workoutExercises.exercise',
+        'workoutExercises.exercise.bodyPart',
+        'workoutExercises.exercise.targetMuscle',
+        'workoutExercises.exercise.secondaryMuscles',
+        'workoutExercises.exercise.equipments',
         'workoutExercises.workoutExerciseDetails',
       ],
     });
