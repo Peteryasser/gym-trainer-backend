@@ -24,4 +24,7 @@ export class UserKeys {
 
   @Column()
   publicKey: string;
+
+  @Column()
+  salt: string;
 }
