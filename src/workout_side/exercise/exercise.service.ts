@@ -24,6 +24,21 @@ export class ExerciseService {
 
   private readonly apiUrl = 'https://exercisedb.p.rapidapi.com';
 
+  async getAllExercisesfromDB(user: User) {
+    const connection = await ConnectionManager.getConnection();
+    const exercises = await connection.manager.find(Exercise, {
+      where: [{ type: false }, { type: true, user: { id: user.id } }],
+      relations: [
+        'bodyPart',
+        'targetMuscle',
+        'secondaryMuscles',
+        'instructions',
+        'equipments',
+      ],
+    });
+    return exercises;
+  }
+
   async getExercisesByUser(user: User): Promise<Exercise[]> {
     const connection = await ConnectionManager.getConnection();
 

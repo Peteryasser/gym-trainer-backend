@@ -76,4 +76,10 @@ export class ExerciseController {
     console.log('getMuscles');
     return this.exerciseService.getMuscles();
   }
+
+  @Get('all-exercises')
+  async getAllExercises(@GetUser() user: User): Promise<Exercise[]> {
+    console.log('getAllExercises');
+    return this.exerciseService.getAllExercisesfromDB(user);
+  }
 }
