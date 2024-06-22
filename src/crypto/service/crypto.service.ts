@@ -1,30 +1,56 @@
 import { Injectable } from '@nestjs/common';
 import { ec as EC } from 'elliptic';
 import * as crypto from 'crypto';
+import { UserKeys } from 'src/entity/user-keys.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-
 @Injectable()
 export class CryptoService {
   private ec: EC;
 
-  constructor() {
+  constructor(
+    @InjectRepository(UserKeys)
+    private readonly keysRepo: Repository<UserKeys>,
+  ) {
     this.ec = new EC('secp256k1');
   }
 
-  generateKeyPair() {
+  async saveKeyPair(userId: number, password: string) {
+    const keyPair = this.generateKeyPair();
+
+    const keys = new UserKeys();
+    keys.salt = await this.generateBrainKeySalt();
+    keys.encryptedPrivateKey = this.encryptPrivKey(
+      keyPair.privKey,
+      password,
+      keys.salt,
+    );
+
+    keys.publicKey = keyPair.pubKey;
+    keys.userId = userId;
+
+    await this.keysRepo.save(keys);
+  }
+
+  private generateKeyPair() {
     const keyPair = this.ec.genKeyPair();
     const pubKey = keyPair.getPublic('hex');
     const privKey = keyPair.getPrivate('hex');
     return { pubKey, privKey };
   }
 
-  encryptPrivKey(privateKey: string, password: string): string {
-    const brainKey = this.generateBrainKey(password);
+  encryptPrivKey(privateKey: string, password: string, salt: string): string {
+    const brainKey = this.generateBrainKey(password, salt);
     return this.encrypt(brainKey.toString('hex'), privateKey);
   }
 
-  decryptPrivKey(encryptedPrivateKey: string, password: string): string {
-    const brainKey = this.generateBrainKey(password);
+  decryptPrivKey(
+    encryptedPrivateKey: string,
+    password: string,
+    salt: string,
+  ): string {
+    const brainKey = this.generateBrainKey(password, salt);
     return this.decrypt(brainKey.toString('hex'), encryptedPrivateKey);
   }
 
@@ -63,14 +89,11 @@ export class CryptoService {
     return decrypted;
   }
 
-  private generateBrainKey(password: string): Buffer {
-    return crypto.pbkdf2Sync(
-      password,
-      // salt needs to be stored? otherwise calling this function multiple times on the same password will return diff values for the key
-      bcrypt.genSaltSync(),
-      100000, // rounds
-      32, // keylen --> based on algorithm (aes256gcm requires 32 bytes key)
-      'sha512', // digest
-    );
+  private generateBrainKey(password: string, salt: string): Buffer {
+    return crypto.pbkdf2Sync(password, salt, 100000, 32, 'sha512');
+  }
+
+  private async generateBrainKeySalt(): Promise<string> {
+    return await bcrypt.genSalt();
   }
 }
