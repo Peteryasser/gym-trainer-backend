@@ -26,6 +26,7 @@ import { UserType } from '../../users/user-type.enum';
 import { TokenPayload } from '../types/token.payload';
 import { User } from '../../entity/user.entity';
 import { Coach } from '../../entity/coach.entity';
+import { CryptoService } from 'src/crypto/service/crypto.service';
 
 @Injectable()
 export class AuthService {
@@ -34,6 +35,7 @@ export class AuthService {
     private readonly coachesService: CoachesService,
     private readonly jwtService: JwtService,
     private readonly deviceService: DevicesService,
+    private readonly cryptoService: CryptoService,
   ) {}
 
   private async authenticateUser(
@@ -111,6 +113,8 @@ export class AuthService {
       newUser.id,
       user.fcmToken,
     );
+
+    await this.cryptoService.saveKeyPair(newUser.id, user.password);
     return await this.createUserAuthResponse(newUser, device.id);
   }
 
