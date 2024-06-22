@@ -7,6 +7,7 @@ import { Package } from 'src/entity/coach-package.entity';
 import { WorkoutPlan } from 'src/entity/workout-plan';
 import { UserPackageWorkoutPlan } from 'src/entity/user-package-workoutPlan';
 import { WorkoutPlanPackageUpdateDTO } from './dtos/workout_package_update';
+import { Coach } from 'src/entity/coach.entity';
 
 dotenvConfig({ path: '.env' });
 @Injectable()
@@ -15,7 +16,7 @@ export class WorkoutPlanPackageService {
 
   async addWorkoutPlanToPackage(
     workoutPlanPackageDto: WorkoutPlanPackageDTO,
-    user: User,
+    user: Coach,
   ) {
     const connection = await ConnectionManager.getConnection();
     let message = '';
@@ -33,6 +34,7 @@ export class WorkoutPlanPackageService {
     // get package with package_id in dto and make sure it's exist
     const coachPackage = await connection.manager.findOne(Package, {
       where: { id: workoutPlanPackageDto.package_id },
+      relations: ['coach'],
     });
 
     if (!coachPackage) {
@@ -40,20 +42,15 @@ export class WorkoutPlanPackageService {
       return message;
     }
 
-    console.log('coachPackage', coachPackage);
-
-    console.log('coachPackage.coach', await coachPackage.coach);
-
     if ((await coachPackage.coach).id !== user.id) {
       message = `You are not authorized to add workout plan to package with id ${workoutPlanPackageDto.package_id}`;
       return message;
     }
 
-    console.log('coachPackage.coach.user', await coachPackage.coach.user);
-
     // get workout plan with workout_plan_id in dto and make sure it's exist
     const workoutPlan = await connection.manager.findOne(WorkoutPlan, {
       where: { id: workoutPlanPackageDto.workout_plan_id },
+      relations: ['user'],
     });
 
     if (!workoutPlan) {
@@ -61,20 +58,23 @@ export class WorkoutPlanPackageService {
       return message;
     }
 
+    console.log('workoutPlan.user', workoutPlan.user);
+
     if (workoutPlan.user.id !== user.id) {
       message = `You are not authorized to add workout plan with id ${workoutPlanPackageDto.workout_plan_id} to package`;
       return message;
     }
 
-    // create user package workout plan
-    const userPackageWorkoutPlan = connection.manager.create(
-      UserPackageWorkoutPlan,
-      {
-        user: trainee,
-        workoutPlan,
-        coachPackage,
-      },
-    );
+    console.log('workoutPlan', workoutPlan);
+    console.log('coachPackage', coachPackage);
+    console.log('trainee', trainee);
+
+    let userPackageWorkoutPlan = new UserPackageWorkoutPlan();
+    userPackageWorkoutPlan.user = trainee;
+    userPackageWorkoutPlan.workoutPlan = workoutPlan;
+    userPackageWorkoutPlan.package = coachPackage;
+
+    console.log(userPackageWorkoutPlan);
 
     await connection.manager.save(userPackageWorkoutPlan);
 
@@ -82,7 +82,7 @@ export class WorkoutPlanPackageService {
     return message;
   }
 
-  async deleteWorkoutPlanfromPackage(id: number, user: User) {
+  async deleteWorkoutPlanfromPackage(id: number, user: Coach) {
     const connection = await ConnectionManager.getConnection();
     let message = '';
 
@@ -91,15 +91,18 @@ export class WorkoutPlanPackageService {
       UserPackageWorkoutPlan,
       {
         where: { id },
+        relations: ['package', 'package.coach'],
       },
     );
+
+    console.log('userPackageWorkoutPlan', userPackageWorkoutPlan);
 
     if (!userPackageWorkoutPlan) {
       message = `Workout Plan with id ${id} not found in user's packages`;
       return message;
     }
 
-    if ((await userPackageWorkoutPlan.package.coach.user).id !== user.id) {
+    if (userPackageWorkoutPlan.package.coach.id !== user.id) {
       message = `You are not authorized to delete workout plan with id ${id}`;
       return message;
     }
@@ -117,14 +120,28 @@ export class WorkoutPlanPackageService {
       UserPackageWorkoutPlan,
       {
         where: { user: { id: user.id } },
-        relations: ['workoutPlan'],
+        relations: [
+          'workoutPlan',
+          'workoutPlan.workoutPlanDetails',
+          'workoutPlan.workoutPlanDetails.workoutCollection',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.workoutExerciseDetails',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.bodyPart',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.targetMuscle',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.secondaryMuscles',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.equipments',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.instructions',
+        ],
       },
     );
 
     return userPackageWorkoutPlans;
   }
 
-  async getWorkoutPlanInPackage(id: number, user: User) {
+  async getWorkoutPlanInPackage(id: number) {
     // get connection
     const connection = await ConnectionManager.getConnection();
 
@@ -133,7 +150,21 @@ export class WorkoutPlanPackageService {
       UserPackageWorkoutPlan,
       {
         where: { id },
-        relations: ['workoutPlan'],
+        relations: [
+          'workoutPlan',
+          'workoutPlan.workoutPlanDetails',
+          'workoutPlan.workoutPlanDetails.workoutCollection',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.workoutExerciseDetails',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.bodyPart',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.targetMuscle',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.secondaryMuscles',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.equipments',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.instructions',
+        ],
       },
     );
 
@@ -148,7 +179,7 @@ export class WorkoutPlanPackageService {
   async updateWorkoutPlanInPackage(
     id: number,
     workoutPackageUpdateDTO: WorkoutPlanPackageUpdateDTO,
-    user: User,
+    user: Coach,
   ) {
     // get connection
     const connection = await ConnectionManager.getConnection();
@@ -158,15 +189,18 @@ export class WorkoutPlanPackageService {
       UserPackageWorkoutPlan,
       {
         where: { id },
+        relations: ['package', 'package.coach'],
       },
     );
+
+    console.log('userPackageWorkoutPlan', userPackageWorkoutPlan);
 
     // if user package workout plan not found, throw exception
     if (!userPackageWorkoutPlan) {
       return `Workout Plan with id ${id} not found in user's packages`;
     }
 
-    if ((await userPackageWorkoutPlan.package.coach.user).id !== user.id) {
+    if (userPackageWorkoutPlan.package.coach.id !== user.id) {
       return `You are not authorized to update workout plan with id ${id}`;
     }
 

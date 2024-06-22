@@ -26,6 +26,7 @@ export class WorkoutService {
         'workoutExercises.exercise.targetMuscle',
         'workoutExercises.exercise.secondaryMuscles',
         'workoutExercises.exercise.equipments',
+        'workoutExercises.exercise.instructions',
         'workoutExercises.workoutExerciseDetails',
       ],
     });

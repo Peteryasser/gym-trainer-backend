@@ -14,6 +14,7 @@ import { User } from 'src/entity/user.entity';
 import { WorkoutPlanPackageService } from './workoutpackage.service';
 import { WorkoutPlanPackageDTO } from './dtos/workout_package_dto';
 import { WorkoutPlanPackageUpdateDTO } from './dtos/workout_package_update';
+import { Coach } from 'src/entity/coach.entity';
 
 @Controller('workoutplan-package')
 @UseGuards(JwtAuthGuard)
@@ -25,7 +26,7 @@ export class WorkoutPlanPackageController {
   @Post('add')
   addWorkoutPlanToPackage(
     @Body() workoutPlanPackageDto: WorkoutPlanPackageDTO,
-    @GetUser() user: User,
+    @GetUser() user: Coach,
   ) {
     console.log('Add Workout Plan to Package ');
     console.log('workoutPlanPackageDto', workoutPlanPackageDto);
@@ -37,7 +38,7 @@ export class WorkoutPlanPackageController {
   }
 
   @Delete('delete/:id')
-  async deleteWorkoutPlan(@Param('id') id: number, @GetUser() user: User) {
+  async deleteWorkoutPlan(@Param('id') id: number, @GetUser() user: Coach) {
     console.log('delete Workout Plan');
     return this.workoutPlanPackageService.deleteWorkoutPlanfromPackage(
       id,
@@ -52,20 +53,16 @@ export class WorkoutPlanPackageController {
   }
 
   @Get('get-workout-plan-in-package/:id')
-  async getWorkoutPlanInPackage(
-    @Param('id') id: number,
-    @GetUser() user: User,
-  ) {
+  async getWorkoutPlanInPackage(@Param('id') id: number) {
     console.log('getWorkoutPlanInPackage');
-    return this.workoutPlanPackageService.getWorkoutPlanInPackage(id, user);
+    return this.workoutPlanPackageService.getWorkoutPlanInPackage(id);
   }
 
   @Patch('update/:id')
   async updateWorkoutPlanInPackage(
     @Param('id') id: number,
-
     @Body() workoutPackageUpdateDTO: WorkoutPlanPackageUpdateDTO,
-    @GetUser() user: User,
+    @GetUser() user: Coach,
   ) {
     console.log('updateWorkoutPlanInPackage');
     return this.workoutPlanPackageService.updateWorkoutPlanInPackage(

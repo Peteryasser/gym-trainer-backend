@@ -34,8 +34,8 @@ import { WorkoutPlanPackageService } from 'src/workout_side/workout-package/work
 import { ExerciseFilterModule } from 'src/workout_side/exercise/filter/filter.module';
 import { ExerciseFilterController } from 'src/workout_side/exercise/filter/filter.controller';
 import { ExerciseFilterService } from 'src/workout_side/exercise/filter/filter.service';
-import { IngredientController } from 'src/nutrition_side/ingredient/ingredient.controller';
-import { IngredientService } from 'src/nutrition_side/ingredient/ingredient.service';
+// import { IngredientController } from 'src/nutrition_side/ingredient/ingredient.controller';
+// import { IngredientService } from 'src/nutrition_side/ingredient/ingredient.service';
 
 @Module({
   imports: [
@@ -63,7 +63,7 @@ import { IngredientService } from 'src/nutrition_side/ingredient/ingredient.serv
   controllers: [
     PopulationController,
     WorkoutController,
-    IngredientController,
+    // IngredientController,
     ExerciseController,
     WorkoutController,
     WorkoutHistoryController,
@@ -77,7 +77,7 @@ import { IngredientService } from 'src/nutrition_side/ingredient/ingredient.serv
     AppService,
     ImageService,
     ExerciseService,
-    IngredientService,
+    // IngredientService,
     CSVReaderService,
     WorkoutService,
     WorkoutHistoryService,

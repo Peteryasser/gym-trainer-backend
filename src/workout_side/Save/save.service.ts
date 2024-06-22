@@ -165,34 +165,11 @@ export class SaveService {
         'exercise.targetMuscle',
         'exercise.secondaryMuscles',
         'exercise.equipments',
+        'exercise.instructions',
       ],
     });
 
-    // Format the response to include the necessary details
-    const response = savedExercises.map((savedExercise) => ({
-      id: savedExercise.id,
-      exercise: {
-        id: savedExercise.exercise.id,
-        name: savedExercise.exercise.name,
-        idApi: savedExercise.exercise.idApi,
-        gifUrl: savedExercise.exercise.gifUrl,
-        type: savedExercise.exercise.type,
-        bodyPart: savedExercise.exercise.bodyPart
-          ? savedExercise.exercise.bodyPart.name
-          : null,
-        targetMuscle: savedExercise.exercise.targetMuscle
-          ? savedExercise.exercise.targetMuscle.name
-          : null,
-        secondaryMuscles: savedExercise.exercise.secondaryMuscles
-          ? savedExercise.exercise.secondaryMuscles.map((muscle) => muscle.name)
-          : [],
-        equipments: savedExercise.exercise.equipments
-          ? savedExercise.exercise.equipments.map((equipment) => equipment.name)
-          : [],
-      },
-    }));
-
-    return response;
+    return savedExercises;
   }
 
   async getSavedWorkouts(user: User): Promise<any[]> {
@@ -209,53 +186,12 @@ export class SaveService {
         'workout.workoutExercises.exercise.targetMuscle',
         'workout.workoutExercises.exercise.secondaryMuscles',
         'workout.workoutExercises.exercise.equipments',
+        'workout.workoutExercises.exercise.instructions',
         'workout.workoutExercises.workoutExerciseDetails',
       ],
     });
 
-    // Format the response to include the necessary details
-    const response = savedWorkouts.map((savedWorkout) => ({
-      id: savedWorkout.id,
-      workout: {
-        id: savedWorkout.workout.id,
-        type: savedWorkout.workout.type,
-        description: savedWorkout.workout.description,
-        exercises: savedWorkout.workout.workoutExercises.map(
-          (workoutExercise) => ({
-            id: workoutExercise.exercise.id,
-            name: workoutExercise.exercise.name,
-            idApi: workoutExercise.exercise.idApi,
-            gifUrl: workoutExercise.exercise.gifUrl,
-            type: workoutExercise.exercise.type,
-            bodyPart: workoutExercise.exercise.bodyPart
-              ? workoutExercise.exercise.bodyPart.name
-              : null,
-            targetMuscle: workoutExercise.exercise.targetMuscle
-              ? workoutExercise.exercise.targetMuscle.name
-              : null,
-            secondaryMuscles: workoutExercise.exercise.secondaryMuscles
-              ? workoutExercise.exercise.secondaryMuscles.map(
-                  (muscle) => muscle.name,
-                )
-              : [],
-            equipments: workoutExercise.exercise.equipments
-              ? workoutExercise.exercise.equipments.map(
-                  (equipment) => equipment.name,
-                )
-              : [],
-            details: workoutExercise.workoutExerciseDetails.map((detail) => ({
-              sets: detail.sets,
-              weights: detail.weights,
-              reps: detail.reps,
-              duration: detail.duration,
-              durationUnit: detail.durationUnit,
-            })),
-          }),
-        ),
-      },
-    }));
-
-    return response;
+    return savedWorkouts;
   }
 
   async getSavedWorkoutCollections(user: User): Promise<any[]> {
@@ -276,61 +212,12 @@ export class SaveService {
           'workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.targetMuscle',
           'workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.secondaryMuscles',
           'workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.equipments',
+          'workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.instructions',
           'workoutCollection.workoutCollectionDetails.workout.workoutExercises.workoutExerciseDetails',
         ],
       },
     );
 
-    // Format the response to include the necessary details
-    const response = savedWorkoutCollections.map((savedWorkoutCollection) => ({
-      id: savedWorkoutCollection.id,
-      name: savedWorkoutCollection.workoutCollection.name,
-      description: savedWorkoutCollection.workoutCollection.description,
-      type: savedWorkoutCollection.workoutCollection.type,
-      workouts:
-        savedWorkoutCollection.workoutCollection.workoutCollectionDetails.map(
-          (collectionDetail) => ({
-            id: collectionDetail.workout.id,
-            type: collectionDetail.workout.type,
-            description: collectionDetail.workout.description,
-            exercises: collectionDetail.workout.workoutExercises.map(
-              (workoutExercise) => ({
-                id: workoutExercise.exercise.id,
-                name: workoutExercise.exercise.name,
-                idApi: workoutExercise.exercise.idApi,
-                gifUrl: workoutExercise.exercise.gifUrl,
-                type: workoutExercise.exercise.type,
-                bodyPart: workoutExercise.exercise.bodyPart
-                  ? workoutExercise.exercise.bodyPart.name
-                  : null,
-                targetMuscle: workoutExercise.exercise.targetMuscle
-                  ? workoutExercise.exercise.targetMuscle.name
-                  : null,
-                secondaryMuscles: workoutExercise.exercise.secondaryMuscles
-                  ? workoutExercise.exercise.secondaryMuscles.map(
-                      (muscle) => muscle.name,
-                    )
-                  : [],
-                equipments: workoutExercise.exercise.equipments
-                  ? workoutExercise.exercise.equipments.map(
-                      (equipment) => equipment.name,
-                    )
-                  : [],
-                details: workoutExercise.workoutExerciseDetails.map(
-                  (detail) => ({
-                    sets: detail.sets,
-                    weights: detail.weights,
-                    reps: detail.reps,
-                    duration: detail.duration,
-                    durationUnit: detail.durationUnit,
-                  }),
-                ),
-              }),
-            ),
-          }),
-        ),
-    }));
-
-    return response;
+    return savedWorkoutCollections;
   }
 }

@@ -118,6 +118,7 @@ export class WorkoutCollectionService {
           'workoutCollectionDetails.workout.workoutExercises.exercise.targetMuscle',
           'workoutCollectionDetails.workout.workoutExercises.exercise.secondaryMuscles',
           'workoutCollectionDetails.workout.workoutExercises.exercise.equipments',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.instructions',
         ],
       },
     );
@@ -141,6 +142,7 @@ export class WorkoutCollectionService {
           'workoutCollectionDetails.workout.workoutExercises.exercise.targetMuscle',
           'workoutCollectionDetails.workout.workoutExercises.exercise.secondaryMuscles',
           'workoutCollectionDetails.workout.workoutExercises.exercise.equipments',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.instructions',
         ],
       },
     );
