@@ -44,7 +44,7 @@ export class WorkoutPlanPackageService {
 
     console.log('coachPackage.coach', await coachPackage.coach);
 
-    if ((await coachPackage.coach.user).id !== user.id) {
+    if ((await coachPackage.coach).id !== user.id) {
       message = `You are not authorized to add workout plan to package with id ${workoutPlanPackageDto.package_id}`;
       return message;
     }

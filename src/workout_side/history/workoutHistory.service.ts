@@ -4,7 +4,6 @@ import { WorkoutHistory } from 'src/entity/user-workout-history';
 import { config as dotenvConfig } from 'dotenv';
 import { ConnectionManager } from 'src/config/connection_manager';
 import { Injectable } from '@nestjs/common';
-import { NotFoundException } from '@nestjs/common';
 import { Workout } from 'src/entity/workout.entity';
 
 dotenvConfig({ path: '.env' });
