@@ -22,6 +22,7 @@ import { CoachesModule } from './users/coaches/coaches.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CoachSocialMediaModule } from './coach_social_media/coach_social_media.module';
+import { CryptoModule } from './crypto/crypto.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { CoachSocialMediaModule } from './coach_social_media/coach_social_media.
     UserSubscriptionsModule,
     NotificationsModule,
     CoachSocialMediaModule,
+    CryptoModule,
   ],
   controllers: [AppController, WorkoutController, IngredientController],
   providers: [AppService, ImageService, ExerciseService, IngredientService],
