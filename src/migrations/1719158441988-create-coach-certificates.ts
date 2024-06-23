@@ -34,7 +34,7 @@ export class CreateCoachCertificates1719158441988
             length: '255',
           },
           {
-            name: 'certificate_url',
+            name: 'certificateUrl',
             type: 'varchar',
             length: '255',
           },
