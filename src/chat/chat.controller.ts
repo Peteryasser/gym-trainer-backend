@@ -117,6 +117,9 @@ export class ChatController {
     const saved = await this.chatKeysRepo.save(newChatKeys);
     result = saved;
 
+    const docId = await this.firebaseService.createSubcollection(saved.id.toString());
+    console.log('docId', docId);
+
     return { message: 'new', result: result };
   }
 }

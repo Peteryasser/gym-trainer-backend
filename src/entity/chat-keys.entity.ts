@@ -13,8 +13,8 @@ export class ChatKeys {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
-  chatId: number;
+  // @Column({ unique: true })
+  // chatId: number;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'userAId' })

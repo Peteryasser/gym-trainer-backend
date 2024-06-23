@@ -26,13 +26,14 @@ export class FirebaseService implements OnModuleInit {
     return docRef.id;
   }
 
-  async createSubcollection(data: any, chatId: string) {
+  async createSubcollection(chatId: string) {
     // Ensure the parent document exists
     await this.firestore.collection('chats').doc(chatId).set({}, { merge: true });
 
-    // Create an empty document in the subcollection
-    const docRef = this.firestore.collection('chats').doc(chatId).collection('messages').doc();
-    await docRef.set({});
-    return docRef.id;
-  }
+    // Create the subcollection
+    await this.firestore.collection('chats').doc(chatId).collection('messages').add({});
+
+    return 'Subcollection created under chatId: ' + chatId;
+}
+
 }
