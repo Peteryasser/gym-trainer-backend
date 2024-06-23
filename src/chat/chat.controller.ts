@@ -14,7 +14,7 @@ export class ChatController {
     private readonly firebaseService: FirebaseService,
 
     private readonly cryptoService: CryptoService,
-    
+
     @InjectRepository(ChatKeys)
     private readonly chatKeysRepo: Repository<ChatKeys>,
 
@@ -23,14 +23,13 @@ export class ChatController {
 
     @InjectRepository(UserKeys)
     private readonly userKeysRepo: Repository<UserKeys>,
-
-    
-  ) { }
+  ) {}
 
   @Post('create')
   async createDummyDocument(@Body() data: any) {
     log('data', data);
-    const docId = await this.firebaseService.createDocumentInTestCollection(data);
+    const docId =
+      await this.firebaseService.createDocumentInTestCollection(data);
     return { docId };
   }
 
@@ -39,8 +38,12 @@ export class ChatController {
     var userAId = data.userAId;
     var userBId = data.userBId;
 
-    const existsA = await this.chatKeysRepo.find({ where: { userAId: userAId, userBId: userBId } });
-    const existsB = await this.chatKeysRepo.find({ where: { userAId: userBId, userBId: userAId } });
+    const existsA = await this.chatKeysRepo.find({
+      where: { userAId: userAId, userBId: userBId },
+    });
+    const existsB = await this.chatKeysRepo.find({
+      where: { userAId: userBId, userBId: userAId },
+    });
     var exists = false;
     if (existsA.length > 0 || existsB.length > 0) {
       exists = true;
@@ -48,7 +51,6 @@ export class ChatController {
 
     return { exists };
   }
-
 
   // async createDocument(@Body() data: any) {
   //   log('data', data);
@@ -62,8 +64,12 @@ export class ChatController {
     var userAId = data.userAId;
     var userBId = data.userBId;
 
-    const existsA = await this.chatKeysRepo.find({ where: { userAId: userAId, userBId: userBId } });
-    const existsB = await this.chatKeysRepo.find({ where: { userAId: userBId, userBId: userAId } });
+    const existsA = await this.chatKeysRepo.find({
+      where: { userAId: userAId, userBId: userBId },
+    });
+    const existsB = await this.chatKeysRepo.find({
+      where: { userAId: userBId, userBId: userAId },
+    });
     var result = null;
     var exists = false;
     if (existsA.length > 0) {
@@ -77,8 +83,7 @@ export class ChatController {
       exists = true;
     }
 
-    if (exists === true)
-      return { message:"old",result:result };
+    if (exists === true) return { message: 'old', result: result };
 
     const userA = await this.userRepo.findOne({ where: { id: userAId } });
     const userB = await this.userRepo.findOne({ where: { id: userBId } });
@@ -89,21 +94,29 @@ export class ChatController {
     newChatKeys.userBId = userBId;
     // TODO - generate symmetric key
 
-    const pubKeyA = (await this.userKeysRepo.findOne({ where: { userId: userAId } })).publicKey;
+    const pubKeyA = (
+      await this.userKeysRepo.findOne({ where: { userId: userAId } })
+    ).publicKey;
 
-    const pubKeyB = (await this.userKeysRepo.findOne({ where: { userId: userBId } })).publicKey;
+    const pubKeyB = (
+      await this.userKeysRepo.findOne({ where: { userId: userBId } })
+    ).publicKey;
 
     const symmetricKey = this.cryptoService.generateSymmetricKey();
-    const symmetricEncryptedByPubA = this.cryptoService.encrypt(this.cryptoService.extractCompressedPublicKey(pubKeyA), symmetricKey );
-    const symmetricEncryptedByPubB = this.cryptoService.encrypt(this.cryptoService.extractCompressedPublicKey(pubKeyB), symmetricKey );
+    const symmetricEncryptedByPubA = this.cryptoService.encrypt(
+      this.cryptoService.extractCompressedPublicKey(pubKeyA),
+      symmetricKey,
+    );
+    const symmetricEncryptedByPubB = this.cryptoService.encrypt(
+      this.cryptoService.extractCompressedPublicKey(pubKeyB),
+      symmetricKey,
+    );
 
     newChatKeys.symmetricEncryptedByPubA = symmetricEncryptedByPubA;
     newChatKeys.symmetricEncryptedByPubB = symmetricEncryptedByPubB;
     const saved = await this.chatKeysRepo.save(newChatKeys);
     result = saved;
 
-    return { message:"new",result:result };
-  
-
+    return { message: 'new', result: result };
   }
 }
