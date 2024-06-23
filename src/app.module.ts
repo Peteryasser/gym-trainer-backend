@@ -44,6 +44,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CoachSocialMediaModule } from './coach_social_media/coach_social_media.module';
 // import { IngredientService } from './nutrition_side/ingredient/ingredient.service';
 // import { IngredientController } from './nutrition_side/ingredient/ingredient.controller';
+import { StatisticModule } from './statistic/statistic.module';
 
 @Module({
   imports: [
@@ -80,6 +81,7 @@ import { CoachSocialMediaModule } from './coach_social_media/coach_social_media.
     NotificationsModule,
     CoachSocialMediaModule,
     RecipeModule,
+    StatisticModule,
   ],
   controllers: [
     AppController,
