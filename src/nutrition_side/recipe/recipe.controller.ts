@@ -1,14 +1,18 @@
-import { Controller, Get, Res, Param, Query,Post } from '@nestjs/common';
+import { Controller, Get, Res, Param, Query,Post, UseGuards, Delete, Body, Patch, Put } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
 import axios from 'axios';
 import { Response } from 'express';
-import { CLOUDINARY_INGREDIENTS_FOLDER_NAME } from 'src/constants';
 import { CloudinaryService } from 'src/utils/cloudinary/cloudinary.service';
 import { v2 } from 'cloudinary';
 import { Readable } from 'typeorm/platform/PlatformTools';
 import { readFileSync } from 'fs';
 import { RecipeDto } from './dtos/recipe_info.dto';
 import { RecipeIngredientDto } from './dtos/recipe-ingredient.dto';
+import { Recipes } from 'src/entity/recipes.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { User } from 'src/entity/user.entity';
+import { CreateRecipeDto } from './dtos/create-recipe.dto';
 
 
 
@@ -61,8 +65,7 @@ export class RecipeController {
       recipeDto.ingredients= [];
       for(let ingredient of data.nutrition.ingredients){
         let recipeIngredientDto: RecipeIngredientDto = new RecipeIngredientDto;
-        recipeIngredientDto.ingredientId=ingredient.id;
-        recipeIngredientDto.ingredientName=ingredient.name;
+        recipeIngredientDto.id=ingredient.id;
         recipeIngredientDto.amount=ingredient.amount;
         recipeIngredientDto.unit=ingredient.unit;
         recipeDto.ingredients.push(recipeIngredientDto);
@@ -81,48 +84,114 @@ export class RecipeController {
         }
     }
 
-    @Get('get_image')
-    async getImage(@Query('imagePath') imagePath: string, @Res() res: Response): Promise<void> {
-        try {
-            const imageResponse = await axios.get(imagePath, {
-                responseType: 'stream', // Set response type to stream to directly pipe it to response
-                headers: {
-                    'x-api-key': this.spoonacular_api_key,
-                },
-            });
-
-            const link = await this.uploadIngredientImageToCloudinary(imageResponse.data);
-        
-            // Set response type to JSON and send the link
-            res.setHeader('Content-Type', 'application/json');
-            res.status(200).json({ imageUrl: link });
-            // return Buffer.from(imageResponse.data, 'binary');
-        } catch (error) {
-            console.error('Error fetching image:', error);
-            // Return an error response if something goes wrong
-            res.status(500).send('Internal server error');
-        }
-    }
-
-
-
-    async uploadIngredientImageToCloudinary(imageStream: Readable): Promise<string> {
-        return new Promise<string>((resolve, reject) => {
-            const uploadStream = v2.uploader.upload_stream(
-                {
-                    folder: CLOUDINARY_INGREDIENTS_FOLDER_NAME,
-                },
-                (error, result) => {
-                    if (error) {
-                        reject(new Error('Image upload failed'));
-                    } else {
-                        resolve(result.secure_url);
-                    }
-                }
-            );
     
-            imageStream.pipe(uploadStream);
-        });
+
+    @Get('get_all_recipes_while_installing')
+    async getAllrecipes():Promise<Recipes[]>{
+        try{
+            return await this.recipeService.getAllRecipes()
+        }catch{
+            throw new Error("Error while loading recipes");;
+        }
+
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('save/:id')
+    async saveRecipe(
+        @Param('id') id: number,
+        @GetUser() user: User,
+    ): Promise<{ message: string }> {
+        await this.recipeService.saveRecipe(id, user);
+        return { message: 'Recipe saved successfully' };
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('unsave/:id')
+    async unsaveRecipe(
+        @Param('id') id: number,
+        @GetUser() user: User,
+    ): Promise<{ message: string }> {
+        await this.recipeService.unSaveRecipe(id, user);
+        return { message: 'Recipe unsaved successfully' };
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('get-saved-recipes')
+    async getAllSaved(@GetUser() user: User):Promise<Recipes[]>{
+        return this.recipeService.getAllSaved(user)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('create-custom-recipe')
+    async create(
+        @Body() createRecipeDto: CreateRecipeDto,
+        @GetUser() user: User,
+    ):Promise<Recipes> {
+        try{
+            return await this.recipeService.createCustom(createRecipeDto,user);
+        }catch(error){
+            return error;
+        }
+         
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('get_all_recipes')
+    async getAll():Promise<Recipes[]>{
+        try{
+            return await this.recipeService.getAllRecipes()
+        }catch{
+            throw new Error("Error while loading recipes");;
+        }
+
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('get-recipe/:id')
+    async getRecipe(
+        @Param('id') id: number,
+    ): Promise<Recipes> {
+        return await this.recipeService.getRecipe(id);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('delete/:id')
+    async deleteExercise(
+        @Param('id') id: number,
+        @GetUser() user: User,
+    ): Promise<String> {
+        console.log('delete Recipe');
+        return this.recipeService.deleteRecipe(user, id);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('get_my_recipes')
+    async getAllByUser(@GetUser() user: User):Promise<Recipes[]>{
+        try{
+            return await this.recipeService.getAllByUser(user)
+        }catch{
+            throw new Error("Error while loading recipes");
+        }
+
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Put('update/:id')
+    async update(
+        @Param('id') id: number,
+        @GetUser() user: User,
+        @Body() updateRecipeDto: CreateRecipeDto
+        ):Promise<Recipes>{
+        try{
+            return await this.recipeService.update(id,user,updateRecipeDto)
+        }catch(error){
+            console.log(error);
+            return error;
+        }
+
+    }
+
+
     
 }

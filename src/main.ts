@@ -4,6 +4,7 @@ import * as bodyParser from 'body-parser';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import * as fs from 'fs';
 
+//process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 async function bootstrap() {
   const httpsOptions = {

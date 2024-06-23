@@ -11,5 +11,7 @@ import { SavedIngredients } from 'src/entity/saved_ingredients.entity';
   imports: [TypeOrmModule.forFeature([Ingredient, IngredientCategory,SavedIngredients])],
   providers: [IngredientService],
   controllers: [IngredientController],
+  exports: [IngredientService],
+
 })
 export class IngredientModule { }
