@@ -104,9 +104,10 @@ export class CryptoService {
     return key.toString('hex');
   }
 
+  extractCompressedPublicKey(uncompressedHexKey: string): string {
+    const hexWithoutPrefix = uncompressedHexKey.substring(2);
+    const xHex = hexWithoutPrefix.substring(0, 64);
 
-
-
-
-
+    return xHex;
+  }
 }

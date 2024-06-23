@@ -94,8 +94,8 @@ export class ChatController {
     const pubKeyB = (await this.userKeysRepo.findOne({ where: { userId: userBId } })).publicKey;
 
     const symmetricKey = this.cryptoService.generateSymmetricKey();
-    const symmetricEncryptedByPubA = this.cryptoService.encrypt(pubKeyA, symmetricKey );
-    const symmetricEncryptedByPubB = this.cryptoService.encrypt(pubKeyB, symmetricKey );
+    const symmetricEncryptedByPubA = this.cryptoService.encrypt(this.cryptoService.extractCompressedPublicKey(pubKeyA), symmetricKey );
+    const symmetricEncryptedByPubB = this.cryptoService.encrypt(this.cryptoService.extractCompressedPublicKey(pubKeyB), symmetricKey );
 
     newChatKeys.symmetricEncryptedByPubA = symmetricEncryptedByPubA;
     newChatKeys.symmetricEncryptedByPubB = symmetricEncryptedByPubB;
