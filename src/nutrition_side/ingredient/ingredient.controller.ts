@@ -1,31 +1,35 @@
-import { Controller, Get, Res, Param, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Res, Param, BadRequestException, Query, UseGuards, Post, Delete } from '@nestjs/common';
 import { IngredientInfoDto } from 'src/nutrition_side/ingredient/dtos/ingredient.dto';
 import { IngredientService } from './ingredient.service';
-import * as request from 'request';
-import { headers } from 'next/headers';
 import axios from 'axios';
 import { Response } from 'express';
 import { CLOUDINARY_INGREDIENTS_FOLDER_NAME } from 'src/constants';
 import { CloudinaryService } from 'src/utils/cloudinary/cloudinary.service';
 import { v2 } from 'cloudinary';
 import { Readable } from 'typeorm/platform/PlatformTools';
+import { IngredientInfoDTO } from './dtos/ingredient-info.dto';
+import { IngredientDetailsDTO } from './dtos/ingredient-details.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { User } from 'src/entity/user.entity';
+import { Ingredient } from 'src/entity/ingredients.entity';
 
-@Controller()
-export class IngredientController {
-  ingredientService;
+
+@Controller('ingredient')
+export class IngredientController { 
   cloudinary;
   ninja_api_url;
   ninja_api_key;
   spoonacular_api_url;
   spoonacular_api_key;
 
-  constructor() {
-    this.ingredientService = new IngredientService();
+  constructor(private readonly ingredientService: IngredientService) {
     this.cloudinary = new CloudinaryService();
     this.ninja_api_url = process.env.NINJA_API_URL;
     this.ninja_api_key = process.env.NINJA_API_KEY;
     this.spoonacular_api_url = process.env.SPOONACULAR_API_URL;
     this.spoonacular_api_key = process.env.SPOONACULAR_API_KEY;
+    
   }
 
   // Call the function with the path to your CSV file
@@ -35,9 +39,8 @@ export class IngredientController {
     const ingredients = await this.ingredientService.processIngredientsFile(filePath);
     return ingredients;
 }
-
     @Get('get_ingredient_info/:name')
-    async getIngredientHealtyDetails(@Param('name') name: string): Promise<any> {
+    async getIngredientHealtyDetails(@Param('name') name: string): Promise<IngredientInfoDTO> {
 
         try {
             const response = await axios.get(`${this.ninja_api_url}${name}`, {
@@ -45,7 +48,8 @@ export class IngredientController {
                     'X-Api-Key': this.ninja_api_key,
                 },
             });
-            return response.data;
+            const data = response.data[0] as IngredientInfoDTO;
+            return data;
         } catch (error) {
             if (error.response) {
                 console.error(`Error: ${error.response.status} ${error.response.data}`);
@@ -62,15 +66,18 @@ export class IngredientController {
 
 
     @Get('get_ingredient_details_by_id/:id') // Adjusted route definition to include the 'id' parameter
-    async getIngredientDetails(@Param('id') id: string): Promise<any> {
+    async getIngredientDetails(@Param('id') id: string): Promise<IngredientDetailsDTO> {
         try {
-            const response = await axios.get(`${this.spoonacular_api_url}${id}/information`, {
+            const response = await axios.get(`${this.spoonacular_api_url}${id}/information?amount=1`, {
                 headers: {
                     'X-Api-Key': this.spoonacular_api_key,
+                    
                 },
             });
+            const data = response.data as IngredientDetailsDTO;
+            data.nutrition= response.data.nutrition.nutrients;
 
-            return response.data;
+            return data;
         } catch (error) {
             if (error.response) {
                 console.error(`Error: ${error.response.status} ${error.response.data}`);
@@ -86,7 +93,7 @@ export class IngredientController {
     }
 
     @Get('get_image/:imageName')
-    async getImage(@Param('imageName') imageName: string, @Res() res: Response): Promise<string> {
+    async getImage(@Param('imageName') imageName: string, @Res() res: Response): Promise<void> {
         try {
             const imageResponse = await axios.get(`https://img.spoonacular.com/ingredients_500x500/${imageName}`, {
                 responseType: 'stream', // Set response type to stream to directly pipe it to response
@@ -95,13 +102,11 @@ export class IngredientController {
                 },
             });
 
-            res.setHeader('Content-Type', 'image/jpeg');                // Set content type header for the image
-            imageResponse.data.pipe(res);        // Pipe the image data directly to the response
-            
             const link = await this.uploadIngredientImageToCloudinary(imageResponse.data);
-            console.log(link);
-            return link;
-
+        
+            // Set response type to JSON and send the link
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).json({ imageUrl: link });
             // return Buffer.from(imageResponse.data, 'binary');
         } catch (error) {
             console.error('Error fetching image:', error);
@@ -131,35 +136,54 @@ export class IngredientController {
         });
     }
 
-    @Get('get_all_ingredient_data')
-    async getAll(@Res() res: Response): Promise<void> {
-        try {
-            const ingredients = (await axios.get('http://localhost:3000/read-ingredients', {})).data;
-            for(let ingredient of ingredients){
-                try{
-                    const info = (await axios.get(`http://localhost:3000/get_ingredient_info/${ingredient.name}`, {})).data;
-                    const info2 = (await axios.get(`http://localhost:3000/get_ingredient_details_by_id/${ingredient.id}`, {})).data;
-                    const imageName = info2.image;
-                    const cat = info2.categoryPath[0]
-                    console.log(imageName, cat)
-                    const link = (await axios.get(`http://localhost:3000/get_image/${imageName}`, {})).data;
-                    
-
-
-                }catch (error){
-                    continue;
-                }
-
-            
-            }
-            
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).send('Internal server error');
+    @Get('get_all_ingredients_while_installing')
+    async gettAllForApp():Promise<Ingredient[]>{
+        try{
+            return await this.ingredientService.getAllIngredients()
+        }catch{
+            throw new Error("Error while loading ingredients");;
         }
     }
 
+   @Get('get_all_ingredient_data')
+    async getAll(@Query('ingredient') ingredient: string,@Res() res: Response): Promise<void> {
+        try {
+            const ingredientInfoDTO: IngredientInfoDto = JSON.parse(ingredient);
+            const data = await this.ingredientService.getAllAndSave(ingredientInfoDTO);
+            console.log("DATA", data)
+            res.status(200).send(data);
+          } catch (error) {
+            throw new Error("Error");
+          }
+    }
+    @UseGuards(JwtAuthGuard)
+    @Post('save/:id')
+    async saveIngredient(
+        @Param('id') id: number,
+        @GetUser() user: User,
+    ): Promise<{ message: string }> {
+        console.log('saveIngredient');
+        await this.ingredientService.saveIngredient(id, user);
+        return { message: 'Ingredient saved successfully' };
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('unsave/:id')
+    async unsaveIngredient(
+        @Param('id') id: number,
+        @GetUser() user: User,
+    ): Promise<{ message: string }> {
+        console.log('unsaveIngredient');
+        await this.ingredientService.unSaveIngredient(id, user);
+        return { message: 'Ingredient unsaved successfully' };
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('get-saved-ingredients')
+    async getAllSaved(@GetUser() user: User):Promise<Ingredient[]>{
+        return this.ingredientService.getAllSaved(user)
+    }
 
 
-
+    
 }
