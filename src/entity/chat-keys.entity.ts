@@ -25,6 +25,11 @@ export class ChatKeys {
   userB: User;
 
   @Column()
+  userAId: number;
+  @Column()
+  userBId: number;
+
+  @Column()
   symmetricEncryptedByPubA: string;
 
   @Column()

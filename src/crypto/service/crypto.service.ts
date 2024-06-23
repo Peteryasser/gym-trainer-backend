@@ -5,6 +5,7 @@ import { UserKeys } from 'src/entity/user-keys.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+
 @Injectable()
 export class CryptoService {
   private ec: EC;
@@ -54,7 +55,7 @@ export class CryptoService {
     return this.decrypt(brainKey.toString('hex'), encryptedPrivateKey);
   }
 
-  private encrypt(key: string, data: string): string {
+  encrypt(key: string, data: string): string {
     const iv = crypto.randomBytes(16);
 
     const cipher = crypto.createCipheriv(
@@ -71,7 +72,7 @@ export class CryptoService {
     return `${iv.toString('hex')}:${encrypted}:${authTag}`;
   }
 
-  private decrypt(key: string, data: string): string {
+  decrypt(key: string, data: string): string {
     const [ivHex, encryptedData, authTagHex] = data.split(':');
     const iv = Buffer.from(ivHex, 'hex');
     const authTag = Buffer.from(authTagHex, 'hex');
@@ -96,4 +97,16 @@ export class CryptoService {
   private async generateBrainKeySalt(): Promise<string> {
     return await bcrypt.genSalt();
   }
+
+  // New method to generate a symmetric key
+  generateSymmetricKey(): string {
+    const key = crypto.randomBytes(32); // Generate a 256-bit (32 bytes) key
+    return key.toString('hex');
+  }
+
+
+
+
+
+
 }

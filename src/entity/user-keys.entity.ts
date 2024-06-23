@@ -19,6 +19,7 @@ export class UserKeys {
   @JoinColumn({ name: 'userId' })
   user: User;
 
+
   @Column()
   encryptedPrivateKey: string;
 
