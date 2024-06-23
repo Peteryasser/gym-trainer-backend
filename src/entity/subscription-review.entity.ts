@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { UserSubscription } from './user-subscription.entity';
+import { User } from './user.entity';
 
 @Entity('subscription_reviews')
 export class SubscriptionReview {
@@ -18,10 +19,20 @@ export class SubscriptionReview {
   userId: number;
 
   @Column({ nullable: false })
+  subscriptionId: number;
+
+  @Column({ nullable: false })
   rating: number;
 
   @Column({ nullable: false })
   comment: string;
+
+  @ManyToOne(() => User, (user) => user.reviews, {
+    onDelete: 'CASCADE',
+    eager: true,
+  })
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   @ManyToOne(() => UserSubscription, (subscription) => subscription.reviews, {
     onDelete: 'CASCADE',

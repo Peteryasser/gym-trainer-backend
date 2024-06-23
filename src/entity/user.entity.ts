@@ -9,6 +9,7 @@ import { Device } from './device.entity';
 import { Coach } from './coach.entity';
 import { UserSubscription } from './user-subscription.entity';
 import { AppNotification } from './app-notification.entity';
+import { SubscriptionReview } from './subscription-review.entity';
 
 @Entity('users')
 export class User {
@@ -90,6 +91,9 @@ export class User {
 
   @OneToMany(() => AppNotification, (notification) => notification.user)
   notifications: AppNotification[];
+
+  @OneToMany(() => SubscriptionReview, (review) => review.user)
+  reviews: SubscriptionReview[];
 
   public get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
