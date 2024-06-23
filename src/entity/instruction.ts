@@ -1,6 +1,6 @@
 // Instruction Entity
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Exercise } from './exercise';
+import { Exercise } from './exercise.entity';
 
 @Entity()
 export class Instruction {
