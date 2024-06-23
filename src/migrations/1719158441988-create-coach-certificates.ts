@@ -32,11 +32,13 @@ export class CreateCoachCertificates1719158441988
             name: 'description',
             type: 'varchar',
             length: '255',
+            isNullable: true,
           },
           {
             name: 'certificateUrl',
             type: 'varchar',
             length: '255',
+            isNullable: true,
           },
           {
             name: 'createdAt',
