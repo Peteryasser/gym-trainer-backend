@@ -42,8 +42,7 @@ import { RecipeModule } from './nutrition_side/recipe/recipe.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CoachSocialMediaModule } from './coach_social_media/coach_social_media.module';
-// import { IngredientService } from './nutrition_side/ingredient/ingredient.service';
-// import { IngredientController } from './nutrition_side/ingredient/ingredient.controller';
+import { SubscriptionsReviewsModule } from './subscriptions_reviews/subscriptions_reviews.module';
 
 @Module({
   imports: [
@@ -79,12 +78,12 @@ import { CoachSocialMediaModule } from './coach_social_media/coach_social_media.
     RecipeModule,
     NotificationsModule,
     CoachSocialMediaModule,
+    SubscriptionsReviewsModule,
     RecipeModule,
   ],
   controllers: [
     AppController,
     WorkoutController,
-    // IngredientController,
     ExerciseController,
     WorkoutController,
     WorkoutHistoryController,
