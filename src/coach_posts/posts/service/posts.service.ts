@@ -5,6 +5,9 @@ import { CoachPost } from 'src/entity/coach-post.entity';
 import { Coach } from 'src/entity/coach.entity';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from '../dtos/create-post.dto';
+import { PaginatedResultDto } from 'src/dtos/paginatied-result.dto';
+import { PaginationDto } from 'src/dtos/pagination.dto';
+import { paginate } from 'src/utils/pagination/pagination.util';
 
 @Injectable()
 export class PostsService {
@@ -15,12 +18,28 @@ export class PostsService {
     private postMultimediaRepository: Repository<CoachPostMultimedia>,
   ) {}
 
-  async findAll(id: number): Promise<CoachPost[]> {
-    return this.coachPostRepository.find({
-      where: { coach: { id: id } },
-      relations: ['multimedia'],
-    });
+  async findAll(
+    id: number,
+    filterDto?: PaginationDto,
+  ): Promise<PaginatedResultDto<CoachPost>> {
+    let query = this.coachPostRepository.createQueryBuilder('posts');
+
+    query = query
+      .leftJoinAndSelect('posts.multimedia', 'multimedia')
+      .andWhere('posts.coachId = :coachId', { coachId: id });
+
+    query = paginate(query, filterDto.page, filterDto.pageSize);
+
+    const [data, total] = await query.getManyAndCount();
+
+    return {
+      data,
+      total,
+      page: filterDto.page,
+      pageSize: filterDto.pageSize,
+    };
   }
+
   async findOne(id: number): Promise<CoachPost> {
     const post = await this.coachPostRepository.findOne({
       where: { id: id },
@@ -36,15 +55,16 @@ export class PostsService {
     const { multimedia, ...postDetails } = CreatePostDto;
 
     const post = this.coachPostRepository.create(postDetails);
-    post.coach = user;
+    post.coachId = user.id;
 
     await this.coachPostRepository.save(post);
 
-    const multimediaEntities = multimedia.map((item) =>
-      this.postMultimediaRepository.create({ ...item, postId: post.id }),
-    );
-    await this.postMultimediaRepository.save(multimediaEntities);
-
+    if (multimedia) {
+      const multimediaEntities = multimedia.map((item) =>
+        this.postMultimediaRepository.create({ ...item, postId: post.id }),
+      );
+      await this.postMultimediaRepository.save(multimediaEntities);
+    }
     return this.findOne(post.id);
   }
 
@@ -56,7 +76,7 @@ export class PostsService {
     const result = await this.coachPostRepository.update(
       {
         id: id,
-        coach: user,
+        coachId: user.id,
       },
       updateCoachPostDto,
     );
@@ -69,7 +89,7 @@ export class PostsService {
   async delete(user: Coach, id: number): Promise<void> {
     const result = await this.coachPostRepository.delete({
       id: id,
-      coach: user,
+      coachId: user.id,
     });
 
     if (!result.affected) throw new NotFoundException('Post not found');

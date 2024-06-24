@@ -16,6 +16,8 @@ import { CoachPost } from '../../../entity/coach-post.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { Coach } from 'src/entity/coach.entity';
+import { PaginatedResultDto } from 'src/dtos/paginatied-result.dto';
+import { PaginationDto } from 'src/dtos/pagination.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('posts')
@@ -23,15 +25,19 @@ export class PostsController {
   constructor(private readonly postService: PostsService) {}
 
   @Get('my_posts')
-  findAll(@GetUser() user: Coach): Promise<CoachPost[]> {
-    return this.postService.findAll(user.id);
+  findAll(
+    @GetUser() user: Coach,
+    @Body() filterDto: PaginationDto,
+  ): Promise<PaginatedResultDto<CoachPost>> {
+    return this.postService.findAll(user.id, filterDto);
   }
 
   @Get()
   findAllByCoach(
+    @Body() filterDto: PaginationDto,
     @Query('coachId', ParseIntPipe) coachId: number,
-  ): Promise<CoachPost[]> {
-    return this.postService.findAll(coachId);
+  ): Promise<PaginatedResultDto<CoachPost>> {
+    return this.postService.findAll(coachId, filterDto);
   }
 
   @Get(':id')
@@ -57,10 +63,12 @@ export class PostsController {
   }
 
   @Delete(':id')
-  delete(
+  async delete(
     @GetUser() user: Coach,
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<void> {
-    return this.postService.delete(user, id);
+  ): Promise<any> {
+    await this.postService.delete(user, id);
+
+    return { success: true, message: 'Post deleted successfully' };
   }
 }
