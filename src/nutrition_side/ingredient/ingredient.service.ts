@@ -9,9 +9,10 @@ import { IngredientDetailsDTO } from './dtos/ingredient-details.dto';
 import { NutrientsDto } from './dtos/nutrients.dto';
 import axios from 'axios';
 import { User } from 'src/entity/user.entity';
-import { ConnectionManager } from 'src/config/connection_manager';
 import { SavedIngredients } from 'src/entity/saved_ingredients.entity';
-import { use } from 'passport';
+import { CLOUDINARY_INGREDIENTS_FOLDER_NAME } from 'src/constants';
+import { v2 } from 'cloudinary';
+import { Readable } from 'typeorm/platform/PlatformTools';
 
 
 @Injectable()
@@ -44,6 +45,73 @@ export class IngredientService {
     }
   }
 
+  async getIngredientDetails(id: number): Promise<IngredientDetailsDTO> {
+      try {
+          const response = await axios.get(`${process.env.SPOONACULAR_API_URL}${id}/information?amount=1`, {
+              headers: {
+                  'X-Api-Key': process.env.SPOONACULAR_API_KEY,
+                  
+              },
+          });
+          const data = response.data as IngredientDetailsDTO;
+          data.nutrition= response.data.nutrition.nutrients;
+
+          return data;
+      } catch (error) {
+          if (error.response) {
+              console.error(`Error: ${error.response.status} ${error.response.data}`);
+              throw new Error(`Error: ${error.response.status} ${error.response.data}`);
+          } else if (error.request) {
+              console.error(`Error: No response received from the server`);
+              throw new Error('Error: No response received from the server');
+          } else {
+              console.error(`Error: ${error.message}`);
+              throw new Error(`Error: ${error.message}`);
+          }
+      }
+  }
+
+ 
+  async getImage(imageName: string): Promise<string> {
+      try {
+          const imageResponse = await axios.get(`https://img.spoonacular.com/ingredients_500x500/${imageName}`, {
+              responseType: 'stream', // Set response type to stream to directly pipe it to response
+              headers: {
+                  'x-api-key': process.env.SPOONACULAR_API_KEY,
+              },
+          });
+
+          const link = await this.uploadIngredientImageToCloudinary(imageResponse.data);
+          return link;
+      
+          
+      } catch (error) {
+          console.error('Error fetching image:', error);
+          
+      }
+  }
+
+
+  
+  async uploadIngredientImageToCloudinary(imageStream: Readable): Promise<string> {
+      return new Promise<string>((resolve, reject) => {
+          const uploadStream = v2.uploader.upload_stream(
+              {
+                  folder: CLOUDINARY_INGREDIENTS_FOLDER_NAME,
+              },
+              (error, result) => {
+                  if (error) {
+                      reject(new Error('Image upload failed'));
+                  } else {
+                      resolve(result.secure_url);
+                  }
+              }
+          );
+  
+          imageStream.pipe(uploadStream);
+      });
+  }
+
   async getAllAndSave(ingredient: IngredientInfoDto): Promise<Ingredient> {
     try {
         //const ingredients = (await axios.get('http://localhost:3000/api/v1/ingredient/read-ingredients', {})).data;
@@ -56,15 +124,15 @@ export class IngredientService {
                   throw new Error("Not Number");
                 }*/
 
-                const info2Response = await axios.get(`http://localhost:3000/api/v1/ingredient/get_ingredient_details_by_id/${ingredient.id}`, {});
-                const info2: IngredientDetailsDTO = info2Response.data;
+
+                const info2: IngredientDetailsDTO = await this.getIngredientDetails(ingredient.id);
                 const nutrients: NutrientsDto[] = info2.nutrition;
                 console.log(nutrients)
                 const imageName = info2.image;
                 const categoryName = info2.categoryPath[0]
                  // Upload image to Cloudinary
-                 const linkResponse = await axios.get(`http://localhost:3000/api/v1/ingredient/get_image/${imageName}`);
-                 const imageURL: string = linkResponse.data.imageUrl;
+                 const linkResponse = await this.getImage(imageName);
+                 const imageURL: string = linkResponse;
                  
                 let category = await this.categoryRepository.findOne({ where: { name: categoryName } });
                 if (!category) {
@@ -72,7 +140,7 @@ export class IngredientService {
                     await this.categoryRepository.save(category);
                 }
                 const ingredientEntity = this.ingredientRepository.create({
-                    name: ingredient.name,
+                    name: info2.name,
                     calories: this.findNutrient(nutrients, 'Calories').amount,
                     fat: this.findNutrient(nutrients, 'Fat').amount,
                     fatSaturated: this.findNutrient(nutrients, 'Saturated Fat').amount,
@@ -87,7 +155,7 @@ export class IngredientService {
                     category: category,
                   });
         
-                  const saved = await this.ingredientRepository.save(ingredientEntity);
+                  const saved:Ingredient = await this.ingredientRepository.save(ingredientEntity);
                   return saved;
 
             }catch (error){
@@ -146,12 +214,10 @@ export class IngredientService {
       where: { user: { id: user.id } },
       relations: ['ingredient','ingredient.category'],
     });
-    console.log("IIIIIIIIIII",savedIngredients[0].ingredient.category)
 
     if (!savedIngredients.length) {
       throw new NotFoundException('No saved ingredients found for the user');
     }
-    console.log("SSSSSSSSSSSSSSSS",savedIngredients)
 
     return savedIngredients.map(savedIngredient => ({
       ...savedIngredient.ingredient,

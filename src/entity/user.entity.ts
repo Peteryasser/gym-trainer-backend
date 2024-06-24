@@ -24,6 +24,7 @@ import { UserMealsHistory } from './user_meals_history.entity';
 import { SavedRecipes } from './saved_recipes.entity';
 import { SavedIngredients } from './saved_ingredients.entity';
 import { AppNotification } from './app-notification.entity';
+import { SubscriptionReview } from './subscription-review.entity';
 import { UserPackageMealPlans } from './user_package_meal_plans.entity';
 
 @Entity('users')
@@ -138,6 +139,9 @@ export class User {
 
   @OneToMany(() => AppNotification, (notification) => notification.user)
   notifications: AppNotification[];
+
+  @OneToMany(() => SubscriptionReview, (review) => review.user)
+  reviews: SubscriptionReview[];
 
   public get fullName(): string {
     return `${this.firstName} ${this.lastName}`;

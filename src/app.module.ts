@@ -45,6 +45,8 @@ import { CoachSocialMediaModule } from './coach_social_media/coach_social_media.
 // import { IngredientService } from './nutrition_side/ingredient/ingredient.service';
 // import { IngredientController } from './nutrition_side/ingredient/ingredient.controller';
 import { StatisticModule } from './statistic/statistic.module';
+import { SubscriptionsReviewsModule } from './subscriptions_reviews/subscriptions_reviews.module';
+import { CoachCertificatesModule } from './coach_certificates/coach_certificates.module';
 
 @Module({
   imports: [
@@ -82,6 +84,9 @@ import { StatisticModule } from './statistic/statistic.module';
     CoachSocialMediaModule,
     RecipeModule,
     StatisticModule,
+    SubscriptionsReviewsModule,
+    RecipeModule,
+    CoachCertificatesModule,
   ],
   controllers: [
     AppController,
