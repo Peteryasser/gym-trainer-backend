@@ -35,4 +35,21 @@ export class Coach {
 
   @OneToMany(() => CoachPost, (posts) => posts.coach)
   posts: CoachPost[];
+
+  async getPackages(): Promise<Package[]> {
+    return this.packages;
+  }
+
+  async getLatestPost(): Promise<CoachPost | undefined> {
+    return this.posts?.length > 0 ? this.posts[0] : undefined;
+  }
+
+  async getTraineesCount(): Promise<number> {
+    let subscriptionsCount = 0;
+
+    for (const pack of this.packages) {
+      subscriptionsCount += await pack.getSubscriptionsCount();
+    }
+    return subscriptionsCount;
+  }
 }

@@ -62,4 +62,10 @@ export class Package {
     (userPackageWorkoutPlan) => userPackageWorkoutPlan.package,
   )
   userPackageWorkoutPlans: UserPackageWorkoutPlan[];
+
+  async getSubscriptionsCount(): Promise<number> {
+    const subscriptions = await this.subscriptions;
+
+    return subscriptions.length;
+  }
 }
