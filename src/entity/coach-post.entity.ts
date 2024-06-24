@@ -23,6 +23,9 @@ export class CoachPost {
   @Column({ nullable: false })
   body: string;
 
+  @Column({ nullable: false })
+  likesNo: number;
+
   @ManyToOne(() => Coach, (coach) => coach.posts, {
     onDelete: 'CASCADE',
   })
