@@ -23,10 +23,10 @@ export class CreateCoachPostsMultimedia1719180615194
 
           { name: 'postId', type: 'int', isNullable: false },
           {
-            name: 'multimedia_url',
+            name: 'multimediaUrl',
             type: 'varchar',
             length: '255',
-            isNullable: true,
+            isNullable: false,
           },
           {
             name: 'type',
