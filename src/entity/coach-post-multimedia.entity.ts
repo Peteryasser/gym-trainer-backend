@@ -18,7 +18,7 @@ export class CoachPostMultimedia {
   postId: number;
 
   @Column({ nullable: false })
-  multimedia_url: string;
+  multimediaUrl: string;
 
   @Column({ nullable: false })
   type: MultimediaTypeEnum;

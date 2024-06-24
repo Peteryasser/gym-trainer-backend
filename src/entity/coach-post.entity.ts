@@ -25,7 +25,6 @@ export class CoachPost {
 
   @ManyToOne(() => Coach, (coach) => coach.posts, {
     onDelete: 'CASCADE',
-    eager: true,
   })
   @JoinColumn({ name: 'coachId' })
   coach: Coach;
