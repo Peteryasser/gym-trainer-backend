@@ -27,6 +27,7 @@ import { FirebaseService } from './firebase/firebase.service';
 import { ChatController } from './chat/chat.controller';
 import { CryptoController } from './crypto/controller/crypto.controller';
 import { CryptoService } from './crypto/service/crypto.service';
+import { CryptoRsaModule } from './crypto-rsa/crypto-rsa.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { CryptoService } from './crypto/service/crypto.service';
     CoachSocialMediaModule,
     CryptoModule,
     ChatModule,
+    CryptoRsaModule,
   ],
   controllers: [
     AppController,

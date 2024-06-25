@@ -110,4 +110,28 @@ export class CryptoService {
 
     return xHex;
   }
+
+encryptSymmetricKey(pubKeyUncompressed, symmetricKey) {
+  const keyPair = this.ec.keyFromPublic(pubKeyUncompressed, 'hex');
+  const pubKeyCompressed = keyPair.getPublic(true, 'hex'); // 'true' for compressed form
+
+  const pubKey = this.ec.keyFromPublic(pubKeyCompressed, 'hex');
+  const ephKeyPair = this.ec.genKeyPair();
+  const sharedSecret = ephKeyPair.derive(pubKey.getPublic()).toString(16);
+
+  const aesKey = crypto.createHash('sha256').update(sharedSecret).digest();
+
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv('aes-256-gcm', aesKey, iv);
+  let encrypted = cipher.update(symmetricKey, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  const authTag = cipher.getAuthTag().toString('hex');
+
+  console.log('AES Key:', aesKey.toString('hex'));
+  console.log('IV:', iv.toString('hex'));
+  console.log('Auth Tag:', authTag);
+  console.log('Encrypted Symmetric Key:', encrypted);
+
+  return `${ephKeyPair.getPublic('hex')}:${iv.toString('hex')}:${encrypted}:${authTag}`;
+}
 }

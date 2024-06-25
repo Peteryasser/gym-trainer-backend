@@ -103,22 +103,19 @@ export class ChatController {
     ).publicKey;
 
     const symmetricKey = this.cryptoService.generateSymmetricKey();
-    const symmetricEncryptedByPubA = this.cryptoService.encrypt(
-      this.cryptoService.extractCompressedPublicKey(pubKeyA),
-      symmetricKey,
-    );
-    const symmetricEncryptedByPubB = this.cryptoService.encrypt(
-      this.cryptoService.extractCompressedPublicKey(pubKeyB),
-      symmetricKey,
-    );
+    // const symmetricEncryptedByPubA = this.cryptoService.encryptSymmetricKey(this.cryptoService.extractCompressedPublicKey(pubKeyA), symmetricKey);
 
-    newChatKeys.symmetricEncryptedByPubA = symmetricEncryptedByPubA;
-    newChatKeys.symmetricEncryptedByPubB = symmetricEncryptedByPubB;
-    const saved = await this.chatKeysRepo.save(newChatKeys);
-    result = saved;
+    // const symmetricEncryptedByPubB = this.cryptoService.encryptSymmetricKey(this.cryptoService.extractCompressedPublicKey(pubKeyB), symmetricKey);
 
-    const docId = await this.firebaseService.createSubcollection(saved.id.toString());
-    console.log('docId', docId);
+    // newChatKeys.symmetricEncryptedByPubA = symmetricEncryptedByPubA;
+    // newChatKeys.symmetricEncryptedByPubB = symmetricEncryptedByPubB;
+    // const saved = await this.chatKeysRepo.save(newChatKeys);
+    // result = saved;
+
+    // const docId = await this.firebaseService.createSubcollection(saved.id.toString());
+    // const chatIdResponse = await this.firebaseService.addChatIdToUsers(saved.id.toString(), userAId.toString(), userBId.toString());
+    // console.log('docId', docId);
+    // console.log('chatIdResponse', chatIdResponse);
 
     return { message: 'new', result: result };
   }
