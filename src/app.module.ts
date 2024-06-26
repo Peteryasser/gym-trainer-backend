@@ -12,8 +12,7 @@ import { WorkoutController } from './workout_side/workout/workout.controller';
 import { ExerciseModule } from './workout_side/exercise/exercise.module';
 import { ExerciseService } from './workout_side/exercise/exercise.service';
 
-import { IngredientService } from './nutrition_side/ingredient/ingredient.service';
-import { IngredientController } from './nutrition_side/ingredient/ingredient.controller';
+
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PopulationModule } from './population/population.module';
@@ -57,6 +56,8 @@ import { ChatController } from './chat/chat.controller';
 import { CryptoController } from './crypto/controller/crypto.controller';
 import { CryptoService } from './crypto/service/crypto.service';
 import { CryptoRsaModule } from './crypto-rsa/crypto-rsa.module';
+import { MealPlanModule } from './nutrition_side/meal_plan/meal_plan.module';
+import { MealPlanPackageModule } from './nutrition_side/meal-plan-package/mealplanpackage.module';
 
 @Module({
   imports: [
@@ -95,7 +96,8 @@ import { CryptoRsaModule } from './crypto-rsa/crypto-rsa.module';
     CoachCertificatesModule,
     MealModule,
     CoachPostsModule,
-
+    MealPlanModule,
+    MealPlanPackageModule,
     CryptoModule,
     ChatModule,
     CryptoRsaModule,
@@ -111,13 +113,11 @@ import { CryptoRsaModule } from './crypto-rsa/crypto-rsa.module';
     WorkoutPlanController,
     WorkoutPlanPackageController,
     ExerciseFilterController,
-    IngredientController,
   ],
   providers: [
     AppService,
     ImageService,
     ExerciseService,
-    // IngredientService,
     WorkoutService,
     WorkoutHistoryService,
     SaveService,
@@ -125,7 +125,6 @@ import { CryptoRsaModule } from './crypto-rsa/crypto-rsa.module';
     WorkoutPlanService,
     WorkoutPlanPackageService,
     ExerciseFilterService,
-//     IngredientService,
     FirebaseService,
   ],
 })

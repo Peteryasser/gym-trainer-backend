@@ -16,7 +16,38 @@ export class MealPlanController {
    
   ){}
 
- 
+  @Post('create')
+  createMealPlan(@Body() mealPlanDto:MealPlanDto, @GetUser() user: User):Promise<MealPlans> {
+
+    return this.mealPlanService.createMealPlan(mealPlanDto, user);
+  }
+
+  @Delete('delete/:id')
+  deleteWorkoutPlan(@Param('id') id: number, @GetUser() user: User):{} {
+
+    return this.mealPlanService.deleteMealPlan(id, user);
+  }
+
+  @Get('get-my-plans')
+  getMyPlans(@GetUser() user: User): Promise<MealPlans[]> {
+    console.log('Get My Plans ');
+
+    return this.mealPlanService.getMyPlans(user);
+  }
+
+  @Put('update/:id')
+  updateMealPlan(
+    @Param('id') id: number,
+    @Body() MealPlanUpdateDto: MealPlanDto,
+    @GetUser() user: User,
+  ):Promise<MealPlans> {
+
+    return this.mealPlanService.updateMealPlan(
+      id,
+      MealPlanUpdateDto,
+      user,
+    );
+  }
   
   
 }
