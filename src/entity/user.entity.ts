@@ -26,6 +26,7 @@ import { SavedIngredients } from './saved_ingredients.entity';
 import { AppNotification } from './app-notification.entity';
 import { SubscriptionReview } from './subscription-review.entity';
 import { UserPackageMealPlans } from './user_package_meal_plans.entity';
+import { UserKeys } from './user-keys.entity';
 
 @Entity('users')
 export class User {
@@ -142,6 +143,8 @@ export class User {
 
   @OneToMany(() => SubscriptionReview, (review) => review.user)
   reviews: SubscriptionReview[];
+  @OneToOne(() => UserKeys, (keys) => keys.user, { cascade: true })
+  keys: UserKeys;
 
   public get fullName(): string {
     return `${this.firstName} ${this.lastName}`;

@@ -7,12 +7,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../entity/user.entity';
 import { MoreThan, Repository, UpdateResult } from 'typeorm';
 import { CoachSummaryDto } from '../coaches/dtos/coach-summary.dto';
+import { UserKeys } from 'src/entity/user-keys.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(UserKeys)
+    private keysRepository: Repository<UserKeys>,
   ) {}
 
   async findOneByEmail(
@@ -59,6 +62,10 @@ export class UsersService {
   async delete(id: number): Promise<void> {
     const result = await this.usersRepository.delete(id);
     if (result.affected == 0) throw new NotFoundException('User not found');
+  }
+
+  async getKeys(id: number): Promise<UserKeys> {
+    return await this.keysRepository.findOne({ where: { userId: id } });
   }
 
   async setotp(otp, otpExpire, email) {
@@ -134,4 +141,5 @@ export class UsersService {
 
     return coachSummaryDtos;
   }
+
 }
