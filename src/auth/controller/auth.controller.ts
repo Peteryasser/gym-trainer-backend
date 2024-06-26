@@ -35,7 +35,7 @@ export class AuthController {
     return this.authService.login(
       userType,
       payload,
-      headers['x-retrieve-keys'],
+      headers['x-retrieve-keys'] === 'true',
     );
   }
 

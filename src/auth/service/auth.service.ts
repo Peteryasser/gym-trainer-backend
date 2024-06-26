@@ -25,6 +25,7 @@ import { TokenPayload } from '../types/token.payload';
 import { User } from '../../entity/user.entity';
 import { Coach } from '../../entity/coach.entity';
 import { CryptoService } from 'src/crypto/service/crypto.service';
+import { UserKeysDto } from '../dtos/user-keys.dto';
 
 @Injectable()
 export class AuthService {
@@ -64,7 +65,7 @@ export class AuthService {
   async login(
     userType: UserType,
     user: UserLoginRequestDto,
-    retrieveKeys: boolean,
+    retrieveKeys: boolean = false,
   ): Promise<UserAuthResponseDto> {
     let validatedUser: User | Coach = await this.authenticateUser(
       userType,
@@ -76,17 +77,9 @@ export class AuthService {
     );
 
     let keys = null;
-    console.log(validatedUser);
-    if (retrieveKeys) {
-      keys = await this.usersService.getKeys(validatedUser.id);
-      const publicKey = keys.publicKey;
-      const privateKey = this.cryptoService.decryptPrivKey(
-        keys.encryptedPrivateKey,
-        user.password,
-        keys.salt,
-      );
-      keys = { publicKey, privateKey };
-    }
+    if (retrieveKeys === true)
+      keys = await this.buildKeyPairDto(validatedUser.id, user.password);
+
     if (userType == UserType.coach) validatedUser = validatedUser.coach;
 
     return this.createUserAuthResponse(validatedUser, device.id, keys);
@@ -127,7 +120,9 @@ export class AuthService {
     );
 
     await this.cryptoService.saveKeyPair(newUser.id, user.password);
-    return await this.createUserAuthResponse(newUser, device.id);
+    const keys = await this.buildKeyPairDto(newUser.id, user.password);
+
+    return await this.createUserAuthResponse(newUser, device.id, keys);
   }
 
   async logout(deviceID: number): Promise<void> {
@@ -169,12 +164,29 @@ export class AuthService {
   private async createUserAuthResponse(
     user: User | Coach,
     deviceID: number,
-    keys?: null,
+    keys?: UserKeysDto | null,
   ): Promise<UserAuthResponseDto> {
     const token = await this.getToken(user, deviceID);
     const userDto = await this.createUserDTO(user);
 
     return new UserAuthResponseDto(token, userDto, keys);
+  }
+
+  private async buildKeyPairDto(
+    userId: number,
+    password: string,
+  ): Promise<UserKeysDto> {
+    let keys = null;
+
+    keys = await this.usersService.getKeys(userId);
+    const publicKey = keys.publicKey;
+    const privateKey = this.cryptoService.decryptPrivKey(
+      keys.encryptedPrivateKey,
+      password,
+      keys.salt,
+    );
+    keys = { publicKey, privateKey };
+    return keys;
   }
 
   async forgetPassword(user: UserForgetPasswordRequestDto): Promise<String> {
