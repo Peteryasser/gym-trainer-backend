@@ -1,10 +1,6 @@
 import { Controller, Get, Res, Param, Query,Post, UseGuards, Delete, Body, Patch, Put } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
-import axios from 'axios';
 import { Response } from 'express';
-import { CloudinaryService } from 'src/utils/cloudinary/cloudinary.service';
-import { v2 } from 'cloudinary';
-import { Readable } from 'typeorm/platform/PlatformTools';
 import { readFileSync } from 'fs';
 import { RecipeDto } from './dtos/recipe_info.dto';
 import { RecipeIngredientDto } from './dtos/recipe-ingredient.dto';
@@ -18,18 +14,10 @@ import { CreateRecipeDto } from './dtos/create-recipe.dto';
 
 @Controller('recipe')
 export class RecipeController { 
-    cloudinary;
-    ninja_api_url;
-    ninja_api_key;
-    spoonacular_api_url;
-    spoonacular_api_key;
+   
 
     constructor(private readonly recipeService: RecipeService) {
-      this.cloudinary = new CloudinaryService();
-      this.ninja_api_url = process.env.NINJA_API_URL;
-      this.ninja_api_key = process.env.NINJA_API_KEY;
-      this.spoonacular_api_url = process.env.SPOONACULAR_API_URL;
-      this.spoonacular_api_key = process.env.SPOONACULAR_API_KEY;
+      
       
     }
 
@@ -86,7 +74,7 @@ export class RecipeController {
 
     
 
-    @Get('get_all_recipes_while_installing')
+    @Get('get-all-recipes-while-installing')
     async getAllrecipes():Promise<Recipes[]>{
         try{
             return await this.recipeService.getAllRecipes()
@@ -157,7 +145,7 @@ export class RecipeController {
 
     @UseGuards(JwtAuthGuard)
     @Delete('delete/:id')
-    async deleteExercise(
+    async deleteRecipe(
         @Param('id') id: number,
         @GetUser() user: User,
     ): Promise<String> {
@@ -166,7 +154,7 @@ export class RecipeController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('get_my_recipes')
+    @Get('get-my-recipes')
     async getAllByUser(@GetUser() user: User):Promise<Recipes[]>{
         try{
             return await this.recipeService.getAllByUser(user)
@@ -189,7 +177,6 @@ export class RecipeController {
             console.log(error);
             return error;
         }
-
     }
 
 

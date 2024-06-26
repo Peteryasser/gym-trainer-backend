@@ -87,9 +87,13 @@ export class IngredientController {
         @Param('id') id: number,
         @GetUser() user: User,
     ): Promise<{ message: string }> {
-        console.log('saveIngredient');
-        await this.ingredientService.saveIngredient(id, user);
-        return { message: 'Ingredient saved successfully' };
+        try{
+            await this.ingredientService.saveIngredient(id, user);
+            return { message: 'Ingredient saved successfully' };
+        }catch(error){
+            return error
+        }
+        
     }
 
     @UseGuards(JwtAuthGuard)

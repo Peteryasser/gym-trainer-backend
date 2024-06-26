@@ -15,7 +15,7 @@ export class Recipes {
   @Column({ length: 90 })
   name: string;
 
-  @Column()
+  @Column({nullable: true})
   imageURL: string;
 
   @Column('float4')

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { MealCategories } from './meal_categories.entity';
 import { User } from './user.entity';
 import { MealRecipes } from './meal_recipes.entity';
@@ -20,13 +20,18 @@ export class Meals {
   @Column()
   is_custom: boolean;
 
-  @ManyToOne(() => User, user => user.meals)
+  @ManyToOne(() => User, user => user.meals, { nullable: true })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => MealCategories, category => category.meals)
+  @ManyToOne(() => MealCategories, category => category.meals, { nullable: true })
+  @JoinColumn({ name: 'categoryId' })
   category: MealCategories;
 
-  @Column()
+  @Column({nullable: true})
+  imageURL: string;
+
+  @Column('float4')
   total_calories: number;
 
   @OneToMany(() => MealRecipes, mealRecipe => mealRecipe.meal)

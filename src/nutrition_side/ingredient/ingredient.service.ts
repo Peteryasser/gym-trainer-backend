@@ -180,7 +180,7 @@ export class IngredientService {
     return ingredients;
   }
 
-  async saveIngredient(id: number, user: User): Promise<void> {
+  async saveIngredient(id: number, user: User): Promise<SavedIngredients> {
     const ingredient: Ingredient = await this.ingredientRepository.findOne( {
       where: { id },
       relations: ['category'],
@@ -190,12 +190,13 @@ export class IngredientService {
       throw new NotFoundException('ingredient not found');
     }
 
-    const savedIngredients = new SavedIngredients();
-    savedIngredients.user = user;
-    savedIngredients.ingredient = ingredient;
+    const savedIngredient = this.savedIngredientsRepository.create({
+      user,
+      ingredient,
+    });
 
 
-    await this.savedIngredientsRepository.save(savedIngredients);
+    return await this.savedIngredientsRepository.save(savedIngredient);
   }
 
   async unSaveIngredient(id: number, user: User): Promise<void> {

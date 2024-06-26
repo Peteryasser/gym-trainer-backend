@@ -210,7 +210,7 @@ export class RecipeService {
     });
 
     if (!savedRecipes.length) {
-      throw new NotFoundException('No saved ingredients found for the user');
+      throw new NotFoundException('No saved recipes found for the user');
     }
     console.log(savedRecipes)
 
@@ -271,8 +271,6 @@ export class RecipeService {
 
     const savedRecipe = await this.recipesRepository.save(recipeEntity);
 
-    console.log("HEREEEEEEE",createRecipeDto.recipeIngredients,createRecipeDto.recipeIngredients.length)
-
     if(createRecipeDto.recipeIngredients.length!=0){
       for (const ingredient of createRecipeDto.recipeIngredients) {
       let ingredientEntity = await this.ingredientRepository.findOne({ where: { id: ingredient.id } });
@@ -285,8 +283,6 @@ export class RecipeService {
           unit: ingredient.unit
         });
         await this.recipesIngredientsRepository.save(recipeIngredient);
-        console.log("SAVED",recipeIngredient)
-
         //savedRecipe.recipeIngredients.push(recipeIngredient)
       }  
     }
@@ -328,7 +324,6 @@ export class RecipeService {
       where: { user: { id: user.id } },
       relations: ["user", "dishType", "extentedIngredients", "cuisine", "recipeIngredients", "recipeIngredients.ingredient"],
     });
-    console.log(recipes[0].recipeIngredients)
     return recipes;
   }
 
@@ -341,7 +336,6 @@ export class RecipeService {
     if (!recipe) {
       throw new NotFoundException(`Recipe with ID ${id} not found or you are not authorized to update this`);
     }
-    console.log("IIIIIIIIII",updateRecipeDto)
     await this.deleteRecipe(user,id);
     return this.createCustom(updateRecipeDto,user);
   }

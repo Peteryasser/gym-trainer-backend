@@ -44,6 +44,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CoachSocialMediaModule } from './coach_social_media/coach_social_media.module';
 import { SubscriptionsReviewsModule } from './subscriptions_reviews/subscriptions_reviews.module';
 import { CoachCertificatesModule } from './coach_certificates/coach_certificates.module';
+import { MealModule } from './nutrition_side/meal/meal.module';
 
 @Module({
   imports: [
@@ -82,6 +83,7 @@ import { CoachCertificatesModule } from './coach_certificates/coach_certificates
     SubscriptionsReviewsModule,
     RecipeModule,
     CoachCertificatesModule,
+    MealModule,
   ],
   controllers: [
     AppController,
