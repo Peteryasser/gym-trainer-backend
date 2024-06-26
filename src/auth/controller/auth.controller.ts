@@ -15,11 +15,11 @@ import { UserLoginRequestDto } from '../dtos/user.login.request.dto';
 import { UserForgetPasswordRequestDto } from '../dtos/user.forgetpassword.request.dto';
 import { UserResetPasswordRequestDto } from '../dtos/user.resetpassword.request.dto';
 import { UserChangePasswordRequestDto } from '../dtos/user.changepassword.request.dto';
-import { DeviceDto } from 'src/users/dtos/device.dto';
 import { JwtAuthGuard } from '../guards/jwt.auth.guard';
 import { AuthService } from '../service/auth.service';
 import { UserType } from '../../users/user-type.enum';
 import { UserTypeValidationPipe } from '../../pipe';
+import { RequestHeaders } from 'src/utils/headers/request-header.decorator';
 
 @Public()
 @Controller('auth')
@@ -30,8 +30,13 @@ export class AuthController {
   async login(
     @Param('userType', new UserTypeValidationPipe()) userType: UserType,
     @Body() payload: UserLoginRequestDto,
+    @RequestHeaders() headers,
   ): Promise<UserAuthResponseDto> {
-    return this.authService.login(userType, payload);
+    return this.authService.login(
+      userType,
+      payload,
+      headers['x-retrieve-keys'] === 'true',
+    );
   }
 
   @Post('register')
@@ -68,5 +73,4 @@ export class AuthController {
   ): Promise<String | BadRequestException> {
     return await this.authService.changePassword(payload.user);
   }
-
 }
