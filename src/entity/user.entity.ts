@@ -7,8 +7,25 @@ import {
 } from 'typeorm';
 import { Device } from './device.entity';
 import { Coach } from './coach.entity';
+import { Workout } from './workout.entity';
+import { WorkoutHistory } from './user-workout-history';
+import { WorkoutPlan } from './workout-plan';
+import { SavedWorkout } from './saved-workouts';
+import { UserPackageWorkoutPlan } from './user-package-workoutPlan';
+import { Exercise } from './exercise.entity';
+import { WorkoutCollection } from './workout-collection';
+import { SavedExercise } from './saved-exercises';
+import { SavedWorkoutCollection } from './saved-workout-collection';
 import { UserSubscription } from './user-subscription.entity';
+import { SavedMeals } from './saved_meals.entity';
+import { Meals } from './meals.entity';
+import { Recipes } from './recipes.entity';
+import { UserMealsHistory } from './user_meals_history.entity';
+import { SavedRecipes } from './saved_recipes.entity';
+import { SavedIngredients } from './saved_ingredients.entity';
 import { AppNotification } from './app-notification.entity';
+import { SubscriptionReview } from './subscription-review.entity';
+import { UserPackageMealPlans } from './user_package_meal_plans.entity';
 import { UserKeys } from './user-keys.entity';
 
 @Entity('users')
@@ -86,16 +103,73 @@ export class User {
   @OneToOne(() => Coach, (coach) => coach.user, { cascade: true, eager: true })
   coach: Coach;
 
+  @OneToMany(() => Exercise, (exercise) => exercise.user)
+  exercises: Exercise[];
+
+  @OneToMany(() => Workout, (workout) => workout.user)
+  workouts: Workout[];
+
+  @OneToMany(() => WorkoutHistory, (history) => history.user)
+  workoutHistories: WorkoutHistory[];
+
+  @OneToMany(() => WorkoutPlan, (workoutPlan) => workoutPlan.user)
+  workoutPlans: WorkoutPlan[];
+
+  @OneToMany(() => SavedWorkout, (savedWorkout) => savedWorkout.user)
+  savedWorkouts: SavedWorkout[];
+
+  @OneToMany(() => SavedExercise, (savedExercise) => savedExercise.user)
+  savedExercises: SavedExercise[];
+
+  @OneToMany(
+    () => SavedWorkoutCollection,
+    (savedWorkoutCollection) => savedWorkoutCollection.user,
+  )
+  savedWorkoutCollections: SavedWorkoutCollection[];
+
+  @OneToMany(
+    () => UserPackageWorkoutPlan,
+    (userPackageWorkoutPlan) => userPackageWorkoutPlan.user,
+  )
+  userPackageWorkoutPlans: UserPackageWorkoutPlan[];
+
+  @OneToMany(() => WorkoutCollection, (collection) => collection.user)
+  workoutCollections: WorkoutCollection[];
   @OneToMany(() => UserSubscription, (subsciption) => subsciption.user)
   subscriptions: UserSubscription[];
 
   @OneToMany(() => AppNotification, (notification) => notification.user)
   notifications: AppNotification[];
 
+  @OneToMany(() => SubscriptionReview, (review) => review.user)
+  reviews: SubscriptionReview[];
   @OneToOne(() => UserKeys, (keys) => keys.user, { cascade: true })
   keys: UserKeys;
 
   public get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }
+  @OneToMany(() => SavedMeals, (savedMeal) => savedMeal.user)
+  savedMeals: SavedMeals[];
+
+  @OneToMany(() => Meals, (meal) => meal.user)
+  meals: Meals[];
+
+  @OneToMany(() => Recipes, (recipe) => recipe.user)
+  recipes: Recipes[];
+
+  @OneToMany(() => UserMealsHistory, (mealsHistory) => mealsHistory.user)
+  mealsHistory: UserMealsHistory[];
+
+  @OneToMany(() => SavedRecipes, (savedRecipe) => savedRecipe.user)
+  savedRecipes: SavedRecipes[];
+
+  @OneToMany(() => SavedIngredients, (savedIngredient) => savedIngredient.user)
+  savedIngredients: SavedIngredients[];
+
+  @OneToMany(
+    () => UserPackageMealPlans,
+    (userPackageMealPlan) => userPackageMealPlan.user,
+  )
+  userPackageMealPlans: UserPackageMealPlans[];
 }
