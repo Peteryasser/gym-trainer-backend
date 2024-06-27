@@ -52,42 +52,46 @@ export class ChatController {
     return { exists };
   }
 
-
   @Post('getCorrespondingUserInChat')
   async getCorrespondingUserInChat(@Body() data: any) {
     const { chatId, requesterId } = data;
-  
+
     const chatKeys = await this.chatKeysRepo.findOne({ where: { id: chatId } });
     if (!chatKeys) return { message: 'no chat found' };
-  
+
     const { userAId, userBId } = chatKeys;
-  
-    if (requesterId !== userAId && requesterId !== userBId) return { message: 'not allowed' };
-  
+
+    if (requesterId !== userAId && requesterId !== userBId)
+      return { message: 'not allowed' };
+
     let correspondingUserId = requesterId === userAId ? userBId : userAId;
-    const user = await this.userRepo.findOne({ where: { id: correspondingUserId } });
-  
+    const user = await this.userRepo.findOne({
+      where: { id: correspondingUserId },
+    });
+
     if (!user) return { message: 'user not found' };
-  
+
     const { id, username, firstName, lastName, profilePictureUrl } = user;
-  
-    return { message: 'success', user: { id, username, firstName, lastName, profilePictureUrl } };
+
+    return {
+      message: 'success',
+      user: { id, username, firstName, lastName, profilePictureUrl },
+    };
   }
-  
 
   @Post('getCorrespondingUsersInChats')
   async getCorrespondingUsersInChats(@Body() data: any) {
-
     const { chatIds, requesterId } = data;
-    console.log('=============================================')
+    console.log('=============================================');
     console.log('chatIds', chatIds);
     console.log('requesterId', requesterId);
 
-    
     const results = [];
 
     for (const chatId of chatIds) {
-      const chatKeys = await this.chatKeysRepo.findOne({ where: { id: chatId } });
+      const chatKeys = await this.chatKeysRepo.findOne({
+        where: { id: chatId },
+      });
       if (!chatKeys) {
         console.log('no chat found');
         results.push({ chatId, message: 'no chat found' });
@@ -96,8 +100,8 @@ export class ChatController {
 
       const { userAId, userBId } = chatKeys;
       console.log('userAId', userAId);
-      console.log('userBId', userBId);  
-      
+      console.log('userBId', userBId);
+
       console.log('requesterIdType', typeof requesterId);
       console.log('userAIdType', typeof userAId);
       console.log('userBIdType', typeof userBId);
@@ -110,8 +114,11 @@ export class ChatController {
 
       const correspondingUserIdLetter = requesterId === userAId ? 'B' : 'A';
 
-      const correspondingUserId = correspondingUserIdLetter === 'B' ? userBId : userAId;
-      const user = await this.userRepo.findOne({ where: { id: correspondingUserId } });
+      const correspondingUserId =
+        correspondingUserIdLetter === 'B' ? userBId : userAId;
+      const user = await this.userRepo.findOne({
+        where: { id: correspondingUserId },
+      });
 
       if (!user) {
         console.log('user not found');
@@ -119,7 +126,10 @@ export class ChatController {
         continue;
       }
 
-      const encryptSymmetricKey = correspondingUserIdLetter === 'B' ? chatKeys.symmetricEncryptedByPubA : chatKeys.symmetricEncryptedByPubB;
+      const encryptSymmetricKey =
+        correspondingUserIdLetter === 'B'
+          ? chatKeys.symmetricEncryptedByPubA
+          : chatKeys.symmetricEncryptedByPubB;
 
       const { id, username, firstName, lastName, profilePictureUrl } = user;
       console.log('success');
@@ -128,10 +138,10 @@ export class ChatController {
         chatId,
         message: 'success',
         user: { id, username, firstName, lastName, profilePictureUrl },
-        key: encryptSymmetricKey
+        key: encryptSymmetricKey,
       });
     }
-    console.log('results', results);  
+    console.log('results', results);
     return results;
   }
 
@@ -186,17 +196,29 @@ export class ChatController {
     ).publicKey;
 
     const symmetricKey = this.cryptoService.generateSymmetricKey();
-    const symmetricEncryptedByPubA = this.cryptoService.encryptSymmetricKey(this.cryptoService.extractCompressedPublicKey(pubKeyA), symmetricKey);
+    const symmetricEncryptedByPubA = this.cryptoService.encryptSymmetricKey(
+      pubKeyA,
+      symmetricKey,
+    );
 
-    const symmetricEncryptedByPubB = this.cryptoService.encryptSymmetricKey(this.cryptoService.extractCompressedPublicKey(pubKeyB), symmetricKey);
+    const symmetricEncryptedByPubB = this.cryptoService.encryptSymmetricKey(
+      pubKeyB,
+      symmetricKey,
+    );
 
     newChatKeys.symmetricEncryptedByPubA = symmetricEncryptedByPubA;
     newChatKeys.symmetricEncryptedByPubB = symmetricEncryptedByPubB;
     const saved = await this.chatKeysRepo.save(newChatKeys);
     result = saved;
 
-    const docId = await this.firebaseService.createSubcollection(saved.id.toString());
-    const chatIdResponse = await this.firebaseService.addChatIdToUsers(saved.id.toString(), userAId.toString(), userBId.toString());
+    const docId = await this.firebaseService.createSubcollection(
+      saved.id.toString(),
+    );
+    const chatIdResponse = await this.firebaseService.addChatIdToUsers(
+      saved.id.toString(),
+      userAId.toString(),
+      userBId.toString(),
+    );
     console.log('docId', docId);
     console.log('chatIdResponse', chatIdResponse);
 
