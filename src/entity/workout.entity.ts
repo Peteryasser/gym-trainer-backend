@@ -21,7 +21,7 @@ export class Workout {
   @Column({ type: 'boolean', default: false })
   type: boolean;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   description: string;
 
   @ManyToOne(() => User, (user) => user.workouts, { nullable: true })

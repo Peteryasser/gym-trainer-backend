@@ -7,6 +7,7 @@ import { Workout } from 'src/entity/workout.entity';
 import { WorkoutCollection } from 'src/entity/workout-collection';
 import { WorkoutCollectionDetails } from 'src/entity/workout-collection-details';
 import { WorkoutCollectionUpdateDto } from './dtos/workout_collection_update_dto';
+import { WorkoutService } from 'src/workout_side/workout/workout.service';
 
 dotenvConfig({ path: '.env' });
 @Injectable()
@@ -20,23 +21,21 @@ export class WorkoutCollectionService {
     const connection = await ConnectionManager.getConnection();
     let message = '';
 
-    // LOOP ON workout ids in workout collection dto and make sure that each on is
-    // exist in data base and (type == false or type == true and user id == user.id)
-    for (const workoutId of createWorkoutCollectionDto.workout_ids) {
-      const workout = await connection.manager.findOne(Workout, {
-        where: { id: workoutId },
-        relations: ['user'],
-      });
+    // get instance of workout service
+    const workoutService = new WorkoutService();
+    // initialize array of numbers named workoutIds
+    const workoutIds: number[] = [];
 
-      if (!workout) {
-        message = `Workout with id ${workoutId} not found`;
-        return message;
-      }
+    // iterate on list of WorkoutDTOs in WorkoutCollection
+    for (const workoutdto of createWorkoutCollectionDto.workouts) {
+      const workoutId = workoutService.addWorkoutForCollections(
+        user,
+        workoutdto,
+      );
 
-      if (workout.type && workout.user.id !== user.id) {
-        message = `You are not authorized to add workout with id ${workoutId} to your collection`;
-        return message;
-      }
+      console.log('workoutId', await workoutId);
+      if ((await workoutId) == -1) return 'Exercise Not Found';
+      workoutIds.push(await workoutId);
     }
 
     // Create workout collection
@@ -51,7 +50,7 @@ export class WorkoutCollectionService {
     await connection.manager.save(workoutCollection);
 
     // Add workouts to workout collection by using WorkoutCollectionDetails
-    for (const workoutId of createWorkoutCollectionDto.workout_ids) {
+    for (const workoutId of workoutIds) {
       const workout = await connection.manager.findOne(Workout, {
         where: { id: workoutId },
       });
@@ -68,7 +67,6 @@ export class WorkoutCollectionService {
     }
 
     message = 'Workout collection created successfully';
-
     return message;
   }
 

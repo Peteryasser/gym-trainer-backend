@@ -149,6 +149,62 @@ export class WorkoutService {
     return 'Workout created successfully';
   }
 
+  async addWorkoutForCollections(user: User, createWorkoutDto: WorkoutDto):Promise<number> {
+    const connection = await ConnectionManager.getConnection();
+
+    const exercise = await connection.manager.findOne(Exercise, {
+      where: { id: createWorkoutDto.exerciseId },
+    });
+
+    if (!exercise) {
+      return -1;
+    }
+
+    const workout = new Workout();
+    workout.description = createWorkoutDto.description;
+    workout.user = user;
+    workout.type = true;
+
+    try {
+      await connection.manager.save(workout);
+    } catch (e) {
+      console.log(e);
+    }
+
+    // Create the workout exercise entity
+    const workoutExercise = new WorkoutExercise();
+    workoutExercise.workout = workout;
+    workoutExercise.exercise = exercise;
+
+    try {
+      await connection.manager.save(workoutExercise);
+      console.log('WorkoutExercise created successfully', workoutExercise);
+    } catch (e) {
+      console.log(e);
+    }
+
+    // Create the workout exercise details entity
+    const workoutExerciseDetails = new WorkoutExerciseDetails();
+    workoutExerciseDetails.workoutExercise = workoutExercise;
+    workoutExerciseDetails.sets = createWorkoutDto.setsNumber;
+    workoutExerciseDetails.reps = createWorkoutDto.repsNumber;
+    workoutExerciseDetails.weights = createWorkoutDto.weights;
+    workoutExerciseDetails.duration = createWorkoutDto.duration;
+    workoutExerciseDetails.durationUnit = createWorkoutDto.durationUnit;
+
+    try {
+      await connection.manager.save(workoutExerciseDetails);
+      console.log(
+        'WorkoutExerciseDetails created successfully',
+        workoutExerciseDetails,
+      );
+    } catch (e) {
+      console.log(e);
+    }
+
+    return workout.id;
+  }
+
   async update(user: User, workoutid: number, updatedto: WorkoutUpdateDto) {
     const connection = await ConnectionManager.getConnection();
     let message = '';
