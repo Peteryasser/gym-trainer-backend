@@ -149,7 +149,10 @@ export class WorkoutService {
     return 'Workout created successfully';
   }
 
-  async addWorkoutForCollections(user: User, createWorkoutDto: WorkoutDto):Promise<number> {
+  async addWorkoutForCollections(
+    user: User,
+    createWorkoutDto: WorkoutDto,
+  ): Promise<number> {
     const connection = await ConnectionManager.getConnection();
 
     const exercise = await connection.manager.findOne(Exercise, {

@@ -28,8 +28,8 @@ export class WorkoutExerciseDetails {
   @Column('float', { array: true, default: [] })
   weights: number[];
 
-  @Column({ type: 'int' })
-  reps: number;
+  @Column('int', { array: true, default: [] })
+  reps: number[];
 
   @Column({ type: 'int' })
   duration: number;

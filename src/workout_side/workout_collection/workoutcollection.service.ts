@@ -217,31 +217,39 @@ export class WorkoutCollectionService {
 
     if (updateWorkoutCollectionDto.name) {
       workoutCollection.name = updateWorkoutCollectionDto.name;
-      // save the update to database
       await connection.manager.save(workoutCollection);
     }
 
     if (updateWorkoutCollectionDto.description) {
       workoutCollection.description = updateWorkoutCollectionDto.description;
-      // save the update to database
       await connection.manager.save(workoutCollection);
     }
 
-    if (updateWorkoutCollectionDto.workout_ids) {
+    if (updateWorkoutCollectionDto.workouts) {
       // Delete all workout collection details related to the workout collection
       await connection.manager.delete(WorkoutCollectionDetails, {
         workoutCollection: { id },
       });
-      // Add new workout collection details
-      for (const workoutId of updateWorkoutCollectionDto.workout_ids) {
+
+      const workoutService = new WorkoutService();
+      const workoutIds: number[] = [];
+
+      // iterate on list of WorkoutDTOs in WorkoutCollection
+      for (const workoutdto of updateWorkoutCollectionDto.workouts) {
+        const workoutId = workoutService.addWorkoutForCollections(
+          user,
+          workoutdto,
+        );
+
+        console.log('workoutId', await workoutId);
+        if ((await workoutId) == -1) return 'Exercise Not Found';
+        workoutIds.push(await workoutId);
+      }
+
+      for (const workoutId of workoutIds) {
         const workout = await connection.manager.findOne(Workout, {
           where: { id: workoutId },
         });
-
-        if (workout.type && workout.user.id !== user.id) {
-          message = `You are not authorized to add workout with id ${workoutId} to your collection`;
-          return message;
-        }
 
         const workoutCollectionDetails = connection.manager.create(
           WorkoutCollectionDetails,
