@@ -23,9 +23,15 @@ export class WorkoutCollectionController {
     private readonly workutCollectionService: WorkoutCollectionService,
   ) {}
 
-  @Get('test')
-  async test(): Promise<string> {
-    return 'WorkoutCollectionController test';
+  @Get('get-deault-collections-info')
+  async test(): Promise<WorkoutCollection[]> {
+    // return 'WorkoutCollectionController test';
+    return this.workutCollectionService.getDeaultCollectionsInfo();
+  }
+
+  @Get('get-collection/:id')
+  async getCollection(@Param('id') id: number): Promise<WorkoutCollection> {
+    return this.workutCollectionService.getCollection(id);
   }
 
   @Post('create')
