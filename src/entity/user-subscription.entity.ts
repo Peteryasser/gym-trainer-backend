@@ -5,11 +5,13 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Package } from './coach-package.entity';
+import { SubscriptionReview } from './subscription-review.entity';
 
-@Entity()
+@Entity('user_subscription')
 export class UserSubscription {
   @PrimaryGeneratedColumn()
   id: number;
@@ -25,6 +27,11 @@ export class UserSubscription {
 
   @Column({ type: 'timestamp' })
   endDate: Date;
+
+  @OneToMany(() => SubscriptionReview, (review) => review.subscription, {
+    cascade: true,
+  })
+  reviews: SubscriptionReview[];
 
   @CreateDateColumn()
   createdAt: Date;

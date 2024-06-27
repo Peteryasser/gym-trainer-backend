@@ -10,13 +10,15 @@ import { DurationUnitEnum } from '../packages/duration-unit.enum';
 import { Coach } from './coach.entity';
 import { PackageDiscount } from './package-discount.entity';
 import { UserSubscription } from './user-subscription.entity';
+import { UserPackageMealPlans } from './user_package_meal_plans.entity';
+import { UserPackageWorkoutPlan } from './user-package-workoutPlan';
 
 @Entity('coach_packages')
 export class Package {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Coach, (coach) => coach.packages)
+  @ManyToOne(() => Coach, (coach) => coach.packages, { eager: true })
   @JoinColumn({ name: 'coachId' })
   coach: Coach;
 
@@ -48,4 +50,22 @@ export class Package {
 
   @OneToMany(() => UserSubscription, (subscription) => subscription.package)
   subscriptions: UserSubscription[];
+
+  @OneToMany(
+    () => UserPackageMealPlans,
+    (userPackageWorkoutPlan) => userPackageWorkoutPlan.package,
+  )
+  userPackageMealPlans: UserPackageMealPlans[];
+
+  @OneToMany(
+    () => UserPackageWorkoutPlan,
+    (userPackageWorkoutPlan) => userPackageWorkoutPlan.package,
+  )
+  userPackageWorkoutPlans: UserPackageWorkoutPlan[];
+
+  async getSubscriptionsCount(): Promise<number> {
+    const subscriptions = await this.subscriptions;
+
+    return subscriptions.length;
+  }
 }

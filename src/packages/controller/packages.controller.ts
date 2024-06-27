@@ -18,6 +18,7 @@ import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { PackageFilterDto } from '../dtos/package-filter.dto';
 import { PackageEditDto } from '../dtos/package-edit.dto';
 import { PaginatedResultDto } from '../../dtos/paginatied-result.dto';
+import { User } from 'src/entity/user.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('packages')
@@ -35,8 +36,10 @@ export class PackagesController {
   @Get()
   async getAll(
     @Query() filterDto: PackageFilterDto,
-    @GetUser() user: Coach,
+    @GetUser() user: Coach | User,
   ): Promise<PaginatedResultDto<Package>> {
+    if (user instanceof User)
+      return this.packagesService.getAll(null, filterDto);
     return this.packagesService.getAll(user, filterDto);
   }
 

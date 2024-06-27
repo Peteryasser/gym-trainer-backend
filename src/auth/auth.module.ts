@@ -12,11 +12,13 @@ import { CoachesService } from '../users/coaches/coach.service';
 import { Coach } from '../entity/coach.entity';
 import { Device } from '../entity/device.entity';
 import { User } from '../entity/user.entity';
+import { CryptoService } from 'src/crypto/service/crypto.service';
+import { UserKeys } from 'src/entity/user-keys.entity';
 
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([User, Coach, Device]),
+    TypeOrmModule.forFeature([User, Coach, Device, UserKeys]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -41,6 +43,7 @@ import { User } from '../entity/user.entity';
     UsersService,
     DevicesService,
     CoachesService,
+    CryptoService,
   ],
   exports: [JwtModule, AuthService],
   controllers: [AuthController],

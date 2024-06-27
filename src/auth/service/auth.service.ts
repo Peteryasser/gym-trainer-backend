@@ -8,14 +8,12 @@ import { UsersService } from '../../users/service/users.service';
 import { UserRegisterRequestDto } from '../dtos/user.register.request.dto';
 import { UserLoginRequestDto } from '../dtos/user.login.request.dto';
 import { UserForgetPasswordRequestDto } from '../dtos/user.forgetpassword.request.dto';
-import { UserChangePasswordRequestDto } from '../dtos/user.changepassword.request.dto' 
+import { UserChangePasswordRequestDto } from '../dtos/user.changepassword.request.dto';
 import { UserAuthResponseDto } from '../dtos/user.auth.response.dto';
-import { DeviceDto } from 'src/users/dtos/device.dto';
 import nodemailer = require('nodemailer');
 import { config as dotenvConfig } from 'dotenv';
 import * as bcrypt from 'bcrypt';
 import { UserResetPasswordRequestDto } from '../dtos/user.resetpassword.request.dto';
-import { UUID } from 'crypto';
 
 dotenvConfig({ path: '.env' });
 import { UserDto } from '../../users/dtos/user.dto';
@@ -26,6 +24,8 @@ import { UserType } from '../../users/user-type.enum';
 import { TokenPayload } from '../types/token.payload';
 import { User } from '../../entity/user.entity';
 import { Coach } from '../../entity/coach.entity';
+import { CryptoService } from 'src/crypto/service/crypto.service';
+import { UserKeysDto } from '../dtos/user-keys.dto';
 
 @Injectable()
 export class AuthService {
@@ -34,6 +34,7 @@ export class AuthService {
     private readonly coachesService: CoachesService,
     private readonly jwtService: JwtService,
     private readonly deviceService: DevicesService,
+    private readonly cryptoService: CryptoService,
   ) {}
 
   private async authenticateUser(
@@ -64,6 +65,7 @@ export class AuthService {
   async login(
     userType: UserType,
     user: UserLoginRequestDto,
+    retrieveKeys: boolean = false,
   ): Promise<UserAuthResponseDto> {
     let validatedUser: User | Coach = await this.authenticateUser(
       userType,
@@ -74,8 +76,13 @@ export class AuthService {
       user.fcmToken,
     );
 
+    let keys = null;
+    if (retrieveKeys === true)
+      keys = await this.buildKeyPairDto(validatedUser.id, user.password);
+
     if (userType == UserType.coach) validatedUser = validatedUser.coach;
-    return this.createUserAuthResponse(validatedUser, device.id);
+
+    return this.createUserAuthResponse(validatedUser, device.id, keys);
   }
 
   async register(user: UserRegisterRequestDto): Promise<UserAuthResponseDto> {
@@ -111,7 +118,11 @@ export class AuthService {
       newUser.id,
       user.fcmToken,
     );
-    return await this.createUserAuthResponse(newUser, device.id);
+
+    await this.cryptoService.saveKeyPair(newUser.id, user.password);
+    const keys = await this.buildKeyPairDto(newUser.id, user.password);
+
+    return await this.createUserAuthResponse(newUser, device.id, keys);
   }
 
   async logout(deviceID: number): Promise<void> {
@@ -139,8 +150,8 @@ export class AuthService {
     if (user instanceof Coach) {
       user = await user.user;
     }
-
     const userDto: UserDto = {
+      id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
@@ -153,17 +164,32 @@ export class AuthService {
   private async createUserAuthResponse(
     user: User | Coach,
     deviceID: number,
+    keys?: UserKeysDto | null,
   ): Promise<UserAuthResponseDto> {
     const token = await this.getToken(user, deviceID);
     const userDto = await this.createUserDTO(user);
 
-    return new UserAuthResponseDto(token, userDto);
+    return new UserAuthResponseDto(token, userDto, keys);
   }
 
+  private async buildKeyPairDto(
+    userId: number,
+    password: string,
+  ): Promise<UserKeysDto> {
+    let keys = null;
 
-  async forgetPassword(
-    user: UserForgetPasswordRequestDto
-  ): Promise<String> {
+    keys = await this.usersService.getKeys(userId);
+    const publicKey = keys.publicKey;
+    const privateKey = this.cryptoService.decryptPrivKey(
+      keys.encryptedPrivateKey,
+      password,
+      keys.salt,
+    );
+    keys = { publicKey, privateKey };
+    return keys;
+  }
+
+  async forgetPassword(user: UserForgetPasswordRequestDto): Promise<String> {
     const existingUser = await this.usersService.findOneByEmail(user.email);
     if (!existingUser) {
       throw new UnauthorizedException('User not exists');
@@ -180,71 +206,71 @@ export class AuthService {
       await this.usersService.setotp(hashedotp, otpExpire, email);
 
       const transporter = nodemailer.createTransport({
-          service: 'Gmail',
-          auth: {
-              user: `${process.env.EMAIL}`,
-              pass: `${process.env.EMAIL_KEY}`,
-          },
+        service: 'Gmail',
+        auth: {
+          user: `${process.env.EMAIL}`,
+          pass: `${process.env.EMAIL_KEY}`,
+        },
       });
 
       const mailOptions = {
-          from: `${process.env.EMAIL}`,
-          to: email,
-          subject: 'Password reset OTP',
-          text: `Your OTP (It is expired after 5 min) : ${otp}`,
+        from: `${process.env.EMAIL}`,
+        to: email,
+        subject: 'Password reset OTP',
+        text: `Your OTP (It is expired after 5 min) : ${otp}`,
       };
 
       // Await sendMail operation to ensure proper execution and error handling
       const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent:", info.response);
+      console.log('Email sent:', info.response);
 
-      return "Your OTP has been sent to your email.";
-  } catch (error) {
-      console.error("Error sending email:", error.message);
-      return "Error sending OTP"; // Return an error message
-  }
-  }
-  async resetPassword(
-    user: UserResetPasswordRequestDto
-  ): Promise<String> {
-      if (user.password.localeCompare(user.confirmPassword) != 0) throw new BadRequestException('Passwords do not match');
-      const existingUser = await this.usersService.checkotp(user.email);
-      try {      
-        const checkOtpMatched: boolean = await bcrypt.compare(user.otp, existingUser.resetPasswordToken);
-        if (!checkOtpMatched) return "OTP is invalid";
-        const changePassworddto = new UserChangePasswordRequestDto(
-          existingUser.id,
-          user.password,
-          user.confirmPassword
-        )
-        return await this.changePassword(changePassworddto);
-        
-    }
-    catch (err) {
-        return "Error";
+      return 'Your OTP has been sent to your email.';
+    } catch (error) {
+      console.error('Error sending email:', error.message);
+      return 'Error sending OTP'; // Return an error message
     }
   }
-  async changePassword( //use jwt and remove devises
-    user: UserChangePasswordRequestDto
+  async resetPassword(user: UserResetPasswordRequestDto): Promise<String> {
+    if (user.password.localeCompare(user.confirmPassword) != 0)
+      throw new BadRequestException('Passwords do not match');
+    const existingUser = await this.usersService.checkotp(user.email);
+    try {
+      const checkOtpMatched: boolean = await bcrypt.compare(
+        user.otp,
+        existingUser.resetPasswordToken,
+      );
+      if (!checkOtpMatched) return 'OTP is invalid';
+      const changePassworddto = new UserChangePasswordRequestDto(
+        existingUser.id,
+        user.password,
+        user.confirmPassword,
+      );
+      return await this.changePassword(changePassworddto);
+    } catch (err) {
+      return 'Error';
+    }
+  }
+  async changePassword(
+    //use jwt and remove devises
+    user: UserChangePasswordRequestDto,
   ): Promise<String> {
-    if (user.password.localeCompare(user.confirmPassword) != 0) throw new BadRequestException('Passwords do not match');
+    if (user.password.localeCompare(user.confirmPassword) != 0)
+      throw new BadRequestException('Passwords do not match');
     const existingUser = await this.usersService.findOneById(user.id);
     if (!existingUser) {
       throw new UnauthorizedException('User not exists');
     }
-    try {      
+    try {
       const salt = await bcrypt.genSalt();
       const hashedPassword = await bcrypt.hash(user.password, salt);
-      existingUser.password= hashedPassword;
-      await this.usersService.update(user.id, {password: hashedPassword,
+      existingUser.password = hashedPassword;
+      await this.usersService.update(user.id, {
+        password: hashedPassword,
         resetPasswordToken: null,
-        resetPasswordTokenSentAt: null
-      })
+        resetPasswordTokenSentAt: null,
+      });
+    } catch (err) {
+      return 'Error';
     }
-    catch (err) {
-        return "Error";
-    }
-
   }
 }
-
