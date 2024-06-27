@@ -1,5 +1,7 @@
+import { WorkoutDto } from '../../workout/dtos/workout.dto';
+
 export class WorkoutCollectionDto {
   name: string;
   description: string;
-  workout_ids: number[];
+  workouts: WorkoutDto[];
 }
