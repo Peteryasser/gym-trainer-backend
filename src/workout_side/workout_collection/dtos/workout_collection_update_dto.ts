@@ -1,4 +1,5 @@
 import { IsArray, IsOptional, IsString } from 'class-validator';
+import { WorkoutDto } from 'src/workout_side/workout/dtos/workout.dto';
 
 export class WorkoutCollectionUpdateDto {
   @IsOptional()
@@ -11,5 +12,5 @@ export class WorkoutCollectionUpdateDto {
 
   @IsOptional()
   @IsArray()
-  workout_ids?: number[];
+  workouts: WorkoutDto[];
 }
