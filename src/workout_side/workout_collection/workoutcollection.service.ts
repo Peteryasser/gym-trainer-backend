@@ -44,6 +44,7 @@ export class WorkoutCollectionService {
       name: createWorkoutCollectionDto.name,
       description: createWorkoutCollectionDto.description,
       type: true,
+      creationDate: new Date(),
       user,
     });
 
@@ -69,6 +70,20 @@ export class WorkoutCollectionService {
     message = 'Workout collection created successfully';
 
     return message;
+  }
+
+  async getDeaultCollectionsInfo() {
+    const connection = await ConnectionManager.getConnection();
+
+    // i want to get only id and name
+    const workoutCollections = await connection.manager.find(
+      WorkoutCollection,
+      {
+        where: { type: false },
+        select: ['id', 'name'],
+      },
+    );
+    return workoutCollections;
   }
 
   async deleteWorkoutCollection(user: User, id: number) {
@@ -124,6 +139,30 @@ export class WorkoutCollectionService {
     );
 
     return workoutCollections;
+  }
+
+  async getCollection(id: number) {
+    const connection = await ConnectionManager.getConnection();
+
+    const workoutCollection = await connection.manager.findOne(
+      WorkoutCollection,
+      {
+        where: { id },
+        relations: [
+          'workoutCollectionDetails',
+          'workoutCollectionDetails.workout',
+          'workoutCollectionDetails.workout.workoutExercises',
+          'workoutCollectionDetails.workout.workoutExercises.exercise',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.bodyPart',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.targetMuscle',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.secondaryMuscles',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.equipments',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.instructions',
+        ],
+      },
+    );
+
+    return workoutCollection;
   }
 
   async getDefaultCollections() {

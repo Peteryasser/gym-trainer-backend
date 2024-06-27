@@ -25,6 +25,9 @@ export class WorkoutCollection {
   @Column({ type: 'boolean', default: false })
   type: boolean;
 
+  @Column({ type: 'date', nullable: true })
+  creationDate: Date;
+
   @ManyToOne(() => User, (user) => user.workoutCollections, { nullable: false })
   @JoinColumn({ name: 'user_id' })
   user: User;
