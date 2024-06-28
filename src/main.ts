@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as bodyParser from 'body-parser';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-import * as fs from 'fs';
+// import * as fs from 'fs';
 
 async function bootstrap() {
   /* const httpsOptions = {
