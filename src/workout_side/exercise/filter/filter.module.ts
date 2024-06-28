@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Exercise } from 'src/entity/exercise.entity';
-import { BodyPart } from 'src/entity/bodyPart';
-import { Muscle } from 'src/entity/muscle';
-import { Equipment } from 'src/entity/equipment';
+import { Exercise } from '../../../entity/exercise.entity';
+import { BodyPart } from '../../../entity/bodyPart';
+import { Muscle } from '../../../entity/muscle';
+import { Equipment } from '../../../entity/equipment';
 import { ExerciseFilterService } from './filter.service';
 import { ExerciseFilterController } from './filter.controller';
 

@@ -7,13 +7,13 @@ import {
   Param,
   Patch,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { WorkoutPlanService } from './workoutplan.service';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/entity/user.entity';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { User } from '../../entity/user.entity';
 import { WorkoutPlanUpdateDto } from './dtos/workout_plan_update_dto';
-import { WorkoutPlan } from 'src/entity/workout-plan';
+import { WorkoutPlan } from '../../entity/workout-plan';
 
 @Controller('workout-plan')
 @UseGuards(JwtAuthGuard)

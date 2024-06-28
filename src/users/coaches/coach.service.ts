@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Coach } from '../../entity/coach.entity';
 import { Repository } from 'typeorm';
 import { CoachProfileDto } from './dtos/coach-profile.dto';
-import { PackageSummaryDto } from 'src/packages/dtos/package-summary.dto';
+import { PackageSummaryDto } from '../../packages/dtos/package-summary.dto';
 
 @Injectable()
 export class CoachesService {

@@ -1,6 +1,6 @@
 import { SelectQueryBuilder } from 'typeorm';
-import { Exercise } from 'src/entity/exercise.entity';
-import { User } from 'src/entity/user.entity';
+import { Exercise } from '../../../entity/exercise.entity';
+import { User } from '../../../entity/user.entity';
 
 export interface ExerciseFilter {
   apply(

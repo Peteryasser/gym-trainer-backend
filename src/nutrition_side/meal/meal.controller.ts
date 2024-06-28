@@ -1,11 +1,11 @@
 import { Controller, Get, Res, Param, Query,Post, UseGuards, Delete, Body, Patch, Put } from '@nestjs/common';
 import { MealService } from './meal.service';
-import { Meals } from 'src/entity/meals.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { Meals } from '../../entity/meals.entity';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { CreateMealDto } from './dtos/create-meal.dto';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/entity/user.entity';
-import { UserMealsHistory } from 'src/entity/user_meals_history.entity';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { User } from '../../entity/user.entity';
+import { UserMealsHistory } from '../../entity/user_meals_history.entity';
 
 
 

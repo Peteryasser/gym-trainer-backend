@@ -12,8 +12,8 @@ import { CoachesService } from '../users/coaches/coach.service';
 import { Coach } from '../entity/coach.entity';
 import { Device } from '../entity/device.entity';
 import { User } from '../entity/user.entity';
-import { CryptoService } from 'src/crypto/service/crypto.service';
-import { UserKeys } from 'src/entity/user-keys.entity';
+import { CryptoService } from '../crypto/service/crypto.service';
+import { UserKeys } from '../entity/user-keys.entity';
 
 @Module({
   imports: [

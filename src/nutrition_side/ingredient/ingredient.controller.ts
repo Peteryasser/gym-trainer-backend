@@ -1,12 +1,12 @@
 import { Controller, Get, Res, Param, BadRequestException, Query, UseGuards, Post, Delete } from '@nestjs/common';
-import { IngredientInfoDto } from 'src/nutrition_side/ingredient/dtos/ingredient.dto';
+import { IngredientInfoDto } from '../../nutrition_side/ingredient/dtos/ingredient.dto';
 import { IngredientService } from './ingredient.service';
 import { Response } from 'express';
-import { CloudinaryService } from 'src/utils/cloudinary/cloudinary.service';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/entity/user.entity';
-import { Ingredient } from 'src/entity/ingredients.entity';
+import { CloudinaryService } from '../../utils/cloudinary/cloudinary.service';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { User } from '../../entity/user.entity';
+import { Ingredient } from '../../entity/ingredients.entity';
 
 
 @Controller('ingredient')

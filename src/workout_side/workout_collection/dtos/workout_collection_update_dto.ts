@@ -1,5 +1,5 @@
 import { IsArray, IsOptional, IsString } from 'class-validator';
-import { WorkoutDto } from 'src/workout_side/workout/dtos/workout.dto';
+import { WorkoutDto } from '../../../workout_side/workout/dtos/workout.dto';
 
 export class WorkoutCollectionUpdateDto {
   @IsOptional()

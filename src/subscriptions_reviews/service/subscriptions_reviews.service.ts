@@ -1,15 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SubscriptionReview } from 'src/entity/subscription-review.entity';
+import { SubscriptionReview } from '../../entity/subscription-review.entity';
 import { CreateReviewDto } from '../dtos/create-review.dto';
 import { ReviewDto } from '../dtos/review.dto';
-import { User } from 'src/entity/user.entity';
+import { User } from '../../entity/user.entity';
 import { UpdateReviewDto } from '../dtos/update-review.dto';
 import { DataSource, Repository } from 'typeorm';
-import { PaginatedResultDto } from 'src/dtos/paginatied-result.dto';
+import { PaginatedResultDto } from '../../dtos/paginatied-result.dto';
 import { ReviewFilterDto } from '../dtos/review-filter.dto';
-import { paginate } from 'src/utils/pagination/pagination.util';
-import { Coach } from 'src/entity/coach.entity';
+import { paginate } from '../../utils/pagination/pagination.util';
+import { Coach } from '../../entity/coach.entity';
 
 @Injectable()
 export class SubscriptionsReviewsService {

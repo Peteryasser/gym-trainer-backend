@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 import { Coach } from './coach.entity';
-import { SocialMediaPlatformEnum } from 'src/coach_social_media/enums/social-media-platform.enum';
+import { SocialMediaPlatformEnum } from '../coach_social_media/enums/social-media-platform.enum';
 
 @Entity('coach_social_media_accounts')
 export class CoachSocialMedia {

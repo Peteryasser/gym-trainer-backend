@@ -19,7 +19,7 @@ import { JwtAuthGuard } from '../guards/jwt.auth.guard';
 import { AuthService } from '../service/auth.service';
 import { UserType } from '../../users/user-type.enum';
 import { UserTypeValidationPipe } from '../../pipe';
-import { RequestHeaders } from 'src/utils/headers/request-header.decorator';
+import { RequestHeaders } from '../../utils/headers/request-header.decorator';
 
 @Public()
 @Controller('auth')

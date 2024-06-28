@@ -3,9 +3,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Coach } from 'src/entity/coach.entity';
+import { Coach } from '../../entity/coach.entity';
 import { CreateSocialMediaDto } from '../dtos/create-social-media.dto';
-import { CoachSocialMedia } from 'src/entity/coach-social-media.entity';
+import { CoachSocialMedia } from '../../entity/coach-social-media.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateSocialMediaDto } from '../dtos/update-social-media.dto';

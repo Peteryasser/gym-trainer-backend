@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../entity/user.entity';
 import { MoreThan, Repository, UpdateResult } from 'typeorm';
 import { CoachSummaryDto } from '../coaches/dtos/coach-summary.dto';
-import { UserKeys } from 'src/entity/user-keys.entity';
+import { UserKeys } from '../../entity/user-keys.entity';
 
 @Injectable()
 export class UsersService {

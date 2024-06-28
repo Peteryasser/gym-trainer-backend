@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { CoachPostLike } from '../../../entity/coach-post-like.entity';
-import { CoachPost } from 'src/entity/coach-post.entity';
-import { PostsService } from 'src/coach_posts/posts/service/posts.service';
+import { CoachPost } from '../../../entity/coach-post.entity';
+import { PostsService } from '../../../coach_posts/posts/service/posts.service';
 
 @Injectable()
 export class PostLikesService {

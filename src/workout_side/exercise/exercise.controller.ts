@@ -9,16 +9,16 @@ import {
   Patch,
 } from '@nestjs/common';
 import { ExerciseService } from './exercise.service';
-import { Exercise } from 'src/entity/exercise.entity';
+import { Exercise } from '../../entity/exercise.entity';
 // import { ExerciseDTO } from './dtos/exercise.dto';
 import { UpdateExerciseDto } from './dtos/exercise_dto_update';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { DTORequest } from './dtos/exercise_dto_request';
-import { User } from 'src/entity/user.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
-import { BodyPart } from 'src/entity/bodyPart';
-import { Equipment } from 'src/entity/equipment';
-import { Muscle } from 'src/entity/muscle';
+import { User } from '../../entity/user.entity';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
+import { BodyPart } from '../../entity/bodyPart';
+import { Equipment } from '../../entity/equipment';
+import { Muscle } from '../../entity/muscle';
 
 @Controller('exercises')
 @UseGuards(JwtAuthGuard)
