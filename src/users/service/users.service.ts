@@ -8,14 +8,17 @@ import { User } from '../../entity/user.entity';
 import { MoreThan, Repository, UpdateResult } from 'typeorm';
 import { CoachSummaryDto } from '../coaches/dtos/coach-summary.dto';
 import { UserKeys } from '../../entity/user-keys.entity';
+import { CoachesService } from '../coaches/coach.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private readonly usersRepository: Repository<User>,
     @InjectRepository(UserKeys)
-    private keysRepository: Repository<UserKeys>,
+    private readonly keysRepository: Repository<UserKeys>,
+
+    private readonly coachesService: CoachesService,
   ) {}
 
   async findOneByEmail(
@@ -118,6 +121,8 @@ export class UsersService {
         'subscriptions',
         'subscriptions.package',
         'subscriptions.package.coach',
+        'subscriptions.package.coach.user',
+        'subscriptions.reviews',
       ],
     });
 
@@ -132,14 +137,21 @@ export class UsersService {
     ).map((id) => subscribedCoaches.find((coach) => coach.id === id));
 
     const coachSummaryDtos: CoachSummaryDto[] = await Promise.all(
-      uniqueCoaches.map(async (coach) => ({
-        id: coach.id,
-        name: (await coach.user).fullName,
-        profilePictureUrl: (await coach.user).profilePictureUrl,
-      })),
+      uniqueCoaches.map(async (coach) => {
+        const reviewsCount = await this.coachesService.getReviewsCount(
+          coach.id,
+        );
+
+        return {
+          id: coach.id,
+          name: `${(await coach.user).firstName} ${(await coach.user).lastName}`,
+          profilePictureUrl: (await coach.user).profilePictureUrl,
+          rating: coach.rating,
+          reviewsNo: reviewsCount,
+        };
+      }),
     );
 
     return coachSummaryDtos;
   }
-
 }
