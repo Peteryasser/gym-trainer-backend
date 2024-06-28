@@ -5,7 +5,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { WorkoutExercise } from './workout-exercise';
+import { WorkoutExercise } from './workout-exercise.entity';
 
 @Entity({ name: 'workout_exercise_details' })
 export class WorkoutExerciseDetails {

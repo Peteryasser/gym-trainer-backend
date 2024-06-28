@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Workout } from './workout.entity';
 import { Exercise } from './exercise.entity';
-import { WorkoutExerciseDetails } from './workout-exercise-details';
+import { WorkoutExerciseDetails } from './workout-exercise-details.entity';
 
 @Entity({ name: 'workout_exercises' })
 export class WorkoutExercise {

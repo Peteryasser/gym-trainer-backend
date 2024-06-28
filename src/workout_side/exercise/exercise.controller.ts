@@ -16,9 +16,9 @@ import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { DTORequest } from './dtos/exercise_dto_request';
 import { User } from '../../entity/user.entity';
 import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
-import { BodyPart } from '../../entity/bodyPart';
-import { Equipment } from '../../entity/equipment';
-import { Muscle } from '../../entity/muscle';
+import { BodyPart } from '../../entity/bodyPart.entity';
+import { Equipment } from '../../entity/equipment.entity';
+import { Muscle } from '../../entity/muscle.entity';
 
 @Controller('exercises')
 @UseGuards(JwtAuthGuard)

@@ -3,11 +3,11 @@ import { User } from '../../entity/user.entity';
 import { config as dotenvConfig } from 'dotenv';
 import { ConnectionManager } from '../../config/connection_manager';
 import { Exercise } from '../../entity/exercise.entity';
-import { SavedExercise } from '../../entity/saved-exercises';
+import { SavedExercise } from '../../entity/saved-exercises.entity';
 import { Workout } from '../../entity/workout.entity';
-import { SavedWorkout } from '../../entity/saved-workouts';
-import { WorkoutCollection } from '../../entity/workout-collection';
-import { SavedWorkoutCollection } from '../../entity/saved-workout-collection';
+import { SavedWorkout } from '../../entity/saved-workouts.entity';
+import { WorkoutCollection } from '../../entity/workout-collection.entity';
+import { SavedWorkoutCollection } from '../../entity/saved-workout-collection.entity';
 import { retry } from 'rxjs';
 
 dotenvConfig({ path: '.env' });

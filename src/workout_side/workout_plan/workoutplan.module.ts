@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { WorkoutPlan } from '../../entity/workout-plan';
-import { WorkoutPlanDetails } from '../../entity/workout-plan-details';
+import { WorkoutPlan } from '../../entity/workout-plan.entity';
+import { WorkoutPlanDetails } from '../../entity/workout-plan-details.entity';
 import { WorkoutPlanService } from './workoutplan.service';
 import { WorkoutPlanController } from './workoutplan.controller';
 import { User } from '../../entity/user.entity';
-import { WorkoutCollection } from '../../entity/workout-collection';
+import { WorkoutCollection } from '../../entity/workout-collection.entity';
 
 @Module({
   imports: [

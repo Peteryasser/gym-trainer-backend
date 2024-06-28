@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ExerciseService } from './exercise.service';
 import { Exercise } from '../../entity/exercise.entity';
-import { Equipment } from '../../entity/equipment';
-import { BodyPart } from '../../entity/bodyPart';
-import { Instruction } from '../../entity/instruction';
-import { Muscle } from '../../entity/muscle';
+import { Equipment } from '../../entity/equipment.entity';
+import { BodyPart } from '../../entity/bodyPart.entity';
+import { Instruction } from '../../entity/instruction.entity';
+import { Muscle } from '../../entity/muscle.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExerciseController } from './exercise.controller';
 
