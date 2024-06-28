@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CloudinaryModule } from './utils/cloudinary/cloudinary.module';
@@ -11,8 +10,6 @@ import { ImageService } from './utils/image/image.service';
 import { WorkoutController } from './workout_side/workout/workout.controller';
 import { ExerciseModule } from './workout_side/exercise/exercise.module';
 import { ExerciseService } from './workout_side/exercise/exercise.service';
-
-
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PopulationModule } from './population/population.module';
@@ -52,10 +49,6 @@ import { CoachPostsModule } from './coach_posts/coach_posts.module';
 import { CryptoModule } from './crypto/crypto.module';
 import { ChatModule } from './chat/chat.module';
 import { FirebaseService } from './firebase/firebase.service';
-import { ChatController } from './chat/chat.controller';
-import { CryptoController } from './crypto/controller/crypto.controller';
-import { CryptoService } from './crypto/service/crypto.service';
-import { CryptoRsaModule } from './crypto-rsa/crypto-rsa.module';
 import { MealPlanModule } from './nutrition_side/meal_plan/meal_plan.module';
 import { MealPlanPackageModule } from './nutrition_side/meal-plan-package/mealplanpackage.module';
 
@@ -100,7 +93,6 @@ import { MealPlanPackageModule } from './nutrition_side/meal-plan-package/mealpl
     MealPlanPackageModule,
     CryptoModule,
     ChatModule,
-    CryptoRsaModule,
   ],
   controllers: [
     AppController,

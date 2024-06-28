@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Meals } from 'src/entity/meals.entity';
+import { Meals } from '../../entity/meals.entity';
 import { Repository } from 'typeorm';
 import { CreateMealDto } from './dtos/create-meal.dto';
-import { User } from 'src/entity/user.entity';
-import { MealCategories } from 'src/entity/meal_categories.entity';
-import { Recipes } from 'src/entity/recipes.entity';
-import { MealRecipes } from 'src/entity/meal_recipes.entity';
-import { SavedMeals } from 'src/entity/saved_meals.entity';
-import { UserMealsHistory } from 'src/entity/user_meals_history.entity';
+import { User } from '../../entity/user.entity';
+import { MealCategories } from '../../entity/meal_categories.entity';
+import { Recipes } from '../../entity/recipes.entity';
+import { MealRecipes } from '../../entity/meal_recipes.entity';
+import { SavedMeals } from '../../entity/saved_meals.entity';
+import { UserMealsHistory } from '../../entity/user_meals_history.entity';
 
 
 @Injectable()

@@ -1,13 +1,34 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as admin from 'firebase-admin';
+import * as dotenv from 'dotenv';
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
+  constructor() {
+    dotenv.config(); // Load environment variables from .env file
+  }
+
   onModuleInit() {
     if (admin.apps.length === 0) {
-      const serviceAccount = require('../../fireBaseService2.json');
+      const serviceAccount = {
+        type: process.env.FIREBASE_TYPE,
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        privateKeyId: process.env.FIREBASE_PRIVATE_KEY_ID,
+        clientCertUrl: process.env.FIREBASE_CLIENT_CERT_URL,
+        client_id: process.env.FIREBASE_CLIENT_ID,
+        auth_uri: process.env.FIREBASE_AUTH_URI,
+        token_uri: process.env.FIREBASE_TOKEN_URI,
+        auth_provider_x509_cert_url:
+          process.env.FIREBASE_AUTH_PROVIDER_CERT_URL,
+        client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL,
+      };
+
       admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+        credential: admin.credential.cert(
+          serviceAccount as admin.ServiceAccount,
+        ),
       });
     }
   }
@@ -21,15 +42,26 @@ export class FirebaseService implements OnModuleInit {
   }
 
   async createDocumentInTestCollection(data: any) {
-    const docRef = this.firestore.collection('testA').doc('5').collection('testB').doc();
+    const docRef = this.firestore
+      .collection('testA')
+      .doc('5')
+      .collection('testB')
+      .doc();
     await docRef.set(data);
     return docRef.id;
   }
 
   async createSubcollection(chatId: string) {
     // Ensure the parent document exists
-    await this.firestore.collection('chats').doc(chatId).set({}, { merge: true });
-    await this.firestore.collection('chats').doc(chatId).collection('messages').add({});
+    await this.firestore
+      .collection('chats')
+      .doc(chatId)
+      .set({}, { merge: true });
+    await this.firestore
+      .collection('chats')
+      .doc(chatId)
+      .collection('messages')
+      .add({});
 
     return 'Subcollection created under chatId: ' + chatId;
   }
@@ -39,8 +71,7 @@ export class FirebaseService implements OnModuleInit {
     console.log('chatId: ', chatId);
     console.log('userAId: ', userAId);
     console.log('userBId: ', userBId);
-    
-    
+
     // Validate user IDs
     if (!userAId || !userBId) {
       throw new Error('Invalid user IDs provided.');

@@ -1,10 +1,10 @@
-import { User } from 'src/entity/user.entity';
+import { User } from '../../entity/user.entity';
 import { WorkoutHistoryDTO } from './dtos/workoutHistory_dto';
-import { WorkoutHistory } from 'src/entity/user-workout-history';
+import { WorkoutHistory } from '../../entity/user-workout-history';
 import { config as dotenvConfig } from 'dotenv';
-import { ConnectionManager } from 'src/config/connection_manager';
+import { ConnectionManager } from '../../config/connection_manager';
 import { Injectable } from '@nestjs/common';
-import { Workout } from 'src/entity/workout.entity';
+import { Workout } from '../../entity/workout.entity';
 
 dotenvConfig({ path: '.env' });
 @Injectable()

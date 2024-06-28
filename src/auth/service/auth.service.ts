@@ -24,7 +24,7 @@ import { UserType } from '../../users/user-type.enum';
 import { TokenPayload } from '../types/token.payload';
 import { User } from '../../entity/user.entity';
 import { Coach } from '../../entity/coach.entity';
-import { CryptoService } from 'src/crypto/service/crypto.service';
+import { CryptoService } from '../../crypto/service/crypto.service';
 import { UserKeysDto } from '../dtos/user-keys.dto';
 
 @Injectable()

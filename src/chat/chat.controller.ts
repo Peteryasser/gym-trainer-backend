@@ -3,10 +3,10 @@ import { FirebaseService } from '../firebase/firebase.service';
 import { assert, log } from 'console';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ChatKeys } from 'src/entity/chat-keys.entity';
-import { User } from 'src/entity/user.entity';
-import { CryptoService } from 'src/crypto/service/crypto.service';
-import { UserKeys } from 'src/entity/user-keys.entity';
+import { ChatKeys } from '../entity/chat-keys.entity';
+import { User } from '../entity/user.entity';
+import { CryptoService } from '../crypto/service/crypto.service';
+import { UserKeys } from '../entity/user-keys.entity';
 
 @Controller('chat')
 export class ChatController {

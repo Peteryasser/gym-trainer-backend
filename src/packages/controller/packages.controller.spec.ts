@@ -66,7 +66,10 @@ describe('PackagesController', () => {
 
   describe('getAll', () => {
     it('should get all packages', async () => {
-      const filterDto: PackageFilterDto = {};
+      const filterDto: PackageFilterDto = {
+        page: 1,
+        pageSize: 1,
+      };
       const result: Package[] = [
         { id: 1, description: 'Test Package' } as Package,
       ];
@@ -84,7 +87,7 @@ describe('PackagesController', () => {
 
       mockPackageService.getById.mockResolvedValue(result);
 
-      expect(await controller.getById(1, mockUser)).toEqual(result);
+      expect(await controller.getById(1)).toEqual(result);
       expect(service.getById).toHaveBeenCalledWith(mockUser, 1);
     });
   });

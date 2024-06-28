@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { CoachPost } from './coach-post.entity';
-import { MultimediaTypeEnum } from 'src/coach_posts/multimedia/enum/multimedia-type.enum';
+import { MultimediaTypeEnum } from '../coach_posts/multimedia/enum/multimedia-type.enum';
 
 @Entity('coach_posts_multimedia')
 export class CoachPostMultimedia {

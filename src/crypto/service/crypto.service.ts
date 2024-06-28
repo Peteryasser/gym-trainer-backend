@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ec as EC } from 'elliptic';
 import * as crypto from 'crypto';
-import { UserKeys } from 'src/entity/user-keys.entity';
+import { UserKeys } from '../../entity/user-keys.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';

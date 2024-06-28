@@ -5,11 +5,11 @@ import {
   ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { JwtAuthGuard } from '../../../auth/guards/jwt.auth.guard';
 import { CoachesService } from '../coach.service';
 import { CoachProfileDto } from '../dtos/coach-profile.dto';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { Coach } from 'src/entity/coach.entity';
+import { GetUser } from '../../../auth/decorators/get-user.decorator';
+import { Coach } from '../../../entity/coach.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('coach_profile')

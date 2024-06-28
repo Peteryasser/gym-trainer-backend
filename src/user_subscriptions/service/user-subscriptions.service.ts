@@ -17,9 +17,9 @@ import { Coach } from '../../entity/coach.entity';
 import { SubscriptionFilterDto } from '../dtos/subscription-filter.dto';
 import { PaginatedResultDto } from '../../dtos/paginatied-result.dto';
 import { paginate } from '../../utils/pagination/pagination.util';
-import { NotificationsService } from 'src/notifications/service/notifications.service';
+import { NotificationsService } from '../../notifications/service/notifications.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { NewUserSubscriptionEvent } from 'src/notifications/events/user-activity-events';
+import { NewUserSubscriptionEvent } from '../../notifications/events/user-activity-events';
 
 @Injectable()
 export class UserSubscriptionsService {

@@ -74,7 +74,12 @@ describe('PackagesService', () => {
     describe('getAll', () => {
       it('should return a list of packages based on filter', async () => {
         const user: Coach = { id: 1 } as Coach;
-        const filterDto: PackageFilterDto = { keyword: 'Test', minPrice: 50 };
+        const filterDto: PackageFilterDto = {
+          keyword: 'Test',
+          minPrice: 50,
+          page: 1,
+          pageSize: 1,
+        };
 
         const queryBuilder = {
           where: jest.fn().mockReturnThis(),
@@ -99,7 +104,7 @@ describe('PackagesService', () => {
 
         mockPackageRepository.findOneBy.mockResolvedValue(foundPackage);
 
-        const result = await service.getById(user, packageId);
+        const result = await service.getById(packageId);
         expect(packageRepository.findOneBy).toHaveBeenCalledWith({
           id: packageId,
           coach: user,
@@ -113,7 +118,7 @@ describe('PackagesService', () => {
 
         mockPackageRepository.findOneBy.mockResolvedValue(null);
 
-        await expect(service.getById(user, packageId)).rejects.toThrow(
+        await expect(service.getById(packageId)).rejects.toThrow(
           NotFoundException,
         );
       });

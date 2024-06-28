@@ -5,12 +5,12 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import * as fs from 'fs';
 
 async function bootstrap() {
-  const httpsOptions = {
+  /* const httpsOptions = {
     key: fs.readFileSync('./key.pem'),
     cert: fs.readFileSync('./cert.pem'),
-  };
+  };*/
   const app = await NestFactory.create(AppModule, {
-    httpsOptions,
+    // httpsOptions,
   });
   app.setGlobalPrefix('api');
   app.enableVersioning({

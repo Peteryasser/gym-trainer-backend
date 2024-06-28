@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { User } from 'src/entity/user.entity';
+import { User } from '../../entity/user.entity';
 import { config as dotenvConfig } from 'dotenv';
-import { ConnectionManager } from 'src/config/connection_manager';
-import { Exercise } from 'src/entity/exercise.entity';
-import { SavedExercise } from 'src/entity/saved-exercises';
-import { Workout } from 'src/entity/workout.entity';
-import { SavedWorkout } from 'src/entity/saved-workouts';
-import { WorkoutCollection } from 'src/entity/workout-collection';
-import { SavedWorkoutCollection } from 'src/entity/saved-workout-collection';
+import { ConnectionManager } from '../../config/connection_manager';
+import { Exercise } from '../../entity/exercise.entity';
+import { SavedExercise } from '../../entity/saved-exercises';
+import { Workout } from '../../entity/workout.entity';
+import { SavedWorkout } from '../../entity/saved-workouts';
+import { WorkoutCollection } from '../../entity/workout-collection';
+import { SavedWorkoutCollection } from '../../entity/saved-workout-collection';
 import { retry } from 'rxjs';
 
 dotenvConfig({ path: '.env' });

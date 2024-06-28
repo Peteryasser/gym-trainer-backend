@@ -1,8 +1,8 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { CryptoService } from '../service/crypto.service';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/entity/user.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { User } from '../../entity/user.entity';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 
 // @UseGuards(JwtAuthGuard)
 @Controller('crypto')

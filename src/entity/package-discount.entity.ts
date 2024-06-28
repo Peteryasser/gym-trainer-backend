@@ -1,4 +1,4 @@
-import {
+/*import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
@@ -26,3 +26,4 @@ export class PackageDiscount {
   @Column({ nullable: false })
   endDate: Date;
 }
+*/

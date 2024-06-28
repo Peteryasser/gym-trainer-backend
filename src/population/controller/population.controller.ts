@@ -1,11 +1,11 @@
 import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
-import { AppService } from 'src/app.service';
-import { CloudinaryService } from 'src/utils/cloudinary/cloudinary.service';
-import { CLOUDINARY_EXERCISES_FOLDER_NAME, CSV_ASSISTED_POPULATION } from 'src/constants';
-import { ExerciseDTO } from 'src/workout_side/exercise/dtos/exercise.dto';
-import { ExerciseService } from 'src/workout_side/exercise/exercise.service';
-import { ImageService } from 'src/utils/image/image.service';
-import { CSVReaderService } from 'src/utils/Readers/csv_reader.service';
+import { AppService } from '../../app.service';
+import { CloudinaryService } from '../../utils/cloudinary/cloudinary.service';
+import { CLOUDINARY_EXERCISES_FOLDER_NAME, CSV_ASSISTED_POPULATION } from '../../constants';
+import { ExerciseDTO } from '../../workout_side/exercise/dtos/exercise.dto';
+import { ExerciseService } from '../../workout_side/exercise/exercise.service';
+import { ImageService } from '../../utils/image/image.service';
+import { CSVReaderService } from '../../utils/Readers/csv_reader.service';
 import { log } from 'console';
 
 @Controller('population')

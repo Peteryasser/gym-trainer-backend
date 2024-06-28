@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { DurationUnitEnum } from '../packages/duration-unit.enum';
 import { Coach } from './coach.entity';
-import { PackageDiscount } from './package-discount.entity';
+//import { PackageDiscount } from './package-discount.entity';
 import { UserSubscription } from './user-subscription.entity';
 import { UserPackageMealPlans } from './user_package_meal_plans.entity';
 import { UserPackageWorkoutPlan } from './user-package-workoutPlan';
@@ -40,14 +40,14 @@ export class Package {
 
   @Column({ default: false })
   hasNutrition: boolean;
-
+  /*
   @OneToMany(
     () => PackageDiscount,
     (package_discount) => package_discount.package,
     { cascade: true },
   )
   discounts: PackageDiscount[];
-
+  */
   @OneToMany(() => UserSubscription, (subscription) => subscription.package)
   subscriptions: UserSubscription[];
 
