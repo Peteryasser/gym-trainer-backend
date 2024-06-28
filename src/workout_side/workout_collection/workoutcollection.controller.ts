@@ -13,7 +13,7 @@ import { WorkoutCollectionService } from './workoutcollection.service';
 import { WorkoutCollectionDto } from './dtos/workout_collection_dto';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { User } from '../../entity/user.entity';
-import { WorkoutCollection } from '../../entity/workout-collection';
+import { WorkoutCollection } from '../../entity/workout-collection.entity';
 import { WorkoutCollectionUpdateDto } from './dtos/workout_collection_update_dto';
 
 @Controller('workout-collection')

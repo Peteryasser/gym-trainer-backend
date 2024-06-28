@@ -1,6 +1,6 @@
 import { User } from '../../entity/user.entity';
 import { WorkoutHistoryDTO } from './dtos/workoutHistory_dto';
-import { WorkoutHistory } from '../../entity/user-workout-history';
+import { WorkoutHistory } from '../../entity/user-workout-history.entity';
 import { config as dotenvConfig } from 'dotenv';
 import { ConnectionManager } from '../../config/connection_manager';
 import { Injectable } from '@nestjs/common';

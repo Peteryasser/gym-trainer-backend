@@ -4,8 +4,8 @@ import { User } from '../../entity/user.entity';
 import { ConnectionManager } from '../../config/connection_manager';
 import { WorkoutPlanPackageDTO } from './dtos/workout_package_dto';
 import { Package } from '../../entity/coach-package.entity';
-import { WorkoutPlan } from '../../entity/workout-plan';
-import { UserPackageWorkoutPlan } from '../../entity/user-package-workoutPlan';
+import { WorkoutPlan } from '../../entity/workout-plan.entity';
+import { UserPackageWorkoutPlan } from '../../entity/user-package-workoutPlan.entity';
 import { WorkoutPlanPackageUpdateDTO } from './dtos/workout_package_update';
 import { Coach } from '../../entity/coach.entity';
 

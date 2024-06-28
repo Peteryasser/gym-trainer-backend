@@ -5,7 +5,7 @@ import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { User } from '../../entity/user.entity';
 import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { WorkoutHistoryDTO } from './dtos/workoutHistory_dto';
-import { WorkoutHistory } from '../../entity/user-workout-history';
+import { WorkoutHistory } from '../../entity/user-workout-history.entity';
 
 @Controller('workout-history')
 @UseGuards(JwtAuthGuard)

@@ -3,8 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { WorkoutService } from './workout.service';
 import { WorkoutController } from './workout.controller';
 import { Workout } from '../../entity/workout.entity';
-import { WorkoutExercise } from '../../entity/workout-exercise';
-import { WorkoutExerciseDetails } from '../../entity/workout-exercise-details';
+import { WorkoutExercise } from '../../entity/workout-exercise.entity';
+import { WorkoutExerciseDetails } from '../../entity/workout-exercise-details.entity';
 import { Exercise } from '../../entity/exercise.entity';
 
 @Module({

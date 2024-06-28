@@ -4,8 +4,8 @@ import { User } from '../../entity/user.entity';
 import { WorkoutCollectionDto } from './dtos/workout_collection_dto';
 import { ConnectionManager } from '../../config/connection_manager';
 import { Workout } from '../../entity/workout.entity';
-import { WorkoutCollection } from '../../entity/workout-collection';
-import { WorkoutCollectionDetails } from '../../entity/workout-collection-details';
+import { WorkoutCollection } from '../../entity/workout-collection.entity';
+import { WorkoutCollectionDetails } from '../../entity/workout-collection-details.entity';
 import { WorkoutCollectionUpdateDto } from './dtos/workout_collection_update_dto';
 import { WorkoutService } from '../../workout_side/workout/workout.service';
 

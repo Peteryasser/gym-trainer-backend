@@ -3,9 +3,9 @@ import { config as dotenvConfig } from 'dotenv';
 import { WorkoutPlanDto } from './dtos/workout_plan_dto';
 import { User } from '../../entity/user.entity';
 import { ConnectionManager } from '../../config/connection_manager';
-import { WorkoutCollection } from '../../entity/workout-collection';
-import { WorkoutPlan } from '../../entity/workout-plan';
-import { WorkoutPlanDetails } from '../../entity/workout-plan-details';
+import { WorkoutCollection } from '../../entity/workout-collection.entity';
+import { WorkoutPlan } from '../../entity/workout-plan.entity';
+import { WorkoutPlanDetails } from '../../entity/workout-plan-details.entity';
 import { WorkoutPlanUpdateDto } from './dtos/workout_plan_update_dto';
 
 dotenvConfig({ path: '.env' });
