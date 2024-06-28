@@ -6,6 +6,7 @@ export class CoachProfileDto {
   name: string;
   profilePictureUrl: string;
   rating: number;
+  reviewsNo: number;
   traineesNo: number;
   mostRecentPost: CoachPost;
   packages: PackageSummaryDto[];
