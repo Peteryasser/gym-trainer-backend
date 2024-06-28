@@ -12,9 +12,9 @@ const config = {
   username: `${process.env.DATABASE_USERNAME}`,
   password: `${process.env.DATABASE_PASSWORD}`,
   database: `${process.env.DATABASE}`,
-  entities: ['dist/entity/**/*{.ts,.js}'],
+  // entities: ['dist/entity/**/*{.ts,.js}'],
   migrations: [join(__dirname, '../migrations/*.{ts,js}')],
-
+  entities: [__dirname + '/../**/*.entity.{js,ts}'],
   // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   // migrations: [join(__dirname, '/../../', 'database/migrations/**/*{.ts,.js}')],
   logging: true,
