@@ -114,7 +114,6 @@ export class UsersService {
 
   async getMyCoaches(userId: number): Promise<CoachSummaryDto[]> {
     const now = new Date();
-
     const user = await this.usersRepository.findOne({
       where: { id: userId },
       relations: [
