@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { WorkoutCollection } from './workout-collection';
+import { WorkoutCollection } from './workout-collection.entity';
 import { Workout } from './workout.entity';
 
 @Entity({ name: 'workout_collection_details' })

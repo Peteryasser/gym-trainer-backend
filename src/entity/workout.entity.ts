@@ -7,11 +7,11 @@ import {
   OneToMany,
 } from 'typeorm';
 import { User } from './user.entity';
-import { SavedWorkout } from './saved-workouts';
+import { SavedWorkout } from './saved-workouts.entity';
 // import { WorkoutPlanDetails } from './workout-plan-details';
-import { WorkoutExercise } from './workout-exercise';
-import { WorkoutHistory } from './user-workout-history';
-import { WorkoutCollectionDetails } from './workout-collection-details';
+import { WorkoutExercise } from './workout-exercise.entity';
+import { WorkoutHistory } from './user-workout-history.entity';
+import { WorkoutCollectionDetails } from './workout-collection-details.entity';
 
 @Entity({ name: 'workouts' })
 export class Workout {
@@ -21,7 +21,7 @@ export class Workout {
   @Column({ type: 'boolean', default: false })
   type: boolean;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   description: string;
 
   @ManyToOne(() => User, (user) => user.workouts, { nullable: true })

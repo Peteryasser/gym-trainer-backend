@@ -7,13 +7,13 @@ import {
   Param,
   Patch,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { WorkoutCollectionService } from './workoutcollection.service';
 import { WorkoutCollectionDto } from './dtos/workout_collection_dto';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/entity/user.entity';
-import { WorkoutCollection } from 'src/entity/workout-collection';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { User } from '../../entity/user.entity';
+import { WorkoutCollection } from '../../entity/workout-collection.entity';
 import { WorkoutCollectionUpdateDto } from './dtos/workout_collection_update_dto';
 
 @Controller('workout-collection')
@@ -23,9 +23,15 @@ export class WorkoutCollectionController {
     private readonly workutCollectionService: WorkoutCollectionService,
   ) {}
 
-  @Get('test')
-  async test(): Promise<string> {
-    return 'WorkoutCollectionController test';
+  @Get('get-deault-collections-info')
+  async test(): Promise<WorkoutCollection[]> {
+    // return 'WorkoutCollectionController test';
+    return this.workutCollectionService.getDeaultCollectionsInfo();
+  }
+
+  @Get('get-collection/:id')
+  async getCollection(@Param('id') id: number): Promise<WorkoutCollection> {
+    return this.workutCollectionService.getCollection(id);
   }
 
   @Post('create')

@@ -4,10 +4,10 @@ import { Response } from 'express';
 import { readFileSync } from 'fs';
 import { RecipeDto } from './dtos/recipe_info.dto';
 import { RecipeIngredientDto } from './dtos/recipe-ingredient.dto';
-import { Recipes } from 'src/entity/recipes.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/entity/user.entity';
+import { Recipes } from '../../entity/recipes.entity';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { User } from '../../entity/user.entity';
 import { CreateRecipeDto } from './dtos/create-recipe.dto';
 
 

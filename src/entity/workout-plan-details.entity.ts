@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { WorkoutPlan } from './workout-plan';
+import { WorkoutPlan } from './workout-plan.entity';
 // import { Workout } from './workout.entity';
-import { WorkoutCollection } from './workout-collection';
+import { WorkoutCollection } from './workout-collection.entity';
 
 @Entity({ name: 'workout_plan_details' })
 export class WorkoutPlanDetails {

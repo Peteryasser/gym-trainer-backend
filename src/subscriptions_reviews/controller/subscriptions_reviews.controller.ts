@@ -15,11 +15,11 @@ import { CreateReviewDto } from '../dtos/create-review.dto';
 import { UpdateReviewDto } from '../dtos/update-review.dto';
 import { User } from '../../entity/user.entity';
 import { Coach } from '../../entity/coach.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { ReviewFilterDto } from '../dtos/review-filter.dto';
 import { ReviewDto } from '../dtos/review.dto';
-import { PaginatedResultDto } from 'src/dtos/paginatied-result.dto';
+import { PaginatedResultDto } from '../../dtos/paginatied-result.dto';
 
 @Controller('user_reviews')
 @UseGuards(JwtAuthGuard)

@@ -7,9 +7,9 @@ import {
   OneToMany,
 } from 'typeorm';
 import { User } from './user.entity';
-import { WorkoutCollectionDetails } from './workout-collection-details';
-import { WorkoutPlanDetails } from './workout-plan-details';
-import { SavedWorkoutCollection } from './saved-workout-collection';
+import { WorkoutCollectionDetails } from './workout-collection-details.entity';
+import { WorkoutPlanDetails } from './workout-plan-details.entity';
+import { SavedWorkoutCollection } from './saved-workout-collection.entity';
 
 @Entity({ name: 'workout_collections' })
 export class WorkoutCollection {
@@ -24,6 +24,9 @@ export class WorkoutCollection {
 
   @Column({ type: 'boolean', default: false })
   type: boolean;
+
+  @Column({ type: 'date', nullable: true })
+  creationDate: Date;
 
   @ManyToOne(() => User, (user) => user.workoutCollections, { nullable: false })
   @JoinColumn({ name: 'user_id' })

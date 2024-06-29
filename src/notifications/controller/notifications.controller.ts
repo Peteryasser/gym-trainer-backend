@@ -6,12 +6,12 @@ import {
   Patch,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { NotificationsService } from '../service/notifications.service';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { Coach } from 'src/entity/coach.entity';
-import { AppNotification } from 'src/entity/app-notification.entity';
-import { User } from 'src/entity/user.entity';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { Coach } from '../../entity/coach.entity';
+import { AppNotification } from '../../entity/app-notification.entity';
+import { User } from '../../entity/user.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('notifications')

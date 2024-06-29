@@ -5,7 +5,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { WorkoutExercise } from './workout-exercise';
+import { WorkoutExercise } from './workout-exercise.entity';
 
 @Entity({ name: 'workout_exercise_details' })
 export class WorkoutExerciseDetails {
@@ -28,8 +28,8 @@ export class WorkoutExerciseDetails {
   @Column('float', { array: true, default: [] })
   weights: number[];
 
-  @Column({ type: 'int' })
-  reps: number;
+  @Column('int', { array: true, default: [] })
+  reps: number[];
 
   @Column({ type: 'int' })
   duration: number;

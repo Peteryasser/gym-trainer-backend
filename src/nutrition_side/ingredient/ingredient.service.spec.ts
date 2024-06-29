@@ -2,12 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { IngredientService } from './ingredient.service';
-import { IngredientCategory } from 'src/entity/ingredient_categories.entity';
-import { Ingredient } from 'src/entity/ingredients.entity';
-import { SavedIngredients } from 'src/entity/saved_ingredients.entity';
-import { User } from 'src/entity/user.entity';
+import { IngredientCategory } from '../../entity/ingredient_categories.entity';
+import { Ingredient } from '../../entity/ingredients.entity';
+import { SavedIngredients } from '../../entity/saved_ingredients.entity';
+import { User } from '../../entity/user.entity';
 import { Repository } from 'typeorm';
-import { CSVReaderService } from 'src/utils/Readers/csv_reader.service'; // Ensure this path is correct
+import { CSVReaderService } from '../../utils/Readers/csv_reader.service'; // Ensure this path is correct
 
 describe('IngredientService', () => {
   let service: IngredientService;

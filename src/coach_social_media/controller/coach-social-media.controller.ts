@@ -10,11 +10,11 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { CoachSocialMediaService } from '../service/coach-social-media.service';
-import { CoachSocialMedia } from 'src/entity/coach-social-media.entity';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { Coach } from 'src/entity/coach.entity';
+import { CoachSocialMedia } from '../../entity/coach-social-media.entity';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { Coach } from '../../entity/coach.entity';
 import { CreateSocialMediaDto } from '../dtos/create-social-media.dto';
 import { UpdateSocialMediaDto } from '../dtos/update-social-media.dto';
 

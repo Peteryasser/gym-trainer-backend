@@ -11,7 +11,7 @@ import { Coach } from './coach.entity';
 import { PackageDiscount } from './package-discount.entity';
 import { UserSubscription } from './user-subscription.entity';
 import { UserPackageMealPlans } from './user_package_meal_plans.entity';
-import { UserPackageWorkoutPlan } from './user-package-workoutPlan';
+import { UserPackageWorkoutPlan } from './user-package-workoutPlan.entity';
 
 @Entity('coach_packages')
 export class Package {

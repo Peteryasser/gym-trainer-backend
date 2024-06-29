@@ -34,6 +34,8 @@ export class AuthController {
     @Body() payload: UserLoginRequestDto,
     @RequestHeaders() headers,
   ): Promise<UserAuthResponseDto> {
+
+    console.log("got login request: ", payload);
     return this.authService.login(
       userType,
       payload,
@@ -45,6 +47,7 @@ export class AuthController {
   async register(
     @Body() payload: UserRegisterRequestDto,
   ): Promise<UserAuthResponseDto> {
+    console.log("got register request: ", payload);
     return await this.authService.register(payload);
   }
 
@@ -53,6 +56,7 @@ export class AuthController {
   @Delete('logout')
   async logout(@Req() req): Promise<void> {
     const deviceID = req.user.device.id;
+    console.log("got logout request: ", deviceID);
 
     await this.authService.logout(deviceID);
   }
@@ -61,12 +65,14 @@ export class AuthController {
   async forgetPassword(
     @Body() payload: { user: UserForgetPasswordRequestDto },
   ): Promise<String | BadRequestException> {
+    console.log("got forgetPassword request: ", payload);
     return await this.authService.forgetPassword(payload.user);
   }
   @Post('resetPassword')
   async resetPassword(
     @Body() payload: { user: UserResetPasswordRequestDto },
   ): Promise<String | BadRequestException> {
+    console.log("got resetPassword request: ", payload);
     return await this.authService.resetPassword(payload.user);
   }
   @UseGuards(JwtAuthGuard)

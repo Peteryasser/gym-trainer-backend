@@ -12,7 +12,7 @@ import {
 import { User } from './user.entity';
 import { Coach } from './coach.entity';
 import { validateOrReject } from 'class-validator';
-import { NotificationTypeEnum } from 'src/notifications/enums/notification-type.enum';
+import { NotificationTypeEnum } from '../notifications/enums/notification-type.enum';
 
 @Entity('notifications')
 export class AppNotification {

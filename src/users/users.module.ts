@@ -5,13 +5,15 @@ import { DevicesService } from './service/devices.service';
 import { User } from '../entity/user.entity';
 import { Device } from '../entity/device.entity';
 import { UsersController } from './controller/users.controller';
-import { UserKeys } from 'src/entity/user-keys.entity';
+import { UserKeys } from '../entity/user-keys.entity';
+import { CoachesService } from './coaches/coach.service';
+import { Coach } from '../entity/coach.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Device, UserKeys])],
+  imports: [TypeOrmModule.forFeature([User, Device, UserKeys, Coach])],
   controllers: [UsersController],
 
-  providers: [UsersService, DevicesService],
+  providers: [UsersService, DevicesService, CoachesService],
   exports: [TypeOrmModule, UsersService],
 })
 export class UsersModule {}
