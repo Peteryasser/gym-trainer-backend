@@ -34,8 +34,6 @@ export class AuthController {
     @Body() payload: UserLoginRequestDto,
     @RequestHeaders() headers,
   ): Promise<UserAuthResponseDto> {
-
-    console.log("got login request: ", payload);
     return this.authService.login(
       userType,
       payload,
@@ -47,7 +45,6 @@ export class AuthController {
   async register(
     @Body() payload: UserRegisterRequestDto,
   ): Promise<UserAuthResponseDto> {
-    console.log("got register request: ", payload);
     return await this.authService.register(payload);
   }
 
@@ -56,8 +53,6 @@ export class AuthController {
   @Delete('logout')
   async logout(@Req() req): Promise<void> {
     const deviceID = req.user.device.id;
-    console.log("got logout request: ", deviceID);
-
     await this.authService.logout(deviceID);
   }
 
