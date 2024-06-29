@@ -3,12 +3,12 @@ import { MealService } from './meal.service';
 import { Meals } from '../../entity/meals.entity';
 import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { CreateMealDto } from './dtos/create-meal.dto';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/entity/user.entity';
-import { UserMealsHistory } from 'src/entity/user_meals_history.entity';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { User } from '../../entity/user.entity';
+import { UserMealsHistory } from '../../entity/user_meals_history.entity';
 import { getHistoryNutritionsDto } from './dtos/get-history-data.dto';
 import { MealNutritionsDto } from './dtos/history-nutrition.dto';
-import { Coach } from 'src/entity/coach.entity';
+import { Coach } from '../../entity/coach.entity';
 
 
 

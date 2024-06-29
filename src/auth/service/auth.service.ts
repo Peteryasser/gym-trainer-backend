@@ -29,7 +29,7 @@ import { CryptoService } from '../../crypto/service/crypto.service';
 import { UserKeysDto } from '../dtos/user-keys.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Device } from 'src/entity/device.entity';
+import { Device } from '../../entity/device.entity';
 
 @Injectable()
 export class AuthService {
