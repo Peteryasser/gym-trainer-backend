@@ -6,6 +6,9 @@ import { CreateMealDto } from './dtos/create-meal.dto';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'src/entity/user.entity';
 import { UserMealsHistory } from 'src/entity/user_meals_history.entity';
+import { getHistoryNutritionsDto } from './dtos/get-history-data.dto';
+import { MealNutritionsDto } from './dtos/history-nutrition.dto';
+import { Coach } from 'src/entity/coach.entity';
 
 
 
@@ -154,12 +157,23 @@ export class MealController {
         return this.mealService.deleteMealHistory(id, user);
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Get('get-user-nutritions-from-history')
+    async getTotalNutritionalValues(
+        @Body() historyNutDto: getHistoryNutritionsDto,
+        @GetUser() user: User,
+    ): Promise<MealNutritionsDto> {
+        return await this.mealService.getTotalNutritionalValues(historyNutDto,user);
+    }
 
-
-
-
-    
-
-
+    @UseGuards(JwtAuthGuard)
+    @Get('get-user-nutritions-from-history-by-coach/:id')
+    async getTotalNutritionalValuesById(
+        @Param('id') treanee_id: number,
+        @Body() historyNutDto: getHistoryNutritionsDto,
+        @GetUser() user: Coach,
+    ): Promise<MealNutritionsDto> {
+        return await this.mealService.getTotalNutritionalValuesByCoach(treanee_id,historyNutDto,user);
+    }
     
 }

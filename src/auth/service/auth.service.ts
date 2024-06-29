@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -26,6 +27,9 @@ import { User } from '../../entity/user.entity';
 import { Coach } from '../../entity/coach.entity';
 import { CryptoService } from 'src/crypto/service/crypto.service';
 import { UserKeysDto } from '../dtos/user-keys.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Device } from 'src/entity/device.entity';
 
 @Injectable()
 export class AuthService {
@@ -35,6 +39,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly deviceService: DevicesService,
     private readonly cryptoService: CryptoService,
+    @InjectRepository(Device)
+    private readonly deviceRepository: Repository<Device>,
   ) {}
 
   private async authenticateUser(
@@ -241,34 +247,33 @@ export class AuthService {
       );
       if (!checkOtpMatched) return 'OTP is invalid';
       const changePassworddto = new UserChangePasswordRequestDto(
-        existingUser.id,
         user.password,
         user.confirmPassword,
       );
-      return await this.changePassword(changePassworddto);
+      return await this.changePassword(changePassworddto,existingUser);
     } catch (err) {
       return 'Error';
     }
   }
   async changePassword(
-    //use jwt and remove devises
-    user: UserChangePasswordRequestDto,
+    user: UserChangePasswordRequestDto,userLoged: User
   ): Promise<String> {
     if (user.password.localeCompare(user.confirmPassword) != 0)
       throw new BadRequestException('Passwords do not match');
-    const existingUser = await this.usersService.findOneById(user.id);
+    const existingUser = await this.usersService.findOneById(userLoged.id);
     if (!existingUser) {
-      throw new UnauthorizedException('User not exists');
+      throw new NotFoundException('User not exists');
     }
     try {
       const salt = await bcrypt.genSalt();
       const hashedPassword = await bcrypt.hash(user.password, salt);
       existingUser.password = hashedPassword;
-      await this.usersService.update(user.id, {
+      await this.usersService.update(userLoged.id, {
         password: hashedPassword,
         resetPasswordToken: null,
         resetPasswordTokenSentAt: null,
       });
+      await this.deviceRepository.delete({ userId: userLoged.id });
     } catch (err) {
       return 'Error';
     }

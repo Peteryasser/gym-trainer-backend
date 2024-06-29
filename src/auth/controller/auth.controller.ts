@@ -20,6 +20,8 @@ import { AuthService } from '../service/auth.service';
 import { UserType } from '../../users/user-type.enum';
 import { UserTypeValidationPipe } from '../../pipe';
 import { RequestHeaders } from 'src/utils/headers/request-header.decorator';
+import { GetUser } from '../decorators/get-user.decorator';
+import { User } from 'src/entity/user.entity';
 
 @Public()
 @Controller('auth')
@@ -67,10 +69,11 @@ export class AuthController {
   ): Promise<String | BadRequestException> {
     return await this.authService.resetPassword(payload.user);
   }
+  @UseGuards(JwtAuthGuard)
   @Post('changePassword')
   async changePassword(
-    @Body() payload: { user: UserChangePasswordRequestDto },
+    @Body() payload: { user: UserChangePasswordRequestDto }, @GetUser() user: User
   ): Promise<String | BadRequestException> {
-    return await this.authService.changePassword(payload.user);
+    return await this.authService.changePassword(payload.user,user);
   }
 }
