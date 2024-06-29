@@ -142,7 +142,7 @@ export class UsersService {
         );
 
         return {
-          id: coach.id,
+          id: (await coach.user).id,
           name: `${(await coach.user).firstName} ${(await coach.user).lastName}`,
           profilePictureUrl: (await coach.user).profilePictureUrl,
           rating: coach.rating,
