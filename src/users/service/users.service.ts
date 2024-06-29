@@ -143,6 +143,7 @@ export class UsersService {
 
         return {
           id: (await coach.user).id,
+          coachId: coach.id,
           name: `${(await coach.user).firstName} ${(await coach.user).lastName}`,
           profilePictureUrl: (await coach.user).profilePictureUrl,
           rating: coach.rating,
