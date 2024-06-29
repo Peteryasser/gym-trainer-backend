@@ -58,7 +58,7 @@ export class CoachesService {
       rating: coach.rating,
       reviewsNo: await this.getReviewsCount(coachId),
       traineesNo: traineesNo,
-      mostRecentPost: mostRecentPost,
+      mostRecentPost: mostRecentPost || null,
       packages: packageSummaries,
     };
   }

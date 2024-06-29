@@ -8,6 +8,6 @@ export class CoachProfileDto {
   rating: number;
   reviewsNo: number;
   traineesNo: number;
-  mostRecentPost: CoachPost;
+  mostRecentPost: CoachPost = null;
   packages: PackageSummaryDto[];
 }
