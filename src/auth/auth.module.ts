@@ -18,7 +18,7 @@ import { UserKeys } from '../entity/user-keys.entity';
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([User, Coach, Device, UserKeys]),
+    TypeOrmModule.forFeature([User, Coach, Device, UserKeys,Device]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
