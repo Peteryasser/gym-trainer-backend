@@ -153,6 +153,23 @@ export class User {
   public get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }
+
+  public get age(): number {
+    const today = new Date();
+    const birthDate = new Date(this.dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+
+    return age;
+  }
+
   @OneToMany(() => SavedMeals, (savedMeal) => savedMeal.user)
   savedMeals: SavedMeals[];
 

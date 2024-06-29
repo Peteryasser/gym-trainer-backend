@@ -9,6 +9,7 @@ import { MoreThan, Repository, UpdateResult } from 'typeorm';
 import { CoachSummaryDto } from '../coaches/dtos/coach-summary.dto';
 import { UserKeys } from '../../entity/user-keys.entity';
 import { CoachesService } from '../coaches/coach.service';
+import { UserProfileDto } from '../dtos/user-profile,dto';
 
 @Injectable()
 export class UsersService {
@@ -153,5 +154,11 @@ export class UsersService {
     );
 
     return coachSummaryDtos;
+  }
+
+  async getProfile(id: number): Promise<UserProfileDto> {
+    const user = await this.findOneById(id);
+
+    return new UserProfileDto(user);
   }
 }
