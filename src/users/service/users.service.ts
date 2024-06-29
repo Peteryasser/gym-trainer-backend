@@ -114,7 +114,6 @@ export class UsersService {
 
   async getMyCoaches(userId: number): Promise<CoachSummaryDto[]> {
     const now = new Date();
-
     const user = await this.usersRepository.findOne({
       where: { id: userId },
       relations: [
@@ -143,7 +142,8 @@ export class UsersService {
         );
 
         return {
-          id: coach.id,
+          id: (await coach.user).id,
+          coachId: coach.id,
           name: `${(await coach.user).firstName} ${(await coach.user).lastName}`,
           profilePictureUrl: (await coach.user).profilePictureUrl,
           rating: coach.rating,
