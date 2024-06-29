@@ -41,4 +41,5 @@ lerna-debug.log*
 cert.pem
 csr.pem
 key.pem
+firebaseService2.json
 .vercel
