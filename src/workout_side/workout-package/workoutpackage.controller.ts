@@ -26,7 +26,7 @@ export class WorkoutPlanPackageController {
   @Post('add')
   addWorkoutPlanToPackage(
     @Body() workoutPlanPackageDto: WorkoutPlanPackageDTO,
-    @GetUser() user: Coach,
+    @GetUser() user: User,
   ) {
     console.log('Add Workout Plan to Package ');
     console.log('workoutPlanPackageDto', workoutPlanPackageDto);
@@ -38,7 +38,7 @@ export class WorkoutPlanPackageController {
   }
 
   @Delete('delete/:id')
-  async deleteWorkoutPlan(@Param('id') id: number, @GetUser() user: Coach) {
+  async deleteWorkoutPlan(@Param('id') id: number, @GetUser() user: User) {
     console.log('delete Workout Plan');
     return this.workoutPlanPackageService.deleteWorkoutPlanfromPackage(
       id,
