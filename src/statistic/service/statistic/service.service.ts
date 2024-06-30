@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { config as dotenvConfig } from 'dotenv';
 import { CreateMeasurementDto } from 'src/statistic/dtos/measurement.dto';
@@ -8,6 +8,8 @@ import { ConnectionManager } from 'src/config/connection_manager';
 import { Measurements } from 'src/entity/measurements.entity';
 import { Muscle } from 'src/entity/muscle';
 import * as moment from 'moment';
+import { WorkoutHistory } from 'src/entity/user-workout-history';
+import { addHours } from 'date-fns';
 
 
 
@@ -19,6 +21,8 @@ export class StatisticService {
       private measurementRepository: Repository<Measurements>,
       @InjectRepository(Muscle)
       private  muscleRepository: Repository<Muscle>,
+      @InjectRepository(WorkoutHistory)
+    private readonly workoutHistoryRepository: Repository<WorkoutHistory>,
       ) {}
 
       async create(createMeasurementDto: CreateMeasurementDto, user: User): Promise<any> {
@@ -180,5 +184,54 @@ export class StatisticService {
           }
         
         return { startDate, endDate };
+      }
+
+      async getLastMeasurementsForUser(userId: number): Promise<Omit<Measurements, 'date'>> {
+        const columns = [
+          'weight', 'height', 'body_fat', 'weight_goal', 'waist', 'neck', 'shoulders', 
+          'chest', 'arm', 'forearm', 'wrist', 'hips', 'thighs', 'calf'
+        ];
+        
+        const latestMeasurement: Partial<Measurements> = {};
+    
+        for (const column of columns) {
+          const latestRecord = await this.measurementRepository
+            .createQueryBuilder('measurement')
+            .select([`measurement.${column}`])
+            .where('measurement.user_id = :userId', { userId })
+            .andWhere(`measurement.${column} IS NOT NULL`)
+            .orderBy('measurement.date', 'DESC')
+            .getOne();
+    
+          if (latestRecord) {
+            latestMeasurement[column] = latestRecord[column];
+          }
+        }
+    
+        return latestMeasurement as Omit<Measurements, 'date'>;
+      }
+
+      async getUserTrainingDays(userId: number, year: number, month: number): Promise<string[]> {
+        try {
+          const queryBuilder = this.workoutHistoryRepository
+            .createQueryBuilder('workoutHistory')
+            .select('DISTINCT DATE("workoutHistory"."date")', 'date')
+            .where('workoutHistory.user_id = :userId', { userId })
+            .andWhere('DATE_PART(\'year\', "workoutHistory"."date") = :year', { year })
+            .andWhere('DATE_PART(\'month\', "workoutHistory"."date") = :month', { month })
+            .orderBy('DATE("workoutHistory"."date")', 'ASC');
+    
+          const queryResult = await queryBuilder.getRawMany();
+          const dates = queryResult.map(result => new Date(result.date));
+          
+          // Adjusting dates to ensure they are correct
+          const adjustedDates = dates.map(date => addHours(date, 24));
+          const uniqueDates = adjustedDates.map(date => date.toISOString().split('T')[0]);
+    
+          return uniqueDates;
+        } catch (error) {
+          console.error('Error in getUserTrainingDays:', error);
+          throw new InternalServerErrorException('Failed to fetch training days');
+        }
       }
 }
