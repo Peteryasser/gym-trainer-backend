@@ -128,6 +128,9 @@ export class AuthService {
     await this.cryptoService.saveKeyPair(newUser.id, user.password);
     const keys = await this.buildKeyPairDto(newUser.id, user.password);
 
+    if (user.isCoach)
+      return await this.createUserAuthResponse(newUser.coach, device.id, keys);
+
     return await this.createUserAuthResponse(newUser, device.id, keys);
   }
 
@@ -250,13 +253,14 @@ export class AuthService {
         user.password,
         user.confirmPassword,
       );
-      return await this.changePassword(changePassworddto,existingUser);
+      return await this.changePassword(changePassworddto, existingUser);
     } catch (err) {
       return 'Error';
     }
   }
   async changePassword(
-    user: UserChangePasswordRequestDto,userLoged: User
+    user: UserChangePasswordRequestDto,
+    userLoged: User,
   ): Promise<String> {
     if (user.password.localeCompare(user.confirmPassword) != 0)
       throw new BadRequestException('Passwords do not match');

@@ -78,6 +78,7 @@ export class CoachesService {
         `coach.${filterDto.sortBy}`,
         filterDto.sortOrder || 'ASC',
       );
+    else query = query.orderBy(`coach.id`, 'DESC');
 
     if (filterDto.keyword)
       query = query.where(

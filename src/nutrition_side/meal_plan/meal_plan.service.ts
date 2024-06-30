@@ -6,9 +6,9 @@ import { Meals } from '../../entity/meals.entity';
 import { MealPlanDto } from './dtos/create-meal.dto';
 import { MealPlans } from '../../entity/meal_plans.entity';
 import { MealPlanMeals } from '../../entity/meal_plan_meals.entity';
-import { Coach } from 'src/entity/coach.entity';
-import { UserPackageMealPlans } from 'src/entity/user_package_meal_plans.entity';
-import { UserSubscription } from 'src/entity/user-subscription.entity';
+import { Coach } from '../../entity/coach.entity';
+import { UserPackageMealPlans } from '../../entity/user_package_meal_plans.entity';
+import { UserSubscription } from '../../entity/user-subscription.entity';
 
 @Injectable()
 export class MealPlanService {
