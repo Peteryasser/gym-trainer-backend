@@ -5,7 +5,7 @@ import { MealPlans } from '../../entity/meal_plans.entity';
 import { User } from '../../entity/user.entity';
 import { MealPlanDto } from './dtos/create-meal.dto';
 import { MealPlanService } from './meal_plan.service';
-import { Coach } from 'src/entity/coach.entity';
+import { Coach } from '../../entity/coach.entity';
 
 
 @Controller('meal-plan')
