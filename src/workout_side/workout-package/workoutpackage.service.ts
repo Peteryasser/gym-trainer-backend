@@ -16,8 +16,14 @@ export class WorkoutPlanPackageService {
 
   async addWorkoutPlanToPackage(
     workoutPlanPackageDto: WorkoutPlanPackageDTO,
-    user: Coach,
+    coach: Coach,
   ) {
+    const coachId = coach.id;
+    const userIdofCoach = (await coach.user).id;
+
+    console.log('coachId', coachId);
+    console.log('userIdofCoach', userIdofCoach);
+
     const connection = await ConnectionManager.getConnection();
     let message = '';
 
@@ -42,7 +48,7 @@ export class WorkoutPlanPackageService {
       return message;
     }
 
-    if ((await coachPackage.coach).id !== user.id) {
+    if ((await coachPackage.coach).id !== coachId) {
       message = `You are not authorized to add workout plan to package with id ${workoutPlanPackageDto.package_id}`;
       return message;
     }
@@ -60,7 +66,7 @@ export class WorkoutPlanPackageService {
 
     console.log('workoutPlan.user', workoutPlan.user);
 
-    if (workoutPlan.user.id !== user.id) {
+    if (workoutPlan.user.id !== userIdofCoach) {
       message = `You are not authorized to add workout plan with id ${workoutPlanPackageDto.workout_plan_id} to package`;
       return message;
     }
@@ -82,7 +88,9 @@ export class WorkoutPlanPackageService {
     return message;
   }
 
-  async deleteWorkoutPlanfromPackage(id: number, user: Coach) {
+  async deleteWorkoutPlanfromPackage(id: number, coach: Coach) {
+    const coachId = coach.id;
+    // const userIdofCoach = (await coach.user).id;
     const connection = await ConnectionManager.getConnection();
     let message = '';
 
@@ -102,7 +110,7 @@ export class WorkoutPlanPackageService {
       return message;
     }
 
-    if (userPackageWorkoutPlan.package.coach.id !== user.id) {
+    if (userPackageWorkoutPlan.package.coach.id !== coachId) {
       message = `You are not authorized to delete workout plan with id ${id}`;
       return message;
     }
@@ -111,6 +119,61 @@ export class WorkoutPlanPackageService {
 
     message = 'Workout Plan deleted successfully';
     return message;
+  }
+
+  async updateWorkoutPlanInPackage(
+    id: number,
+    workoutPackageUpdateDTO: WorkoutPlanPackageUpdateDTO,
+    coach: Coach,
+  ) {
+    const coachId = coach.id;
+    const userIdofCoach = (await coach.user).id;
+
+    // get connection
+    const connection = await ConnectionManager.getConnection();
+
+    // find user package workout plan with this id
+    const userPackageWorkoutPlan = await connection.manager.findOne(
+      UserPackageWorkoutPlan,
+      {
+        where: { id },
+        relations: ['package', 'package.coach'],
+      },
+    );
+
+    console.log('userPackageWorkoutPlan', userPackageWorkoutPlan);
+
+    // if user package workout plan not found, throw exception
+
+    if (!userPackageWorkoutPlan) {
+      return `Workout Plan with id ${id} not found in user's packages`;
+    }
+
+    if (userPackageWorkoutPlan.package.coach.id !== coachId) {
+      return `You are not authorized to update workout plan with id ${id}`;
+    }
+
+    // find workout plan with workout_plan_id in dto and make sure it's exist
+    const workoutPlan = await connection.manager.findOne(WorkoutPlan, {
+      where: { id: workoutPackageUpdateDTO.workout_plan_id },
+    });
+
+    if (!workoutPlan) {
+      return `Workout Plan with id ${workoutPackageUpdateDTO.workout_plan_id} not found`;
+    }
+
+    if (workoutPlan.user.id !== userIdofCoach) {
+      return `You are not authorized to update workout plan with id ${workoutPackageUpdateDTO.workout_plan_id}`;
+    }
+
+    // update user package workout plan
+    await connection.manager.update(
+      UserPackageWorkoutPlan,
+      { id },
+      { workoutPlan: { id: workoutPackageUpdateDTO.workout_plan_id } },
+    );
+
+    return 'Workout Plan updated successfully';
   }
 
   async getMyWorkoutPlansInPackage(user: User) {
@@ -176,13 +239,13 @@ export class WorkoutPlanPackageService {
     return userPackageWorkoutPlan;
   }
 
-  async getPlan(userId: number, coach: Coach) {
+  async getPlanofUserByCoach(userId: number, coach: Coach) {
     const coachId = coach.id;
     const connection = await ConnectionManager.getConnection();
 
     const userPackageWorkoutPlan = await connection
       .getRepository(UserPackageWorkoutPlan)
-      .findOne({
+      .find({
         where: {
           user: { id: userId },
           package: { coach: { id: coachId } },
@@ -245,56 +308,5 @@ export class WorkoutPlanPackageService {
     }
 
     return userPackageWorkoutPlan;
-  }
-
-  async updateWorkoutPlanInPackage(
-    id: number,
-    workoutPackageUpdateDTO: WorkoutPlanPackageUpdateDTO,
-    user: Coach,
-  ) {
-    // get connection
-    const connection = await ConnectionManager.getConnection();
-
-    // find user package workout plan with this id
-    const userPackageWorkoutPlan = await connection.manager.findOne(
-      UserPackageWorkoutPlan,
-      {
-        where: { id },
-        relations: ['package', 'package.coach'],
-      },
-    );
-
-    console.log('userPackageWorkoutPlan', userPackageWorkoutPlan);
-
-    // if user package workout plan not found, throw exception
-    if (!userPackageWorkoutPlan) {
-      return `Workout Plan with id ${id} not found in user's packages`;
-    }
-
-    if (userPackageWorkoutPlan.package.coach.id !== user.id) {
-      return `You are not authorized to update workout plan with id ${id}`;
-    }
-
-    // find workout plan with workout_plan_id in dto and make sure it's exist
-    const workoutPlan = await connection.manager.findOne(WorkoutPlan, {
-      where: { id: workoutPackageUpdateDTO.workout_plan_id },
-    });
-
-    if (!workoutPlan) {
-      return `Workout Plan with id ${workoutPackageUpdateDTO.workout_plan_id} not found`;
-    }
-
-    if (workoutPlan.user.id !== user.id) {
-      return `You are not authorized to update workout plan with id ${workoutPackageUpdateDTO.workout_plan_id}`;
-    }
-
-    // update user package workout plan
-    await connection.manager.update(
-      UserPackageWorkoutPlan,
-      { id },
-      { workoutPlan: { id: workoutPackageUpdateDTO.workout_plan_id } },
-    );
-
-    return 'Workout Plan updated successfully';
   }
 }

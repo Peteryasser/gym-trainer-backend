@@ -46,6 +46,21 @@ export class WorkoutPlanPackageController {
     );
   }
 
+  @Patch('update/:id')
+  async updateWorkoutPlanInPackage(
+    @Param('id') id: number,
+    @Body() workoutPackageUpdateDTO: WorkoutPlanPackageUpdateDTO,
+    @GetUser() user: Coach,
+  ) {
+    console.log('updateWorkoutPlanInPackage');
+    return this.workoutPlanPackageService.updateWorkoutPlanInPackage(
+      id,
+      workoutPackageUpdateDTO,
+      user,
+    );
+  }
+
+
   @Get('get-my-workout-plans-in-package')
   async getMyWorkoutPlansInPackage(@GetUser() user: User) {
     console.log('getMyWorkoutPlansInPackage');
@@ -62,7 +77,7 @@ export class WorkoutPlanPackageController {
   getPlan(@Param('user_id') userId: number, @GetUser() coach: Coach) {
     console.log('Get plan of one user and one coach');
 
-    return this.workoutPlanPackageService.getPlan(userId, coach);
+    return this.workoutPlanPackageService.getPlanofUserByCoach(userId, coach);
   }
 
   @Get('get-plan-by-ids/:coach_id')
@@ -70,19 +85,5 @@ export class WorkoutPlanPackageController {
     console.log('Get plan of one user and one coach');
 
     return this.workoutPlanPackageService.getPlanUser(coachId, user);
-  }
-
-  @Patch('update/:id')
-  async updateWorkoutPlanInPackage(
-    @Param('id') id: number,
-    @Body() workoutPackageUpdateDTO: WorkoutPlanPackageUpdateDTO,
-    @GetUser() user: Coach,
-  ) {
-    console.log('updateWorkoutPlanInPackage');
-    return this.workoutPlanPackageService.updateWorkoutPlanInPackage(
-      id,
-      workoutPackageUpdateDTO,
-      user,
-    );
   }
 }

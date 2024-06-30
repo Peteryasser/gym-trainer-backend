@@ -15,6 +15,8 @@ import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { User } from '../../entity/user.entity';
 import { WorkoutCollection } from '../../entity/workout-collection.entity';
 import { WorkoutCollectionUpdateDto } from './dtos/workout_collection_update_dto';
+import { WorkoutSideUtils } from '../workoutSide.utils';
+import { Coach } from 'src/entity/coach.entity';
 
 @Controller('workout-collection')
 @UseGuards(JwtAuthGuard)
@@ -25,7 +27,6 @@ export class WorkoutCollectionController {
 
   @Get('get-deault-collections-info')
   async test(): Promise<WorkoutCollection[]> {
-    // return 'WorkoutCollectionController test';
     return this.workutCollectionService.getDeaultCollectionsInfo();
   }
 
@@ -37,14 +38,15 @@ export class WorkoutCollectionController {
   @Post('create')
   async createWorkoutCollection(
     @Body() createWorkoutCollectionDto: WorkoutCollectionDto,
-    @GetUser() user: User,
+    @GetUser() user: User | Coach,
   ): Promise<string> {
+    const getUser = await WorkoutSideUtils.getTheUser(user);
     console.log('createWorkoutCollection');
     console.log('createWorkoutCollectionDto', createWorkoutCollectionDto);
-    console.log('user', user);
+    console.log('user', getUser);
 
     const message = this.workutCollectionService.createWorkoutCollection(
-      user,
+      getUser,
       createWorkoutCollectionDto,
     );
     return message;
@@ -53,25 +55,29 @@ export class WorkoutCollectionController {
   @Delete('delete/:id')
   async deleteWorkoutCollection(
     @Param('id') id: number,
-    @GetUser() user: User,
+    @GetUser() user: User | Coach,
   ): Promise<string> {
+    const getUser = await WorkoutSideUtils.getTheUser(user);
     console.log('deleteWorkoutCollection');
     console.log('id', id);
-    console.log('user', user);
+    console.log('user', getUser);
 
     const message = this.workutCollectionService.deleteWorkoutCollection(
-      user,
+      getUser,
       id,
     );
     return message;
   }
 
   @Get('get-my-collections')
-  async getMyCollections(@GetUser() user: User): Promise<WorkoutCollection[]> {
+  async getMyCollections(
+    @GetUser() user: User | Coach,
+  ): Promise<WorkoutCollection[]> {
+    const getUser = await WorkoutSideUtils.getTheUser(user);
     console.log('getMyCollections');
-    console.log('user', user);
+    console.log('user', getUser);
 
-    return this.workutCollectionService.getMyCollections(user);
+    return this.workutCollectionService.getMyCollections(getUser);
   }
 
   @Get('get-default-collections')
@@ -85,15 +91,16 @@ export class WorkoutCollectionController {
   async updateWorkoutCollection(
     @Param('id') id: number,
     @Body() updateWorkoutCollectionDto: WorkoutCollectionUpdateDto,
-    @GetUser() user: User,
+    @GetUser() user: User | Coach,
   ): Promise<string> {
+    const getUser = await WorkoutSideUtils.getTheUser(user);
     console.log('updateWorkoutCollection');
     console.log('id', id);
     console.log('updateWorkoutCollectionDto', updateWorkoutCollectionDto);
-    console.log('user', user);
+    console.log('user', getUser);
 
     const message = this.workutCollectionService.updateWorkoutCollection(
-      user,
+      getUser,
       id,
       updateWorkoutCollectionDto,
     );
