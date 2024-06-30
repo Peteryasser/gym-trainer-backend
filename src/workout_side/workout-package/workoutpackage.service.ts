@@ -141,6 +141,41 @@ export class WorkoutPlanPackageService {
     return userPackageWorkoutPlans;
   }
 
+  async getPlanUser(coachId: number, user: User) {
+    const connection = await ConnectionManager.getConnection();
+
+    const userPackageWorkoutPlan = await connection
+      .getRepository(UserPackageWorkoutPlan)
+      .findOne({
+        where: {
+          user: { id: user.id },
+          package: { coach: { id: coachId } },
+        },
+        relations: [
+          'workoutPlan',
+          'workoutPlan.workoutPlanDetails',
+          'workoutPlan.workoutPlanDetails.workoutCollection',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.workoutExerciseDetails',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.bodyPart',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.targetMuscle',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.secondaryMuscles',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.equipments',
+          'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.instructions',
+          'user',
+          'package',
+          'package.coach',
+        ],
+      });
+
+    console.log(userPackageWorkoutPlan);
+
+    return userPackageWorkoutPlan;
+  }
+
   async getPlan(userId: number, coach: Coach) {
     const coachId = coach.id;
     const connection = await ConnectionManager.getConnection();

@@ -65,6 +65,13 @@ export class WorkoutPlanPackageController {
     return this.workoutPlanPackageService.getPlan(userId, coach);
   }
 
+  @Get('get-plan-by-ids/:coach_id')
+  getUserPlan(@Param('coach_id') coachId: number, @GetUser() user: User) {
+    console.log('Get plan of one user and one coach');
+
+    return this.workoutPlanPackageService.getPlanUser(coachId, user);
+  }
+
   @Patch('update/:id')
   async updateWorkoutPlanInPackage(
     @Param('id') id: number,
