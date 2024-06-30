@@ -116,6 +116,7 @@ export class MealPlanService {
   }
 
   async getUserPlansByCoach(id: number,user: Coach){
+    console.log(user,"UUUUUUUUUUU")
     const userPackageMealPlan = await this.userPackageMealPlansRepository.findOne({
       where: {
         user: { id: id },
@@ -123,6 +124,7 @@ export class MealPlanService {
       },
       relations: ['package', 'package.coach', 'mealPlan'],
     });
+    console.log("DDDDDDDD",userPackageMealPlan)
 
     if (!userPackageMealPlan) {
       throw new UnauthorizedException('You are not authorized to access this user’s data');
@@ -130,9 +132,8 @@ export class MealPlanService {
 
     const mealPlans = await this.mealPlansRepository.find({
       where: {
-        user: { id: id },
         userPackageMealPlans: {
-          package: { coach: user},
+          package: { id: userPackageMealPlan.package.id},
         },
       },
       relations: ['mealPlanMeals','mealPlanMeals.meal','mealPlanMeals.meal.mealRecipes'],
