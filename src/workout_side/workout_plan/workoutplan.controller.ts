@@ -43,6 +43,8 @@ export class WorkoutPlanController {
     return this.workoutPlanService.getMyPlans(user);
   }
 
+ 
+
   @Patch('update/:id')
   updateWorkoutPlan(
     @Param('id') id: number,

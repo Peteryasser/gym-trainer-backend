@@ -137,6 +137,8 @@ export class WorkoutCollectionService {
       },
     );
 
+    console.log(workoutCollections.length);
+
     return workoutCollections;
   }
 
