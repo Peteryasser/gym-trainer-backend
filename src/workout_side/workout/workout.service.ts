@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { config as dotenvConfig } from 'dotenv';
-import { ConnectionManager } from 'src/config/connection_manager';
-import { Exercise } from 'src/entity/exercise.entity';
-import { Workout } from 'src/entity/workout.entity';
-import { WorkoutExerciseDetails } from 'src/entity/workout-exercise-details';
-import { WorkoutExercise } from 'src/entity/workout-exercise';
+import { ConnectionManager } from '../../config/connection_manager';
+import { Exercise } from '../../entity/exercise.entity';
+import { Workout } from '../../entity/workout.entity';
+import { WorkoutExerciseDetails } from '../../entity/workout-exercise-details.entity';
+import { WorkoutExercise } from '../../entity/workout-exercise.entity';
 import { WorkoutDto } from './dtos/workout.dto';
-import { User } from 'src/entity/user.entity';
+import { User } from '../../entity/user.entity';
 import { WorkoutUpdateDto } from './dtos/workout.update.dto';
 
 dotenvConfig({ path: '.env' });

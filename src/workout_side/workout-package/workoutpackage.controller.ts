@@ -7,14 +7,14 @@ import {
   Get,
   Patch,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { UseGuards } from '@nestjs/common';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/entity/user.entity';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { User } from '../../entity/user.entity';
 import { WorkoutPlanPackageService } from './workoutpackage.service';
 import { WorkoutPlanPackageDTO } from './dtos/workout_package_dto';
 import { WorkoutPlanPackageUpdateDTO } from './dtos/workout_package_update';
-import { Coach } from 'src/entity/coach.entity';
+import { Coach } from '../../entity/coach.entity';
 
 @Controller('workoutplan-package')
 @UseGuards(JwtAuthGuard)

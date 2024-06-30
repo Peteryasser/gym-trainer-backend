@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user.entity';
-import { WorkoutCollection } from './workout-collection';
+import { WorkoutCollection } from './workout-collection.entity';
 
 @Entity({ name: 'save_workout_collection' })
 export class SavedWorkoutCollection {

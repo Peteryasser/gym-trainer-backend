@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CoachPostMultimedia } from 'src/entity/coach-post-multimedia.entity';
-import { CoachPost } from 'src/entity/coach-post.entity';
-import { Coach } from 'src/entity/coach.entity';
+import { CoachPostMultimedia } from '../../../entity/coach-post-multimedia.entity';
+import { CoachPost } from '../../../entity/coach-post.entity';
+import { Coach } from '../../../entity/coach.entity';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from '../dtos/create-post.dto';
-import { PaginatedResultDto } from 'src/dtos/paginatied-result.dto';
-import { PaginationDto } from 'src/dtos/pagination.dto';
-import { paginate } from 'src/utils/pagination/pagination.util';
+import { PaginatedResultDto } from '../../../dtos/paginatied-result.dto';
+import { PaginationDto } from '../../../dtos/pagination.dto';
+import { paginate } from '../../../utils/pagination/pagination.util';
 
 @Injectable()
 export class PostsService {

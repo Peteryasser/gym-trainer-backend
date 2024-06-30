@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { User } from 'src/entity/user.entity';
+import { User } from '../../entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { MealPlans } from 'src/entity/meal_plans.entity';
-import { MealPlanMeals } from 'src/entity/meal_plan_meals.entity';
+import { MealPlans } from '../../entity/meal_plans.entity';
+import { MealPlanMeals } from '../../entity/meal_plan_meals.entity';
 import { MealPlanPackageDTO } from './dtos/create-mealplanpackage.dto';
-import { Coach } from 'src/entity/coach.entity';
-import { Package } from 'src/entity/coach-package.entity';
-import { UserPackageMealPlans } from 'src/entity/user_package_meal_plans.entity';
+import { Coach } from '../../entity/coach.entity';
+import { Package } from '../../entity/coach-package.entity';
+import { UserPackageMealPlans } from '../../entity/user_package_meal_plans.entity';
 
 @Injectable()
 export class MealPlanPackageService {

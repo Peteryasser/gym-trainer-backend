@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserPackageWorkoutPlan } from 'src/entity/user-package-workoutPlan';
+import { UserPackageWorkoutPlan } from '../../entity/user-package-workoutPlan.entity';
 import { WorkoutPlanPackageController } from './workoutpackage.controller';
 import { WorkoutPlanPackageService } from './workoutpackage.service';
 

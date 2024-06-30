@@ -1,4 +1,4 @@
-import { SubscriptionReview } from 'src/entity/subscription-review.entity';
+import { SubscriptionReview } from '../../entity/subscription-review.entity';
 
 export class ReviewDto {
   id: number;

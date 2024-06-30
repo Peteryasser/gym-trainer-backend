@@ -19,7 +19,9 @@ import { JwtAuthGuard } from '../guards/jwt.auth.guard';
 import { AuthService } from '../service/auth.service';
 import { UserType } from '../../users/user-type.enum';
 import { UserTypeValidationPipe } from '../../pipe';
-import { RequestHeaders } from 'src/utils/headers/request-header.decorator';
+import { RequestHeaders } from '../../utils/headers/request-header.decorator';
+import { GetUser } from '../decorators/get-user.decorator';
+import { User } from '../../entity/user.entity';
 
 @Public()
 @Controller('auth')
@@ -51,7 +53,6 @@ export class AuthController {
   @Delete('logout')
   async logout(@Req() req): Promise<void> {
     const deviceID = req.user.device.id;
-
     await this.authService.logout(deviceID);
   }
 
@@ -59,18 +60,21 @@ export class AuthController {
   async forgetPassword(
     @Body() payload: { user: UserForgetPasswordRequestDto },
   ): Promise<String | BadRequestException> {
+    console.log("got forgetPassword request: ", payload);
     return await this.authService.forgetPassword(payload.user);
   }
   @Post('resetPassword')
   async resetPassword(
     @Body() payload: { user: UserResetPasswordRequestDto },
   ): Promise<String | BadRequestException> {
+    console.log("got resetPassword request: ", payload);
     return await this.authService.resetPassword(payload.user);
   }
+  @UseGuards(JwtAuthGuard)
   @Post('changePassword')
   async changePassword(
-    @Body() payload: { user: UserChangePasswordRequestDto },
+    @Body() payload: { user: UserChangePasswordRequestDto }, @GetUser() user: User
   ): Promise<String | BadRequestException> {
-    return await this.authService.changePassword(payload.user);
+    return await this.authService.changePassword(payload.user,user);
   }
 }

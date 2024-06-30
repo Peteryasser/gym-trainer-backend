@@ -8,14 +8,14 @@ import {
 import { Device } from './device.entity';
 import { Coach } from './coach.entity';
 import { Workout } from './workout.entity';
-import { WorkoutHistory } from './user-workout-history';
-import { WorkoutPlan } from './workout-plan';
-import { SavedWorkout } from './saved-workouts';
-import { UserPackageWorkoutPlan } from './user-package-workoutPlan';
+import { WorkoutHistory } from './user-workout-history.entity';
+import { WorkoutPlan } from './workout-plan.entity';
+import { SavedWorkout } from './saved-workouts.entity';
+import { UserPackageWorkoutPlan } from './user-package-workoutPlan.entity';
 import { Exercise } from './exercise.entity';
-import { WorkoutCollection } from './workout-collection';
-import { SavedExercise } from './saved-exercises';
-import { SavedWorkoutCollection } from './saved-workout-collection';
+import { WorkoutCollection } from './workout-collection.entity';
+import { SavedExercise } from './saved-exercises.entity';
+import { SavedWorkoutCollection } from './saved-workout-collection.entity';
 import { UserSubscription } from './user-subscription.entity';
 import { SavedMeals } from './saved_meals.entity';
 import { Meals } from './meals.entity';
@@ -153,6 +153,23 @@ export class User {
   public get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }
+
+  public get age(): number {
+    const today = new Date();
+    const birthDate = new Date(this.dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+
+    return age;
+  }
+
   @OneToMany(() => SavedMeals, (savedMeal) => savedMeal.user)
   savedMeals: SavedMeals[];
 

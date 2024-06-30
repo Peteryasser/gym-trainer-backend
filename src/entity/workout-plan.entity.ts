@@ -7,8 +7,8 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { WorkoutPlanDetails } from './workout-plan-details';
-import { UserPackageWorkoutPlan } from './user-package-workoutPlan';
+import { WorkoutPlanDetails } from './workout-plan-details.entity';
+import { UserPackageWorkoutPlan } from './user-package-workoutPlan.entity';
 
 @Entity({ name: 'workout_plans' })
 export class WorkoutPlan {

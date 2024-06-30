@@ -1,14 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Meals } from 'src/entity/meals.entity';
-import { Repository } from 'typeorm';
+import { Meals } from '../../entity/meals.entity';
+import { Between, Repository } from 'typeorm';
 import { CreateMealDto } from './dtos/create-meal.dto';
-import { User } from 'src/entity/user.entity';
-import { MealCategories } from 'src/entity/meal_categories.entity';
-import { Recipes } from 'src/entity/recipes.entity';
-import { MealRecipes } from 'src/entity/meal_recipes.entity';
-import { SavedMeals } from 'src/entity/saved_meals.entity';
-import { UserMealsHistory } from 'src/entity/user_meals_history.entity';
+import { User } from '../../entity/user.entity';
+import { MealCategories } from '../../entity/meal_categories.entity';
+import { Recipes } from '../../entity/recipes.entity';
+import { MealRecipes } from '../../entity/meal_recipes.entity';
+import { SavedMeals } from '../../entity/saved_meals.entity';
+import { UserMealsHistory } from '../../entity/user_meals_history.entity';
+import { getHistoryNutritionsDto } from './dtos/get-history-data.dto';
+import { MealNutritionsDto } from './dtos/history-nutrition.dto';
+import { Coach } from '../../entity/coach.entity';
+import { UserPackageMealPlans } from '../../entity/user_package_meal_plans.entity';
 
 
 @Injectable()
@@ -29,6 +33,8 @@ export class MealService {
     private readonly mealRecipesRepository: Repository<MealRecipes>,
     @InjectRepository(UserMealsHistory)
     private readonly userMealsHistoryRepository: Repository<UserMealsHistory>,
+    @InjectRepository(UserPackageMealPlans)
+    private readonly userPackageMealPlansRepository: Repository<UserPackageMealPlans>,
     
   ){}
   
@@ -229,5 +235,66 @@ export class MealService {
         await this.userMealsHistoryRepository.remove(mealHistory);
         message = 'Meal History deleted successfully';
         return message;
+      }
+
+      async getTotalNutritionalValues(historyNutDto:getHistoryNutritionsDto,user:User):Promise<MealNutritionsDto>{
+        const mealsHistory = await this.userMealsHistoryRepository.find( {
+          where: { user: { id: user.id },
+          date: Between(historyNutDto.start_date, historyNutDto.end_date)
+        },
+          relations: [
+            'meal'
+          ],  
+        });
+        let totalCalories = 0;
+        let totalFats = 0;
+        let totalProtein = 0;
+        let totalSugar = 0;
+
+        for (const mealHistory of mealsHistory) {
+          const mealRecipes = await this.mealRecipesRepository.find({
+            where: {
+              meal: { id: mealHistory.meal.id },
+            },
+            relations: ['recipe'],
+          });
+
+          // Sum the nutritional values from each recipe
+          for (const mealRecipe of mealRecipes) {
+            const recipe = mealRecipe.recipe;
+            totalCalories += recipe.calories_kcal;
+            totalFats += recipe.fat_g;
+            totalProtein += recipe.protein_g;
+            totalSugar += recipe.sugar_g;
+          }
+        }
+        const values: MealNutritionsDto= new MealNutritionsDto;
+        values.total_calories_kcal=totalCalories;
+        values.total_fats_g=totalFats;
+        values.total_protein_g=totalProtein;
+        values.total_sugar_g=totalSugar;
+        return values;
+
+      }
+
+      async getTotalNutritionalValuesByCoach(treanee_id:number, historyNutDto: getHistoryNutritionsDto,user:Coach)
+      :Promise<MealNutritionsDto>{
+
+        const userPackageMealPlan = await this.userPackageMealPlansRepository.findOne({
+          where: {
+            user: { id: treanee_id },
+            package: { coach: { id: user.id } },
+          },
+          relations: ['package', 'package.coach', 'user'],
+        });
+    
+        if (!userPackageMealPlan) {
+          throw new UnauthorizedException('You are not authorized to access this user’s data');
+        }
+        return await this.getTotalNutritionalValues(historyNutDto,await this.userRepository.findOne({
+          where: {
+            id: treanee_id
+          }
+        }))
       }
 }

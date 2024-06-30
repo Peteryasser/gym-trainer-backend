@@ -1,11 +1,14 @@
 import { Controller, Get, Res, Param, Query,Post, UseGuards, Delete, Body, Patch, Put } from '@nestjs/common';
 import { MealService } from './meal.service';
-import { Meals } from 'src/entity/meals.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { Meals } from '../../entity/meals.entity';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { CreateMealDto } from './dtos/create-meal.dto';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/entity/user.entity';
-import { UserMealsHistory } from 'src/entity/user_meals_history.entity';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { User } from '../../entity/user.entity';
+import { UserMealsHistory } from '../../entity/user_meals_history.entity';
+import { getHistoryNutritionsDto } from './dtos/get-history-data.dto';
+import { MealNutritionsDto } from './dtos/history-nutrition.dto';
+import { Coach } from '../../entity/coach.entity';
 
 
 
@@ -154,12 +157,23 @@ export class MealController {
         return this.mealService.deleteMealHistory(id, user);
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Get('get-user-nutritions-from-history')
+    async getTotalNutritionalValues(
+        @Body() historyNutDto: getHistoryNutritionsDto,
+        @GetUser() user: User,
+    ): Promise<MealNutritionsDto> {
+        return await this.mealService.getTotalNutritionalValues(historyNutDto,user);
+    }
 
-
-
-
-    
-
-
+    @UseGuards(JwtAuthGuard)
+    @Get('get-user-nutritions-from-history-by-coach/:id')
+    async getTotalNutritionalValuesById(
+        @Param('id') treanee_id: number,
+        @Body() historyNutDto: getHistoryNutritionsDto,
+        @GetUser() user: Coach,
+    ): Promise<MealNutritionsDto> {
+        return await this.mealService.getTotalNutritionalValuesByCoach(treanee_id,historyNutDto,user);
+    }
     
 }

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Exercise } from 'src/entity/exercise.entity';
+import { Exercise } from '../../../entity/exercise.entity';
 import { BodyPartFilter } from './filter.criterias';
 import { EquipmentFilter } from './filter.criterias';
 import { MuscleFilter } from './filter.criterias';
 import { CompositeExerciseFilter } from './composite.filter';
 import { FilterExercisesDto } from './dtos/filter-exercise-dto';
-import { ConnectionManager } from 'src/config/connection_manager';
-import { User } from 'src/entity/user.entity';
+import { ConnectionManager } from '../../../config/connection_manager';
+import { User } from '../../../entity/user.entity';
 
 @Injectable()
 export class ExerciseFilterService {

@@ -6,11 +6,11 @@ import {
   ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/entity/user.entity';
+import { GetUser } from '../../../auth/decorators/get-user.decorator';
+import { User } from '../../../entity/user.entity';
 import { PostLikesService } from '../service/posts_likes.service';
-import { CoachPost } from 'src/entity/coach-post.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { CoachPost } from '../../../entity/coach-post.entity';
+import { JwtAuthGuard } from '../../../auth/guards/jwt.auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('post_likes')

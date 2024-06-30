@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CoachCertificate } from 'src/entity/coach-certificate.entity';
-import { Coach } from 'src/entity/coach.entity';
+import { CoachCertificate } from '../../entity/coach-certificate.entity';
+import { Coach } from '../../entity/coach.entity';
 import { Repository } from 'typeorm';
 import { CreateCertificateDto } from '../dtos/create-certificate.dto';
 import { UpdateCertificateDto } from '../dtos/update-certificate.dto';

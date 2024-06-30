@@ -13,11 +13,11 @@ import {
 import { PostsService } from '../service/posts.service';
 import { CreatePostDto } from '../dtos/create-post.dto';
 import { CoachPost } from '../../../entity/coach-post.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { Coach } from 'src/entity/coach.entity';
-import { PaginatedResultDto } from 'src/dtos/paginatied-result.dto';
-import { PaginationDto } from 'src/dtos/pagination.dto';
+import { JwtAuthGuard } from '../../../auth/guards/jwt.auth.guard';
+import { GetUser } from '../../../auth/decorators/get-user.decorator';
+import { Coach } from '../../../entity/coach.entity';
+import { PaginatedResultDto } from '../../../dtos/paginatied-result.dto';
+import { PaginationDto } from '../../../dtos/pagination.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('posts')

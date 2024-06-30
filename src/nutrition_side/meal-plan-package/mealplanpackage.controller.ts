@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Param, Post, UseGuards, Get, Put, Patch } from '@nestjs/common';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { MealPlanPackageService } from './mealplanpackage.service';
 import { MealPlanPackageDTO } from './dtos/create-mealplanpackage.dto';
-import { Coach } from 'src/entity/coach.entity';
-import { User } from 'src/entity/user.entity';
-import { UserPackageMealPlans } from 'src/entity/user_package_meal_plans.entity';
+import { Coach } from '../../entity/coach.entity';
+import { User } from '../../entity/user.entity';
+import { UserPackageMealPlans } from '../../entity/user_package_meal_plans.entity';
 
 
 @Controller('meal-plan-package')
