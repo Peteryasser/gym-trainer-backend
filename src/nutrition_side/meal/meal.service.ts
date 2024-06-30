@@ -13,6 +13,7 @@ import { getHistoryNutritionsDto } from './dtos/get-history-data.dto';
 import { MealNutritionsDto } from './dtos/history-nutrition.dto';
 import { Coach } from '../../entity/coach.entity';
 import { UserPackageMealPlans } from '../../entity/user_package_meal_plans.entity';
+import { UserSubscription } from 'src/entity/user-subscription.entity';
 
 
 @Injectable()
@@ -35,6 +36,8 @@ export class MealService {
     private readonly userMealsHistoryRepository: Repository<UserMealsHistory>,
     @InjectRepository(UserPackageMealPlans)
     private readonly userPackageMealPlansRepository: Repository<UserPackageMealPlans>,
+    @InjectRepository(UserSubscription)
+    private readonly userSubscriptionRepository: Repository<UserSubscription>,
     
   ){}
   
@@ -277,23 +280,35 @@ export class MealService {
 
       }
 
-      async getTotalNutritionalValuesByCoach(treanee_id:number, historyNutDto: getHistoryNutritionsDto,user:Coach)
+      async getTotalNutritionalValuesByCoach(trainee_id:number, historyNutDto: getHistoryNutritionsDto,user:Coach)
       :Promise<MealNutritionsDto>{
+
+        const subscription = await this.userSubscriptionRepository.findOne({
+          where: {
+            user: { id: trainee_id },
+            package: { coach: user },
+          },
+    
+        });
+    
+        if (!subscription) {
+          throw new UnauthorizedException('You are not authorized to access this user’s data');
+        }
 
         const userPackageMealPlan = await this.userPackageMealPlansRepository.findOne({
           where: {
-            user: { id: treanee_id },
+            user: { id: trainee_id },
             package: { coach: { id: user.id } },
           },
           relations: ['package', 'package.coach', 'user'],
         });
     
         if (!userPackageMealPlan) {
-          throw new UnauthorizedException('You are not authorized to access this user’s data');
+          return;
         }
         return await this.getTotalNutritionalValues(historyNutDto,await this.userRepository.findOne({
           where: {
-            id: treanee_id
+            id: trainee_id
           }
         }))
       }

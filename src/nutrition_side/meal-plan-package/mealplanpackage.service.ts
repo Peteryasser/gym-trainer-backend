@@ -3,7 +3,6 @@ import { User } from '../../entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MealPlans } from '../../entity/meal_plans.entity';
-import { MealPlanMeals } from '../../entity/meal_plan_meals.entity';
 import { MealPlanPackageDTO } from './dtos/create-mealplanpackage.dto';
 import { Coach } from '../../entity/coach.entity';
 import { Package } from '../../entity/coach-package.entity';
