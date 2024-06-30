@@ -18,8 +18,10 @@ export class MealPlanController {
   ){}
 
   @Post('create')
-  createMealPlan(@Body() mealPlanDto:MealPlanDto, @GetUser() user: User):Promise<MealPlans> {
-
+  async createMealPlan(@Body() mealPlanDto:MealPlanDto, @GetUser() user: Coach|User):Promise<MealPlans> {
+    if(user instanceof Coach){
+      user= await user.user
+    }
     return this.mealPlanService.createMealPlan(mealPlanDto, user);
   }
 
