@@ -5,6 +5,7 @@ import { MealPlans } from '../../entity/meal_plans.entity';
 import { User } from '../../entity/user.entity';
 import { MealPlanDto } from './dtos/create-meal.dto';
 import { MealPlanService } from './meal_plan.service';
+import { Coach } from 'src/entity/coach.entity';
 
 
 @Controller('meal-plan')
@@ -29,10 +30,15 @@ export class MealPlanController {
   }
 
   @Get('get-my-plans')
-  getMyPlans(@GetUser() user: User): Promise<MealPlans[]> {
+  getMyPlans( @GetUser() user: User): Promise<MealPlans[]> {
     console.log('Get My Plans ');
 
     return this.mealPlanService.getMyPlans(user);
+  }
+
+  @Get('get-user-plans-by-coach/:id')
+  getUserPlans(@Param('id') id: number,@GetUser() user: Coach): Promise<MealPlans[]> {
+    return this.mealPlanService.getUserPlansByCoach(id,user);
   }
 
   @Put('update/:id')

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { User } from '../../entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,6 +6,8 @@ import { Meals } from '../../entity/meals.entity';
 import { MealPlanDto } from './dtos/create-meal.dto';
 import { MealPlans } from '../../entity/meal_plans.entity';
 import { MealPlanMeals } from '../../entity/meal_plan_meals.entity';
+import { Coach } from 'src/entity/coach.entity';
+import { UserPackageMealPlans } from 'src/entity/user_package_meal_plans.entity';
 
 @Injectable()
 export class MealPlanService {
@@ -16,6 +18,8 @@ export class MealPlanService {
     private readonly mealPlanMealsRepository: Repository<MealPlanMeals>,
     @InjectRepository(MealPlans)
     private readonly mealPlansRepository: Repository<MealPlans>,
+    @InjectRepository(UserPackageMealPlans)
+    private readonly userPackageMealPlansRepository: Repository<UserPackageMealPlans>,
   ) {}
 
   async createMealPlan(mealPlanDto: MealPlanDto, user: User): Promise<MealPlans> {
@@ -109,6 +113,33 @@ export class MealPlanService {
     });
 
     return mealPlans;
+  }
+
+  async getUserPlansByCoach(id: number,user: Coach){
+    const userPackageMealPlan = await this.userPackageMealPlansRepository.findOne({
+      where: {
+        user: { id: id },
+        package: { coach: user },
+      },
+      relations: ['package', 'package.coach', 'mealPlan'],
+    });
+
+    if (!userPackageMealPlan) {
+      throw new UnauthorizedException('You are not authorized to access this user’s data');
+    }
+
+    const mealPlans = await this.mealPlansRepository.find({
+      where: {
+        user: { id: id },
+        userPackageMealPlans: {
+          package: { coach: user},
+        },
+      },
+      relations: ['mealPlanMeals','mealPlanMeals.meal','mealPlanMeals.meal.mealRecipes'],
+    });
+
+    return mealPlans;
+
   }
 
   async updateMealPlan(
