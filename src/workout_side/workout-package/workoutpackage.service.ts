@@ -141,13 +141,17 @@ export class WorkoutPlanPackageService {
     return userPackageWorkoutPlans;
   }
 
-  async getPlan(userId: number, coachId: number) {
+  async getPlan(userId: number, coach: Coach) {
+    const coachId = coach.id;
     const connection = await ConnectionManager.getConnection();
 
     const userPackageWorkoutPlan = await connection
       .getRepository(UserPackageWorkoutPlan)
       .findOne({
-        where: { user: { id: userId }, package: { coach: { id: coachId } } },
+        where: {
+          user: { id: userId },
+          package: { coach: { id: coachId } },
+        },
         relations: [
           'workoutPlan',
           'workoutPlan.workoutPlanDetails',
@@ -168,7 +172,6 @@ export class WorkoutPlanPackageService {
         ],
       });
 
-    console.log('Veroooooo finish');
     console.log(userPackageWorkoutPlan);
 
     return userPackageWorkoutPlan;
