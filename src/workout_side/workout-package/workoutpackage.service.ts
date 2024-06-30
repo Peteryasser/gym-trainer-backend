@@ -16,8 +16,9 @@ export class WorkoutPlanPackageService {
 
   async addWorkoutPlanToPackage(
     workoutPlanPackageDto: WorkoutPlanPackageDTO,
-    user: Coach,
+    user: User,
   ) {
+    console.log('coach', user);
     const connection = await ConnectionManager.getConnection();
     let message = '';
 
@@ -42,7 +43,9 @@ export class WorkoutPlanPackageService {
       return message;
     }
 
-    if ((await coachPackage.coach).id !== user.id) {
+    console.log('user id ', user.coach.id);
+    console.log('Coach id ', (await coachPackage.coach).id);
+    if ((await coachPackage.coach).id !== user.coach.id) {
       message = `You are not authorized to add workout plan to package with id ${workoutPlanPackageDto.package_id}`;
       return message;
     }
@@ -82,7 +85,7 @@ export class WorkoutPlanPackageService {
     return message;
   }
 
-  async deleteWorkoutPlanfromPackage(id: number, user: Coach) {
+  async deleteWorkoutPlanfromPackage(id: number, user: User) {
     const connection = await ConnectionManager.getConnection();
     let message = '';
 
@@ -102,7 +105,7 @@ export class WorkoutPlanPackageService {
       return message;
     }
 
-    if (userPackageWorkoutPlan.package.coach.id !== user.id) {
+    if (userPackageWorkoutPlan.package.coach.id !== user.coach.id) {
       message = `You are not authorized to delete workout plan with id ${id}`;
       return message;
     }
