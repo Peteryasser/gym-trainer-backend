@@ -26,13 +26,18 @@ export class MealPlanController {
   }
 
   @Delete('delete/:id')
-  deleteWorkoutPlan(@Param('id') id: number, @GetUser() user: User):{} {
-
+  async deleteWorkoutPlan(@Param('id') id: number, @GetUser() user: User|Coach) {
+    if(user instanceof Coach){
+      user= await user.user
+    }
     return this.mealPlanService.deleteMealPlan(id, user);
   }
 
   @Get('get-my-plans')
-  getMyPlans( @GetUser() user: User): Promise<MealPlans[]> {
+  async getMyPlans( @GetUser() user: User|Coach): Promise<MealPlans[]> {
+    if(user instanceof Coach){
+      user= await user.user
+    }
     console.log('Get My Plans ');
 
     return this.mealPlanService.getMyPlans(user);
@@ -44,12 +49,15 @@ export class MealPlanController {
   }
 
   @Put('update/:id')
-  updateMealPlan(
+  async updateMealPlan(
     @Param('id') id: number,
     @Body() MealPlanUpdateDto: MealPlanDto,
-    @GetUser() user: User,
+    @GetUser() user: User|Coach,
   ):Promise<MealPlans> {
 
+    if(user instanceof Coach){
+      user= await user.user
+    }
     return this.mealPlanService.updateMealPlan(
       id,
       MealPlanUpdateDto,

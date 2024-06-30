@@ -9,6 +9,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { User } from '../../entity/user.entity';
 import { CreateRecipeDto } from './dtos/create-recipe.dto';
+import { Coach } from 'src/entity/coach.entity';
 
 
 
@@ -88,8 +89,11 @@ export class RecipeController {
     @Post('save/:id')
     async saveRecipe(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<{ message: string }> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         await this.recipeService.saveRecipe(id, user);
         return { message: 'Recipe saved successfully' };
     }
@@ -98,15 +102,21 @@ export class RecipeController {
     @Delete('unsave/:id')
     async unsaveRecipe(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<{ message: string }> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         await this.recipeService.unSaveRecipe(id, user);
         return { message: 'Recipe unsaved successfully' };
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('get-saved-recipes')
-    async getAllSaved(@GetUser() user: User):Promise<Recipes[]>{
+    async getAllSaved(@GetUser() user: User|Coach):Promise<Recipes[]>{
+        if(user instanceof Coach){
+            user= await user.user
+          }
         return this.recipeService.getAllSaved(user)
     }
 
@@ -114,9 +124,12 @@ export class RecipeController {
     @Post('create-custom-recipe')
     async create(
         @Body() createRecipeDto: CreateRecipeDto,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ):Promise<Recipes> {
         try{
+            if(user instanceof Coach){
+                user= await user.user
+              }
             return await this.recipeService.createCustom(createRecipeDto,user);
         }catch(error){
             return error;
@@ -147,16 +160,22 @@ export class RecipeController {
     @Delete('delete/:id')
     async deleteRecipe(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<String> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         console.log('delete Recipe');
         return this.recipeService.deleteRecipe(user, id);
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('get-my-recipes')
-    async getAllByUser(@GetUser() user: User):Promise<Recipes[]>{
+    async getAllByUser(@GetUser() user: User|Coach):Promise<Recipes[]>{
         try{
+            if(user instanceof Coach){
+                user= await user.user
+              }
             return await this.recipeService.getAllByUser(user)
         }catch{
             throw new Error("Error while loading recipes");
@@ -168,10 +187,13 @@ export class RecipeController {
     @Put('update/:id')
     async update(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
         @Body() updateRecipeDto: CreateRecipeDto
         ):Promise<Recipes>{
         try{
+            if(user instanceof Coach){
+                user= await user.user
+              }
             return await this.recipeService.update(id,user,updateRecipeDto)
         }catch(error){
             console.log(error);
