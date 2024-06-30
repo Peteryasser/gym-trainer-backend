@@ -40,7 +40,7 @@ export class MealController {
             return error;
         }
     }
-
+    
     @UseGuards(JwtAuthGuard)
     @Post('create-custom-meal')
     async createCustom(

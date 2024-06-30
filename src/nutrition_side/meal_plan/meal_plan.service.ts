@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { User } from '../../entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,6 +6,9 @@ import { Meals } from '../../entity/meals.entity';
 import { MealPlanDto } from './dtos/create-meal.dto';
 import { MealPlans } from '../../entity/meal_plans.entity';
 import { MealPlanMeals } from '../../entity/meal_plan_meals.entity';
+import { Coach } from '../../entity/coach.entity';
+import { UserPackageMealPlans } from '../../entity/user_package_meal_plans.entity';
+import { UserSubscription } from '../../entity/user-subscription.entity';
 
 @Injectable()
 export class MealPlanService {
@@ -16,6 +19,10 @@ export class MealPlanService {
     private readonly mealPlanMealsRepository: Repository<MealPlanMeals>,
     @InjectRepository(MealPlans)
     private readonly mealPlansRepository: Repository<MealPlans>,
+    @InjectRepository(UserPackageMealPlans)
+    private readonly userPackageMealPlansRepository: Repository<UserPackageMealPlans>,
+    @InjectRepository(UserSubscription)
+    private readonly userSubscriptionRepository: Repository<UserSubscription>,
   ) {}
 
   async createMealPlan(mealPlanDto: MealPlanDto, user: User): Promise<MealPlans> {
@@ -109,6 +116,44 @@ export class MealPlanService {
     });
 
     return mealPlans;
+  }
+
+  async getUserPlansByCoach(id: number,user: Coach){
+    const subscription = await this.userSubscriptionRepository.findOne({
+      where: {
+        user: { id: id },
+        package: { coach: user },
+      },
+
+    });
+
+    if (!subscription) {
+      throw new UnauthorizedException('You are not authorized to access this user’s data');
+    }
+
+    const userPackageMealPlan = await this.userPackageMealPlansRepository.findOne({
+      where: {
+        user: { id: id },
+        package: { coach: user },
+      },
+      relations: ['package', 'package.coach', 'mealPlan'],
+    });
+
+    if (!userPackageMealPlan) {
+      return[];
+    }
+
+    const mealPlans = await this.mealPlansRepository.find({
+      where: {
+        userPackageMealPlans: {
+          package: { id: userPackageMealPlan.package.id},
+        },
+      },
+      relations: ['mealPlanMeals','mealPlanMeals.meal','mealPlanMeals.meal.mealRecipes'],
+    });
+
+    return mealPlans;
+
   }
 
   async updateMealPlan(

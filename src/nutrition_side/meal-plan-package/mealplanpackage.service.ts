@@ -27,7 +27,6 @@ export class MealPlanPackageService {
     mealPlanPackageDto: MealPlanPackageDTO,
     user: Coach,
   ):Promise<UserPackageMealPlans> {
-
     const trainee = await this.userRepository.findOne({
       where: { id: mealPlanPackageDto.trainee_id },
     });
