@@ -1,18 +1,18 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Meals } from 'src/entity/meals.entity';
+import { Meals } from '../../entity/meals.entity';
 import { Between, Repository } from 'typeorm';
 import { CreateMealDto } from './dtos/create-meal.dto';
-import { User } from 'src/entity/user.entity';
-import { MealCategories } from 'src/entity/meal_categories.entity';
-import { Recipes } from 'src/entity/recipes.entity';
-import { MealRecipes } from 'src/entity/meal_recipes.entity';
-import { SavedMeals } from 'src/entity/saved_meals.entity';
-import { UserMealsHistory } from 'src/entity/user_meals_history.entity';
+import { User } from '../../entity/user.entity';
+import { MealCategories } from '../../entity/meal_categories.entity';
+import { Recipes } from '../../entity/recipes.entity';
+import { MealRecipes } from '../../entity/meal_recipes.entity';
+import { SavedMeals } from '../../entity/saved_meals.entity';
+import { UserMealsHistory } from '../../entity/user_meals_history.entity';
 import { getHistoryNutritionsDto } from './dtos/get-history-data.dto';
 import { MealNutritionsDto } from './dtos/history-nutrition.dto';
-import { Coach } from 'src/entity/coach.entity';
-import { UserPackageMealPlans } from 'src/entity/user_package_meal_plans.entity';
+import { Coach } from '../../entity/coach.entity';
+import { UserPackageMealPlans } from '../../entity/user_package_meal_plans.entity';
 
 
 @Injectable()
