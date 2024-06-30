@@ -8,6 +8,7 @@ import { MealPlans } from '../../entity/meal_plans.entity';
 import { MealPlanMeals } from '../../entity/meal_plan_meals.entity';
 import { Coach } from 'src/entity/coach.entity';
 import { UserPackageMealPlans } from 'src/entity/user_package_meal_plans.entity';
+import { UserSubscription } from 'src/entity/user-subscription.entity';
 
 @Injectable()
 export class MealPlanService {
@@ -20,6 +21,8 @@ export class MealPlanService {
     private readonly mealPlansRepository: Repository<MealPlans>,
     @InjectRepository(UserPackageMealPlans)
     private readonly userPackageMealPlansRepository: Repository<UserPackageMealPlans>,
+    @InjectRepository(UserSubscription)
+    private readonly userSubscriptionRepository: Repository<UserSubscription>,
   ) {}
 
   async createMealPlan(mealPlanDto: MealPlanDto, user: User): Promise<MealPlans> {
@@ -116,7 +119,18 @@ export class MealPlanService {
   }
 
   async getUserPlansByCoach(id: number,user: Coach){
-    console.log(user,"UUUUUUUUUUU")
+    const subscription = await this.userSubscriptionRepository.findOne({
+      where: {
+        user: { id: id },
+        package: { coach: user },
+      },
+
+    });
+
+    if (!subscription) {
+      throw new UnauthorizedException('You are not authorized to access this user’s data');
+    }
+
     const userPackageMealPlan = await this.userPackageMealPlansRepository.findOne({
       where: {
         user: { id: id },
@@ -124,10 +138,9 @@ export class MealPlanService {
       },
       relations: ['package', 'package.coach', 'mealPlan'],
     });
-    console.log("DDDDDDDD",userPackageMealPlan)
 
     if (!userPackageMealPlan) {
-      throw new UnauthorizedException('You are not authorized to access this user’s data');
+      return[];
     }
 
     const mealPlans = await this.mealPlansRepository.find({

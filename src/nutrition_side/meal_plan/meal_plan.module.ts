@@ -6,13 +6,14 @@ import { Meals } from '../../entity/meals.entity';
 import { MealPlans } from '../../entity/meal_plans.entity';
 import { MealPlanMeals } from '../../entity/meal_plan_meals.entity';
 import { UserPackageMealPlans } from 'src/entity/user_package_meal_plans.entity';
+import { UserSubscription } from 'src/entity/user-subscription.entity';
 
 
 
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Meals,MealPlans,MealPlanMeals,UserPackageMealPlans])],
+  imports: [TypeOrmModule.forFeature([Meals,MealPlans,MealPlanMeals,UserPackageMealPlans,UserSubscription])],
   providers: [MealPlanService],
   controllers: [MealPlanController],
 })
