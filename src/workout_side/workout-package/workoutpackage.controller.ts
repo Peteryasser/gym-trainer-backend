@@ -73,7 +73,7 @@ export class WorkoutPlanPackageController {
     return this.workoutPlanPackageService.getWorkoutPlanInPackage(id);
   }
 
-  @Get('get-plan-by-ids/:user_id')
+  @Get('get-plans-by-id/:user_id')
   getPlan(@Param('user_id') userId: number, @GetUser() coach: Coach) {
     console.log('Get plan of one user and one coach');
 
