@@ -83,7 +83,7 @@ export class WorkoutPlanService {
 
     message = 'Workout Plan created successfully';
 
-    return message;
+    return workoutPlan.id;
   }
 
   async deleteWorkoutPlan(id: number, user: User) {
