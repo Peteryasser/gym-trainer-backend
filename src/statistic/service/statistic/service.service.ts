@@ -6,9 +6,9 @@ import { User } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
 import { ConnectionManager } from 'src/config/connection_manager';
 import { Measurements } from 'src/entity/measurements.entity';
-import { Muscle } from 'src/entity/muscle';
+import { Muscle } from 'src/entity/muscle.entity';
 import * as moment from 'moment';
-import { WorkoutHistory } from 'src/entity/user-workout-history';
+import { WorkoutHistory } from 'src/entity/user-workout-history.entity';
 import { addHours } from 'date-fns';
 
 

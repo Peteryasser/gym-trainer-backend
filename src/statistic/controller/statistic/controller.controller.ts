@@ -1,6 +1,6 @@
 import { Body, Controller,Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { WorkoutHistory } from 'src/entity/user-workout-history';
+import { WorkoutHistory } from 'src/entity/user-workout-history.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 import { User } from 'src/entity/user.entity';
 import { StatisticService } from 'src/statistic/service/statistic/service.service';
