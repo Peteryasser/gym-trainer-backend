@@ -10,7 +10,7 @@ import { MealRecipes } from '../../entity/meal_recipes.entity';
 import { SavedMeals } from '../../entity/saved_meals.entity';
 import { UserMealsHistory } from '../../entity/user_meals_history.entity';
 import { UserPackageMealPlans } from '../../entity/user_package_meal_plans.entity';
-import { UserSubscription } from 'src/entity/user-subscription.entity';
+import { UserSubscription } from '../../entity/user-subscription.entity';
 
 
 

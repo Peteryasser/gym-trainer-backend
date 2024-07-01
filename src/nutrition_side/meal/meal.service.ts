@@ -13,7 +13,7 @@ import { getHistoryNutritionsDto } from './dtos/get-history-data.dto';
 import { MealNutritionsDto } from './dtos/history-nutrition.dto';
 import { Coach } from '../../entity/coach.entity';
 import { UserPackageMealPlans } from '../../entity/user_package_meal_plans.entity';
-import { UserSubscription } from 'src/entity/user-subscription.entity';
+import { UserSubscription } from '../../entity/user-subscription.entity';
 
 
 @Injectable()

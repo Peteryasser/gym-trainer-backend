@@ -40,6 +40,7 @@ export class WorkoutHistoryService {
     workoutHistory.weights = dto.weights;
     workoutHistory.duration = dto.duration;
     workoutHistory.durationUnit = dto.durationUnit;
+    workoutHistory.reps = dto.reps;
 
     await connection.manager.save(workoutHistory);
     message = 'Workout History added successfully';
