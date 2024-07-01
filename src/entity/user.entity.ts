@@ -8,14 +8,14 @@ import {
 import { Device } from './device.entity';
 import { Coach } from './coach.entity';
 import { Workout } from './workout.entity';
-import { WorkoutHistory } from './user-workout-history';
-import { WorkoutPlan } from './workout-plan';
-import { SavedWorkout } from './saved-workouts';
-import { UserPackageWorkoutPlan } from './user-package-workoutPlan';
+import { WorkoutHistory } from './user-workout-history.entity';
+import { WorkoutPlan } from './workout-plan.entity';
+import { SavedWorkout } from './saved-workouts.entity';
+import { UserPackageWorkoutPlan } from './user-package-workoutPlan.entity';
 import { Exercise } from './exercise.entity';
-import { WorkoutCollection } from './workout-collection';
-import { SavedExercise } from './saved-exercises';
-import { SavedWorkoutCollection } from './saved-workout-collection';
+import { WorkoutCollection } from './workout-collection.entity';
+import { SavedExercise } from './saved-exercises.entity';
+import { SavedWorkoutCollection } from './saved-workout-collection.entity';
 import { UserSubscription } from './user-subscription.entity';
 import { SavedMeals } from './saved_meals.entity';
 import { Meals } from './meals.entity';
@@ -27,6 +27,8 @@ import { AppNotification } from './app-notification.entity';
 import { SubscriptionReview } from './subscription-review.entity';
 import { UserPackageMealPlans } from './user_package_meal_plans.entity';
 import { Measurements } from './measurements.entity';
+import { MealPlans } from './meal_plans.entity';
+import { UserKeys } from './user-keys.entity';
 
 @Entity('users')
 export class User {
@@ -115,6 +117,9 @@ export class User {
   @OneToMany(() => WorkoutPlan, (workoutPlan) => workoutPlan.user)
   workoutPlans: WorkoutPlan[];
 
+  @OneToMany(() => MealPlans, (mealPlan) => mealPlan.user)
+  mealPlans: MealPlans[];
+
   @OneToMany(() => SavedWorkout, (savedWorkout) => savedWorkout.user)
   savedWorkouts: SavedWorkout[];
 
@@ -143,10 +148,29 @@ export class User {
 
   @OneToMany(() => SubscriptionReview, (review) => review.user)
   reviews: SubscriptionReview[];
+  @OneToOne(() => UserKeys, (keys) => keys.user, { cascade: true })
+  keys: UserKeys;
 
   public get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }
+
+  public get age(): number {
+    const today = new Date();
+    const birthDate = new Date(this.dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+
+    return age;
+  }
+
   @OneToMany(() => SavedMeals, (savedMeal) => savedMeal.user)
   savedMeals: SavedMeals[];
 

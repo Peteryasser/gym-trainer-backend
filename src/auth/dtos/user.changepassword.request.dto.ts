@@ -7,10 +7,7 @@ import {
   } from 'class-validator';
   
   export class UserChangePasswordRequestDto {
-    @IsNumber()
-    @IsNotEmpty()
-    id: number;
-  
+
     @IsString()
     @MinLength(6)
     password: string;
@@ -19,8 +16,7 @@ import {
     @MinLength(6)
     confirmPassword: string;
 
-    constructor(id: number, password: string, confirmPassword: string){
-        this.id = id,
+    constructor(password: string, confirmPassword: string){
         this.password = password;
         this.confirmPassword = confirmPassword;
     }

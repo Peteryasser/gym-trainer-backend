@@ -9,16 +9,18 @@ import {
   Patch,
 } from '@nestjs/common';
 import { ExerciseService } from './exercise.service';
-import { Exercise } from 'src/entity/exercise.entity';
+import { Exercise } from '../../entity/exercise.entity';
 // import { ExerciseDTO } from './dtos/exercise.dto';
 import { UpdateExerciseDto } from './dtos/exercise_dto_update';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { DTORequest } from './dtos/exercise_dto_request';
-import { User } from 'src/entity/user.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
-import { BodyPart } from 'src/entity/bodyPart';
-import { Equipment } from 'src/entity/equipment';
-import { Muscle } from 'src/entity/muscle';
+import { User } from '../../entity/user.entity';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
+import { BodyPart } from '../../entity/bodyPart.entity';
+import { Equipment } from '../../entity/equipment.entity';
+import { Muscle } from '../../entity/muscle.entity';
+import { Coach } from 'src/entity/coach.entity';
+import { WorkoutSideUtils } from '../workoutSide.utils';
 
 @Controller('exercises')
 @UseGuards(JwtAuthGuard)
@@ -28,35 +30,39 @@ export class ExerciseController {
   @Post('create')
   async createExercise(
     @Body() dto: DTORequest,
-    @GetUser() user: User,
-  ): Promise<String> {
+    @GetUser() user: User | Coach,
+  ): Promise<string> {
+    const getUser = await WorkoutSideUtils.getTheUser(user);
     console.log('createExercise');
-    return this.exerciseService.createNewExerciseByUser(dto, user);
+    return this.exerciseService.createNewExerciseByUser(dto, getUser);
   }
 
   @Delete('delete/:id')
   async deleteExercise(
     @Param('id') id: number,
-    @GetUser() user: User,
-  ): Promise<String> {
+    @GetUser() user: User | Coach,
+  ): Promise<string> {
     console.log('deleteExercise');
-    return this.exerciseService.deleteExerciseByUser(id, user);
+    const getUser = await WorkoutSideUtils.getTheUser(user);
+    return this.exerciseService.deleteExerciseByUser(id, getUser);
   }
 
   @Get('my-exercises')
-  async getMyExercise(@GetUser() user: User): Promise<Exercise[]> {
-    console.log('get exercises of the user with id', user.id);
-    return this.exerciseService.getExercisesByUser(user);
+  async getMyExercise(@GetUser() user: User | Coach): Promise<Exercise[]> {
+    const getUser = await WorkoutSideUtils.getTheUser(user);
+    console.log('get exercises of the user with id', getUser.id);
+    return this.exerciseService.getExercisesByUser(getUser);
   }
 
   @Patch('update/:id')
   async updateExercise(
-    @GetUser() user: User,
+    @GetUser() user: User | Coach,
     @Param('id') id: number,
     @Body() dto: UpdateExerciseDto,
-  ): Promise<String> {
+  ): Promise<string> {
     console.log('updateExercise');
-    return this.exerciseService.update(user, id, dto);
+    const getUser = await WorkoutSideUtils.getTheUser(user);
+    return this.exerciseService.update(getUser, id, dto);
   }
 
   @Get('body-parts')
@@ -78,9 +84,10 @@ export class ExerciseController {
   }
 
   @Get('all-exercises')
-  async getAllExercises(@GetUser() user: User): Promise<Exercise[]> {
+  async getAllExercises(@GetUser() user: User | Coach): Promise<Exercise[]> {
     console.log('getAllExercises');
-    return this.exerciseService.getAllExercisesfromDB(user);
+    const getUser = await WorkoutSideUtils.getTheUser(user);
+    return this.exerciseService.getAllExercisesfromDB(getUser);
   }
 
   @Get('get-new-exercises-with-version/:version')

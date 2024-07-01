@@ -10,13 +10,13 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { CoachCertificateService } from '../service/coach_certificates.service';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { Coach } from 'src/entity/coach.entity';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { Coach } from '../../entity/coach.entity';
 import { CreateCertificateDto } from '../dtos/create-certificate.dto';
 import { UpdateCertificateDto } from '../dtos/update-certificate.dto';
-import { CoachCertificate } from 'src/entity/coach-certificate.entity';
+import { CoachCertificate } from '../../entity/coach-certificate.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('coach_certificates')

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { config as dotenvConfig } from 'dotenv';
-import { ConnectionManager } from 'src/config/connection_manager';
-import { Exercise } from 'src/entity/exercise.entity';
-import { Workout } from 'src/entity/workout.entity';
-import { WorkoutExerciseDetails } from 'src/entity/workout-exercise-details';
-import { WorkoutExercise } from 'src/entity/workout-exercise';
+import { ConnectionManager } from '../../config/connection_manager';
+import { Exercise } from '../../entity/exercise.entity';
+import { Workout } from '../../entity/workout.entity';
+import { WorkoutExerciseDetails } from '../../entity/workout-exercise-details.entity';
+import { WorkoutExercise } from '../../entity/workout-exercise.entity';
 import { WorkoutDto } from './dtos/workout.dto';
-import { User } from 'src/entity/user.entity';
+import { User } from '../../entity/user.entity';
 import { WorkoutUpdateDto } from './dtos/workout.update.dto';
 
 dotenvConfig({ path: '.env' });
@@ -147,6 +147,65 @@ export class WorkoutService {
     }
 
     return 'Workout created successfully';
+  }
+
+  async addWorkoutForCollections(
+    user: User,
+    createWorkoutDto: WorkoutDto,
+  ): Promise<number> {
+    const connection = await ConnectionManager.getConnection();
+
+    const exercise = await connection.manager.findOne(Exercise, {
+      where: { id: createWorkoutDto.exerciseId },
+    });
+
+    if (!exercise) {
+      return -1;
+    }
+
+    const workout = new Workout();
+    workout.description = createWorkoutDto.description;
+    workout.user = user;
+    workout.type = true;
+
+    try {
+      await connection.manager.save(workout);
+    } catch (e) {
+      console.log(e);
+    }
+
+    // Create the workout exercise entity
+    const workoutExercise = new WorkoutExercise();
+    workoutExercise.workout = workout;
+    workoutExercise.exercise = exercise;
+
+    try {
+      await connection.manager.save(workoutExercise);
+      console.log('WorkoutExercise created successfully', workoutExercise);
+    } catch (e) {
+      console.log(e);
+    }
+
+    // Create the workout exercise details entity
+    const workoutExerciseDetails = new WorkoutExerciseDetails();
+    workoutExerciseDetails.workoutExercise = workoutExercise;
+    workoutExerciseDetails.sets = createWorkoutDto.setsNumber;
+    workoutExerciseDetails.reps = createWorkoutDto.repsNumber;
+    workoutExerciseDetails.weights = createWorkoutDto.weights;
+    workoutExerciseDetails.duration = createWorkoutDto.duration;
+    workoutExerciseDetails.durationUnit = createWorkoutDto.durationUnit;
+
+    try {
+      await connection.manager.save(workoutExerciseDetails);
+      console.log(
+        'WorkoutExerciseDetails created successfully',
+        workoutExerciseDetails,
+      );
+    } catch (e) {
+      console.log(e);
+    }
+
+    return workout.id;
   }
 
   async update(user: User, workoutid: number, updatedto: WorkoutUpdateDto) {

@@ -14,8 +14,8 @@ export class WorkoutUpdateDto {
   setsNumber: number;
 
   @IsOptional()
-  @IsNumber()
-  repsNumber: number;
+  @IsArray()
+  repsNumber: number[];
 
   @IsOptional()
   @IsArray()

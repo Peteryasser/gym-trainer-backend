@@ -7,14 +7,16 @@ import {
   Param,
   Patch,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { WorkoutService } from './workout.service';
 import { WorkoutDto } from './dtos/workout.dto';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/entity/user.entity';
-import { Workout } from 'src/entity/workout.entity';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { User } from '../../entity/user.entity';
+import { Workout } from '../../entity/workout.entity';
 import { WorkoutUpdateDto } from './dtos/workout.update.dto';
+import { WorkoutSideUtils } from '../workoutSide.utils';
+import { Coach } from 'src/entity/coach.entity';
 
 @Controller('workouts')
 @UseGuards(JwtAuthGuard)
@@ -24,44 +26,51 @@ export class WorkoutController {
   @Post('create')
   async createWorkout(
     @Body() createWorkoutDto: WorkoutDto,
-    @GetUser() user: User,
-  ): Promise<String> {
+    @GetUser() user: User | Coach,
+  ): Promise<string> {
+    const getUser = await WorkoutSideUtils.getTheUser(user);
     console.log('createWorkout');
     console.log('createWorkoutDto', createWorkoutDto);
     console.log('user', user);
 
-    return this.workoutService.createWorkout(user, createWorkoutDto);
+    return this.workoutService.createWorkout(getUser, createWorkoutDto);
   }
 
   @Get('my-workouts-detailed')
-  async getMyWorkouts(@GetUser() user: User): Promise<Workout[]> {
+  async getMyWorkouts(@GetUser() user: User | Coach): Promise<Workout[]> {
     console.log('getMyWorkouts');
-    return this.workoutService.getMyWorkouts(user);
+    const getUser = await WorkoutSideUtils.getTheUser(user);
+    return this.workoutService.getMyWorkouts(getUser);
   }
 
   @Get('my-workouts-summary')
-  async getMyWorkoutsSummary(@GetUser() user: User): Promise<Workout[]> {
+  async getMyWorkoutsSummary(
+    @GetUser() user: User | Coach,
+  ): Promise<Workout[]> {
     console.log('getMyWorkoutsSummary');
-    return this.workoutService.getMyWorkoutsSummary(user);
+    const getUser = await WorkoutSideUtils.getTheUser(user);
+    return this.workoutService.getMyWorkoutsSummary(getUser);
   }
 
   @Delete('delete/:id')
   async deleteExercise(
     @Param('id') id: number,
-    @GetUser() user: User,
-  ): Promise<String> {
+    @GetUser() user: User | Coach,
+  ): Promise<string> {
     console.log('delete Workout');
-    return this.workoutService.deleteWorkout(user, id);
+    const getUser = await WorkoutSideUtils.getTheUser(user);
+    return this.workoutService.deleteWorkout(getUser, id);
     // return { message: 'Workout deleted successfully' };
   }
 
   @Patch('update/:id')
   async updateWorkout(
-    @GetUser() user: User,
+    @GetUser() user: User | Coach,
     @Param('id') id: number,
     @Body() updatedto: WorkoutUpdateDto,
-  ): Promise<String> {
+  ): Promise<string> {
     console.log('updateWorkout');
-    return this.workoutService.update(user, id, updatedto);
+    const getUser = await WorkoutSideUtils.getTheUser(user);
+    return this.workoutService.update(getUser, id, updatedto);
   }
 }

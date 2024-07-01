@@ -10,13 +10,13 @@ import {
   JoinTable,
   Unique,
 } from 'typeorm';
-import { BodyPart } from './bodyPart';
-import { Muscle } from './muscle';
-import { Instruction } from './instruction';
-import { Equipment } from './equipment';
+import { BodyPart } from './bodyPart.entity';
+import { Muscle } from './muscle.entity';
+import { Instruction } from './instruction.entity';
+import { Equipment } from './equipment.entity';
 import { User } from './user.entity';
-import { WorkoutExercise } from './workout-exercise';
-import { SavedExercise } from './saved-exercises';
+import { WorkoutExercise } from './workout-exercise.entity';
+import { SavedExercise } from './saved-exercises.entity';
 
 @Entity({ name: 'exercises' }) // Specify the table name (optional)
 @Unique(['idApi'])

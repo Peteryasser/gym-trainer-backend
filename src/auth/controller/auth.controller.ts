@@ -15,11 +15,13 @@ import { UserLoginRequestDto } from '../dtos/user.login.request.dto';
 import { UserForgetPasswordRequestDto } from '../dtos/user.forgetpassword.request.dto';
 import { UserResetPasswordRequestDto } from '../dtos/user.resetpassword.request.dto';
 import { UserChangePasswordRequestDto } from '../dtos/user.changepassword.request.dto';
-import { DeviceDto } from 'src/users/dtos/device.dto';
 import { JwtAuthGuard } from '../guards/jwt.auth.guard';
 import { AuthService } from '../service/auth.service';
 import { UserType } from '../../users/user-type.enum';
 import { UserTypeValidationPipe } from '../../pipe';
+import { RequestHeaders } from '../../utils/headers/request-header.decorator';
+import { GetUser } from '../decorators/get-user.decorator';
+import { User } from '../../entity/user.entity';
 
 @Public()
 @Controller('auth')
@@ -30,8 +32,13 @@ export class AuthController {
   async login(
     @Param('userType', new UserTypeValidationPipe()) userType: UserType,
     @Body() payload: UserLoginRequestDto,
+    @RequestHeaders() headers,
   ): Promise<UserAuthResponseDto> {
-    return this.authService.login(userType, payload);
+    return this.authService.login(
+      userType,
+      payload,
+      headers['x-retrieve-keys'] === 'true',
+    );
   }
 
   @Post('register')
@@ -46,7 +53,6 @@ export class AuthController {
   @Delete('logout')
   async logout(@Req() req): Promise<void> {
     const deviceID = req.user.device.id;
-
     await this.authService.logout(deviceID);
   }
 
@@ -54,19 +60,21 @@ export class AuthController {
   async forgetPassword(
     @Body() payload: { user: UserForgetPasswordRequestDto },
   ): Promise<String | BadRequestException> {
+    console.log("got forgetPassword request: ", payload);
     return await this.authService.forgetPassword(payload.user);
   }
   @Post('resetPassword')
   async resetPassword(
     @Body() payload: { user: UserResetPasswordRequestDto },
   ): Promise<String | BadRequestException> {
+    console.log("got resetPassword request: ", payload);
     return await this.authService.resetPassword(payload.user);
   }
+  @UseGuards(JwtAuthGuard)
   @Post('changePassword')
   async changePassword(
-    @Body() payload: { user: UserChangePasswordRequestDto },
+    @Body() payload: { user: UserChangePasswordRequestDto }, @GetUser() user: User
   ): Promise<String | BadRequestException> {
-    return await this.authService.changePassword(payload.user);
+    return await this.authService.changePassword(payload.user,user);
   }
-
 }

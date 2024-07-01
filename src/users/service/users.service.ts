@@ -1,13 +1,25 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../entity/user.entity';
 import { MoreThan, Repository, UpdateResult } from 'typeorm';
+import { CoachSummaryDto } from '../coaches/dtos/coach-summary.dto';
+import { UserKeys } from '../../entity/user-keys.entity';
+import { CoachesService } from '../coaches/coach.service';
+import { UserProfileDto } from '../dtos/user-profile,dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private readonly usersRepository: Repository<User>,
+    @InjectRepository(UserKeys)
+    private readonly keysRepository: Repository<UserKeys>,
+
+    private readonly coachesService: CoachesService,
   ) {}
 
   async findOneByEmail(
@@ -55,43 +67,98 @@ export class UsersService {
     const result = await this.usersRepository.delete(id);
     if (result.affected == 0) throw new NotFoundException('User not found');
   }
-  
+
+  async getKeys(id: number): Promise<UserKeys> {
+    return await this.keysRepository.findOne({ where: { userId: id } });
+  }
+
   async setotp(otp, otpExpire, email) {
     try {
-        const userRepository = this.usersRepository;
-        const updateFields: { resetPasswordToken: any; otpExpiration?: any } = { resetPasswordToken: otp };
+      const userRepository = this.usersRepository;
+      const updateFields: { resetPasswordToken: any; otpExpiration?: any } = {
+        resetPasswordToken: otp,
+      };
 
-        // Include otpExpiration only if it's provided
-        if (otpExpire) {
-            updateFields.otpExpiration = otpExpire;
-        }
-        await userRepository
+      // Include otpExpiration only if it's provided
+      if (otpExpire) {
+        updateFields.otpExpiration = otpExpire;
+      }
+      await userRepository
         .createQueryBuilder()
         .update(User)
         .set(updateFields)
-        .where("email = :email", { email })
+        .where('email = :email', { email })
         .execute();
-        return "Success";
+      return 'Success';
     } catch (error) {
-        console.error("Error updating OTP:", error.message); // Log the actual error message
-        return "Failed to update OTP"; // Return a generic error message
+      console.error('Error updating OTP:', error.message); // Log the actual error message
+      return 'Failed to update OTP'; // Return a generic error message
     }
-}
+  }
 
-async checkotp(email): Promise<User>{
+  async checkotp(email): Promise<User> {
     try {
-        const userRepository = this.usersRepository;
-        // Check if there's a user with the given OTP and if the OTP hasn't expired
-        const user = await userRepository.findOne({
-            where: {
-                email:email,
-                resetPasswordTokenSentAt: MoreThan(new Date()) 
-            }
-        });
-        return user;
+      const userRepository = this.usersRepository;
+      // Check if there's a user with the given OTP and if the OTP hasn't expired
+      const user = await userRepository.findOne({
+        where: {
+          email: email,
+          resetPasswordTokenSentAt: MoreThan(new Date()),
+        },
+      });
+      return user;
     } catch (err) {
-        console.error(err);
-        throw new UnauthorizedException('User not exists or otp invalid');
+      console.error(err);
+      throw new UnauthorizedException('User not exists or otp invalid');
     }
-}
+  }
+
+  async getMyCoaches(userId: number): Promise<CoachSummaryDto[]> {
+    const now = new Date();
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: [
+        'subscriptions',
+        'subscriptions.package',
+        'subscriptions.package.coach',
+        'subscriptions.package.coach.user',
+        'subscriptions.reviews',
+      ],
+    });
+
+    if (!user) throw new NotFoundException(`User not found`);
+
+    const subscribedCoaches = user.subscriptions
+      .filter((subscription) => subscription.endDate > now)
+      .map((subscription) => subscription.package.coach);
+
+    const uniqueCoaches = Array.from(
+      new Set(subscribedCoaches.map((coach) => coach.id)),
+    ).map((id) => subscribedCoaches.find((coach) => coach.id === id));
+
+    const coachSummaryDtos: CoachSummaryDto[] = await Promise.all(
+      uniqueCoaches.map(async (coach) => {
+        const reviewsCount = await this.coachesService.getReviewsCount(
+          coach.id,
+        );
+
+        return {
+          id: (await coach.user).id,
+          coachId: coach.id,
+          name: `${(await coach.user).firstName} ${(await coach.user).lastName}`,
+          profilePictureUrl: (await coach.user).profilePictureUrl,
+          rating: coach.rating,
+          reviewsNo: reviewsCount,
+        };
+      }),
+    );
+
+    return coachSummaryDtos;
+  }
+
+  async getProfile(id: number): Promise<UserProfileDto> {
+    const user = await this.findOneById(id);
+
+    return new UserProfileDto(user);
+  }
 }

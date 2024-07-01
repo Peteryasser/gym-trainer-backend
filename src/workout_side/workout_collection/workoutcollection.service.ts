@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { config as dotenvConfig } from 'dotenv';
-import { User } from 'src/entity/user.entity';
+import { User } from '../../entity/user.entity';
 import { WorkoutCollectionDto } from './dtos/workout_collection_dto';
-import { ConnectionManager } from 'src/config/connection_manager';
-import { Workout } from 'src/entity/workout.entity';
-import { WorkoutCollection } from 'src/entity/workout-collection';
-import { WorkoutCollectionDetails } from 'src/entity/workout-collection-details';
+import { ConnectionManager } from '../../config/connection_manager';
+import { Workout } from '../../entity/workout.entity';
+import { WorkoutCollection } from '../../entity/workout-collection.entity';
+import { WorkoutCollectionDetails } from '../../entity/workout-collection-details.entity';
 import { WorkoutCollectionUpdateDto } from './dtos/workout_collection_update_dto';
+import { WorkoutService } from '../../workout_side/workout/workout.service';
 
 dotenvConfig({ path: '.env' });
 @Injectable()
@@ -20,23 +21,21 @@ export class WorkoutCollectionService {
     const connection = await ConnectionManager.getConnection();
     let message = '';
 
-    // LOOP ON workout ids in workout collection dto and make sure that each on is
-    // exist in data base and (type == false or type == true and user id == user.id)
-    for (const workoutId of createWorkoutCollectionDto.workout_ids) {
-      const workout = await connection.manager.findOne(Workout, {
-        where: { id: workoutId },
-        relations: ['user'],
-      });
+    // get instance of workout service
+    const workoutService = new WorkoutService();
+    // initialize array of numbers named workoutIds
+    const workoutIds: number[] = [];
 
-      if (!workout) {
-        message = `Workout with id ${workoutId} not found`;
-        return message;
-      }
+    // iterate on list of WorkoutDTOs in WorkoutCollection
+    for (const workoutdto of createWorkoutCollectionDto.workouts) {
+      const workoutId = workoutService.addWorkoutForCollections(
+        user,
+        workoutdto,
+      );
 
-      if (workout.type && workout.user.id !== user.id) {
-        message = `You are not authorized to add workout with id ${workoutId} to your collection`;
-        return message;
-      }
+      console.log('workoutId', await workoutId);
+      if ((await workoutId) == -1) return 'Exercise Not Found';
+      workoutIds.push(await workoutId);
     }
 
     // Create workout collection
@@ -44,13 +43,14 @@ export class WorkoutCollectionService {
       name: createWorkoutCollectionDto.name,
       description: createWorkoutCollectionDto.description,
       type: true,
+      creationDate: new Date(),
       user,
     });
 
     await connection.manager.save(workoutCollection);
 
     // Add workouts to workout collection by using WorkoutCollectionDetails
-    for (const workoutId of createWorkoutCollectionDto.workout_ids) {
+    for (const workoutId of workoutIds) {
       const workout = await connection.manager.findOne(Workout, {
         where: { id: workoutId },
       });
@@ -67,8 +67,21 @@ export class WorkoutCollectionService {
     }
 
     message = 'Workout collection created successfully';
-
     return message;
+  }
+
+  async getDeaultCollectionsInfo() {
+    const connection = await ConnectionManager.getConnection();
+
+    // i want to get only id and name
+    const workoutCollections = await connection.manager.find(
+      WorkoutCollection,
+      {
+        where: { type: false },
+        select: ['id', 'name'],
+      },
+    );
+    return workoutCollections;
   }
 
   async deleteWorkoutCollection(user: User, id: number) {
@@ -113,6 +126,7 @@ export class WorkoutCollectionService {
           'workoutCollectionDetails',
           'workoutCollectionDetails.workout',
           'workoutCollectionDetails.workout.workoutExercises',
+          'workoutCollectionDetails.workout.workoutExercises.workoutExerciseDetails',
           'workoutCollectionDetails.workout.workoutExercises.exercise',
           'workoutCollectionDetails.workout.workoutExercises.exercise.bodyPart',
           'workoutCollectionDetails.workout.workoutExercises.exercise.targetMuscle',
@@ -123,7 +137,34 @@ export class WorkoutCollectionService {
       },
     );
 
+    console.log(workoutCollections.length);
+
     return workoutCollections;
+  }
+
+  async getCollection(id: number) {
+    const connection = await ConnectionManager.getConnection();
+
+    const workoutCollection = await connection.manager.findOne(
+      WorkoutCollection,
+      {
+        where: { id },
+        relations: [
+          'workoutCollectionDetails',
+          'workoutCollectionDetails.workout',
+          'workoutCollectionDetails.workout.workoutExercises',
+          'workoutCollectionDetails.workout.workoutExercises.workoutExerciseDetails',
+          'workoutCollectionDetails.workout.workoutExercises.exercise',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.bodyPart',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.targetMuscle',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.secondaryMuscles',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.equipments',
+          'workoutCollectionDetails.workout.workoutExercises.exercise.instructions',
+        ],
+      },
+    );
+
+    return workoutCollection;
   }
 
   async getDefaultCollections() {
@@ -137,6 +178,7 @@ export class WorkoutCollectionService {
           'workoutCollectionDetails',
           'workoutCollectionDetails.workout',
           'workoutCollectionDetails.workout.workoutExercises',
+          'workoutCollectionDetails.workout.workoutExercises.workoutExerciseDetails',
           'workoutCollectionDetails.workout.workoutExercises.exercise',
           'workoutCollectionDetails.workout.workoutExercises.exercise.bodyPart',
           'workoutCollectionDetails.workout.workoutExercises.exercise.targetMuscle',
@@ -180,31 +222,39 @@ export class WorkoutCollectionService {
 
     if (updateWorkoutCollectionDto.name) {
       workoutCollection.name = updateWorkoutCollectionDto.name;
-      // save the update to database
       await connection.manager.save(workoutCollection);
     }
 
     if (updateWorkoutCollectionDto.description) {
       workoutCollection.description = updateWorkoutCollectionDto.description;
-      // save the update to database
       await connection.manager.save(workoutCollection);
     }
 
-    if (updateWorkoutCollectionDto.workout_ids) {
+    if (updateWorkoutCollectionDto.workouts) {
       // Delete all workout collection details related to the workout collection
       await connection.manager.delete(WorkoutCollectionDetails, {
         workoutCollection: { id },
       });
-      // Add new workout collection details
-      for (const workoutId of updateWorkoutCollectionDto.workout_ids) {
+
+      const workoutService = new WorkoutService();
+      const workoutIds: number[] = [];
+
+      // iterate on list of WorkoutDTOs in WorkoutCollection
+      for (const workoutdto of updateWorkoutCollectionDto.workouts) {
+        const workoutId = workoutService.addWorkoutForCollections(
+          user,
+          workoutdto,
+        );
+
+        console.log('workoutId', await workoutId);
+        if ((await workoutId) == -1) return 'Exercise Not Found';
+        workoutIds.push(await workoutId);
+      }
+
+      for (const workoutId of workoutIds) {
         const workout = await connection.manager.findOne(Workout, {
           where: { id: workoutId },
         });
-
-        if (workout.type && workout.user.id !== user.id) {
-          message = `You are not authorized to add workout with id ${workoutId} to your collection`;
-          return message;
-        }
 
         const workoutCollectionDetails = connection.manager.create(
           WorkoutCollectionDetails,

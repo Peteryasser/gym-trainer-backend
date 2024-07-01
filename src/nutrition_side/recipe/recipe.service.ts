@@ -1,19 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Ingredient } from 'src/entity/ingredients.entity';
+import { Ingredient } from '../../entity/ingredients.entity';
 import axios from 'axios';
-import { Recipes } from 'src/entity/recipes.entity';
-import { DishTypes } from 'src/entity/dish_types.entity';
-import { Cuisines } from 'src/entity/cuisines.entity';
-import { RecipesIngredients } from 'src/entity/recipes_ingredients.entity';
+import { Recipes } from '../../entity/recipes.entity';
+import { DishTypes } from '../../entity/dish_types.entity';
+import { Cuisines } from '../../entity/cuisines.entity';
+import { RecipesIngredients } from '../../entity/recipes_ingredients.entity';
 import { RecipeDto } from './dtos/recipe_info.dto';
-import { User } from 'src/entity/user.entity';
+import { User } from '../../entity/user.entity';
 import { IngredientInfoDto } from '../ingredient/dtos/ingredient.dto';
-import { SavedRecipes } from 'src/entity/saved_recipes.entity';
+import { SavedRecipes } from '../../entity/saved_recipes.entity';
 import { CreateRecipeDto } from './dtos/create-recipe.dto';
-import { RecipeExtentedIngredients } from 'src/entity/recipe-extentedIngredient.entity';
-import { CLOUDINARY_INGREDIENTS_FOLDER_NAME } from 'src/constants';
+import { RecipeExtentedIngredients } from '../../entity/recipe-extentedIngredient.entity';
+import { CLOUDINARY_INGREDIENTS_FOLDER_NAME } from '../../constants';
 import { v2 } from 'cloudinary';
 import { Readable } from 'typeorm/platform/PlatformTools';
 import { IngredientService } from '../ingredient/ingredient.service';
@@ -210,7 +210,7 @@ export class RecipeService {
     });
 
     if (!savedRecipes.length) {
-      throw new NotFoundException('No saved ingredients found for the user');
+      throw new NotFoundException('No saved recipes found for the user');
     }
     console.log(savedRecipes)
 
@@ -271,8 +271,6 @@ export class RecipeService {
 
     const savedRecipe = await this.recipesRepository.save(recipeEntity);
 
-    console.log("HEREEEEEEE",createRecipeDto.recipeIngredients,createRecipeDto.recipeIngredients.length)
-
     if(createRecipeDto.recipeIngredients.length!=0){
       for (const ingredient of createRecipeDto.recipeIngredients) {
       let ingredientEntity = await this.ingredientRepository.findOne({ where: { id: ingredient.id } });
@@ -285,8 +283,6 @@ export class RecipeService {
           unit: ingredient.unit
         });
         await this.recipesIngredientsRepository.save(recipeIngredient);
-        console.log("SAVED",recipeIngredient)
-
         //savedRecipe.recipeIngredients.push(recipeIngredient)
       }  
     }
@@ -328,7 +324,6 @@ export class RecipeService {
       where: { user: { id: user.id } },
       relations: ["user", "dishType", "extentedIngredients", "cuisine", "recipeIngredients", "recipeIngredients.ingredient"],
     });
-    console.log(recipes[0].recipeIngredients)
     return recipes;
   }
 
@@ -341,7 +336,6 @@ export class RecipeService {
     if (!recipe) {
       throw new NotFoundException(`Recipe with ID ${id} not found or you are not authorized to update this`);
     }
-    console.log("IIIIIIIIII",updateRecipeDto)
     await this.deleteRecipe(user,id);
     return this.createCustom(updateRecipeDto,user);
   }

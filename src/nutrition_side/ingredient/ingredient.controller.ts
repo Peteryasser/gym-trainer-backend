@@ -1,12 +1,13 @@
 import { Controller, Get, Res, Param, BadRequestException, Query, UseGuards, Post, Delete } from '@nestjs/common';
-import { IngredientInfoDto } from 'src/nutrition_side/ingredient/dtos/ingredient.dto';
+import { IngredientInfoDto } from '../../nutrition_side/ingredient/dtos/ingredient.dto';
 import { IngredientService } from './ingredient.service';
 import { Response } from 'express';
-import { CloudinaryService } from 'src/utils/cloudinary/cloudinary.service';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/entity/user.entity';
-import { Ingredient } from 'src/entity/ingredients.entity';
+import { CloudinaryService } from '../../utils/cloudinary/cloudinary.service';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { User } from '../../entity/user.entity';
+import { Ingredient } from '../../entity/ingredients.entity';
+import { Coach } from 'src/entity/coach.entity';
 
 
 @Controller('ingredient')
@@ -85,19 +86,29 @@ export class IngredientController {
     @Post('save/:id')
     async saveIngredient(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<{ message: string }> {
-        console.log('saveIngredient');
-        await this.ingredientService.saveIngredient(id, user);
-        return { message: 'Ingredient saved successfully' };
+        try{
+            if(user instanceof Coach){
+                user= await user.user
+              }
+            await this.ingredientService.saveIngredient(id, user);
+            return { message: 'Ingredient saved successfully' };
+        }catch(error){
+            return error
+        }
+        
     }
 
     @UseGuards(JwtAuthGuard)
     @Delete('unsave/:id')
     async unsaveIngredient(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<{ message: string }> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         console.log('unsaveIngredient');
         await this.ingredientService.unSaveIngredient(id, user);
         return { message: 'Ingredient unsaved successfully' };
@@ -105,7 +116,10 @@ export class IngredientController {
 
     @UseGuards(JwtAuthGuard)
     @Get('get-saved-ingredients')
-    async getAllSaved(@GetUser() user: User):Promise<Ingredient[]>{
+    async getAllSaved(@GetUser() user: User|Coach):Promise<Ingredient[]>{
+        if(user instanceof Coach){
+            user= await user.user
+          }
         return this.ingredientService.getAllSaved(user)
     }
 

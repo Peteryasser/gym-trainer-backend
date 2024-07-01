@@ -17,9 +17,9 @@ import { Coach } from '../../entity/coach.entity';
 import { SubscriptionFilterDto } from '../dtos/subscription-filter.dto';
 import { PaginatedResultDto } from '../../dtos/paginatied-result.dto';
 import { paginate } from '../../utils/pagination/pagination.util';
-import { NotificationsService } from 'src/notifications/service/notifications.service';
+import { NotificationsService } from '../../notifications/service/notifications.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { NewUserSubscriptionEvent } from 'src/notifications/events/user-activity-events';
+import { NewUserSubscriptionEvent } from '../../notifications/events/user-activity-events';
 
 @Injectable()
 export class UserSubscriptionsService {
@@ -116,23 +116,23 @@ export class UserSubscriptionsService {
       }
     }
 
-    if (user instanceof User && filterDto.coachId)
-      query = query
-        .andWhere('coach.id = :coachId', {
+    if (user instanceof User) {
+      query.andWhere('user.id = :userId', {
+        userId: user.id,
+      });
+      if (filterDto.coachId)
+        query = query.andWhere('coach.id = :coachId', {
           coachId: filterDto.coachId,
-        })
-        .andWhere('user.id = :userId', {
-          userId: user.id,
         });
-    else if (user instanceof Coach && filterDto.userId)
-      query = query
-        .andWhere('user.id = :userId', {
+    } else if (user instanceof Coach) {
+      query.andWhere('coach.id = :coachId', {
+        coachId: user.id,
+      });
+      if (filterDto.userId)
+        query = query.andWhere('user.id = :userId', {
           userId: filterDto.userId,
-        })
-        .andWhere('coach.id = :coachId', {
-          coachId: user.id,
         });
-
+    }
     query = paginate(query, filterDto.page, filterDto.pageSize);
 
     const [subscriptions, total] = await query.getManyAndCount();

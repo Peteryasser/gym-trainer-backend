@@ -1,35 +1,24 @@
 import { Controller, Get, Res, Param, Query,Post, UseGuards, Delete, Body, Patch, Put } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
-import axios from 'axios';
 import { Response } from 'express';
-import { CloudinaryService } from 'src/utils/cloudinary/cloudinary.service';
-import { v2 } from 'cloudinary';
-import { Readable } from 'typeorm/platform/PlatformTools';
 import { readFileSync } from 'fs';
 import { RecipeDto } from './dtos/recipe_info.dto';
 import { RecipeIngredientDto } from './dtos/recipe-ingredient.dto';
-import { Recipes } from 'src/entity/recipes.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { User } from 'src/entity/user.entity';
+import { Recipes } from '../../entity/recipes.entity';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { User } from '../../entity/user.entity';
 import { CreateRecipeDto } from './dtos/create-recipe.dto';
+import { Coach } from 'src/entity/coach.entity';
 
 
 
 @Controller('recipe')
 export class RecipeController { 
-    cloudinary;
-    ninja_api_url;
-    ninja_api_key;
-    spoonacular_api_url;
-    spoonacular_api_key;
+   
 
     constructor(private readonly recipeService: RecipeService) {
-      this.cloudinary = new CloudinaryService();
-      this.ninja_api_url = process.env.NINJA_API_URL;
-      this.ninja_api_key = process.env.NINJA_API_KEY;
-      this.spoonacular_api_url = process.env.SPOONACULAR_API_URL;
-      this.spoonacular_api_key = process.env.SPOONACULAR_API_KEY;
+      
       
     }
 
@@ -86,7 +75,7 @@ export class RecipeController {
 
     
 
-    @Get('get_all_recipes_while_installing')
+    @Get('get-all-recipes-while-installing')
     async getAllrecipes():Promise<Recipes[]>{
         try{
             return await this.recipeService.getAllRecipes()
@@ -100,8 +89,11 @@ export class RecipeController {
     @Post('save/:id')
     async saveRecipe(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<{ message: string }> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         await this.recipeService.saveRecipe(id, user);
         return { message: 'Recipe saved successfully' };
     }
@@ -110,15 +102,21 @@ export class RecipeController {
     @Delete('unsave/:id')
     async unsaveRecipe(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<{ message: string }> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         await this.recipeService.unSaveRecipe(id, user);
         return { message: 'Recipe unsaved successfully' };
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('get-saved-recipes')
-    async getAllSaved(@GetUser() user: User):Promise<Recipes[]>{
+    async getAllSaved(@GetUser() user: User|Coach):Promise<Recipes[]>{
+        if(user instanceof Coach){
+            user= await user.user
+          }
         return this.recipeService.getAllSaved(user)
     }
 
@@ -126,9 +124,12 @@ export class RecipeController {
     @Post('create-custom-recipe')
     async create(
         @Body() createRecipeDto: CreateRecipeDto,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ):Promise<Recipes> {
         try{
+            if(user instanceof Coach){
+                user= await user.user
+              }
             return await this.recipeService.createCustom(createRecipeDto,user);
         }catch(error){
             return error;
@@ -157,18 +158,24 @@ export class RecipeController {
 
     @UseGuards(JwtAuthGuard)
     @Delete('delete/:id')
-    async deleteExercise(
+    async deleteRecipe(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<String> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         console.log('delete Recipe');
         return this.recipeService.deleteRecipe(user, id);
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('get_my_recipes')
-    async getAllByUser(@GetUser() user: User):Promise<Recipes[]>{
+    @Get('get-my-recipes')
+    async getAllByUser(@GetUser() user: User|Coach):Promise<Recipes[]>{
         try{
+            if(user instanceof Coach){
+                user= await user.user
+              }
             return await this.recipeService.getAllByUser(user)
         }catch{
             throw new Error("Error while loading recipes");
@@ -180,16 +187,18 @@ export class RecipeController {
     @Put('update/:id')
     async update(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
         @Body() updateRecipeDto: CreateRecipeDto
         ):Promise<Recipes>{
         try{
+            if(user instanceof Coach){
+                user= await user.user
+              }
             return await this.recipeService.update(id,user,updateRecipeDto)
         }catch(error){
             console.log(error);
             return error;
         }
-
     }
 
 

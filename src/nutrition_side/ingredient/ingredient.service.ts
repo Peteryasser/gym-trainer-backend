@@ -1,16 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CSVReaderService } from 'src/utils/Readers/csv_reader.service';
-import { IngredientInfoDto } from 'src/nutrition_side/ingredient/dtos/ingredient.dto';
+import { CSVReaderService } from '../../utils/Readers/csv_reader.service';
+import { IngredientInfoDto } from '../../nutrition_side/ingredient/dtos/ingredient.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Ingredient } from 'src/entity/ingredients.entity';
-import { IngredientCategory } from 'src/entity/ingredient_categories.entity';
+import { Ingredient } from '../../entity/ingredients.entity';
+import { IngredientCategory } from '../../entity/ingredient_categories.entity';
 import { IngredientDetailsDTO } from './dtos/ingredient-details.dto';
 import { NutrientsDto } from './dtos/nutrients.dto';
 import axios from 'axios';
-import { User } from 'src/entity/user.entity';
-import { SavedIngredients } from 'src/entity/saved_ingredients.entity';
-import { CLOUDINARY_INGREDIENTS_FOLDER_NAME } from 'src/constants';
+import { User } from '../../entity/user.entity';
+import { SavedIngredients } from '../../entity/saved_ingredients.entity';
+import { CLOUDINARY_INGREDIENTS_FOLDER_NAME } from '../../constants';
 import { v2 } from 'cloudinary';
 import { Readable } from 'typeorm/platform/PlatformTools';
 
@@ -180,7 +180,7 @@ export class IngredientService {
     return ingredients;
   }
 
-  async saveIngredient(id: number, user: User): Promise<void> {
+  async saveIngredient(id: number, user: User): Promise<SavedIngredients> {
     const ingredient: Ingredient = await this.ingredientRepository.findOne( {
       where: { id },
       relations: ['category'],
@@ -190,12 +190,13 @@ export class IngredientService {
       throw new NotFoundException('ingredient not found');
     }
 
-    const savedIngredients = new SavedIngredients();
-    savedIngredients.user = user;
-    savedIngredients.ingredient = ingredient;
+    const savedIngredient = this.savedIngredientsRepository.create({
+      user,
+      ingredient,
+    });
 
 
-    await this.savedIngredientsRepository.save(savedIngredients);
+    return await this.savedIngredientsRepository.save(savedIngredient);
   }
 
   async unSaveIngredient(id: number, user: User): Promise<void> {
