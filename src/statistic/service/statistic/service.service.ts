@@ -151,7 +151,7 @@ export class StatisticService {
         
           return [...muscleCounts, ...secondaryOnlyMuscles];
         } catch (error) {
-          throw new Error('Error while loading muscle counts');
+          throw new Error(error);
         }
       }
     
