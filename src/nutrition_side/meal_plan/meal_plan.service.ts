@@ -110,9 +110,7 @@ export class MealPlanService {
 
     const mealPlans = await this.mealPlansRepository.find( {
       where: { user: { id: user.id } },
-      relations: [
-        'mealPlanMeals','mealPlanMeals.meal','mealPlanMeals.meal.mealRecipes'
-      ],
+      relations: ['mealPlanMeals','mealPlanMeals.meal','mealPlanMeals.meal.mealRecipes','mealPlanMeals.meal.category','mealPlanMeals.meal.mealRecipes.recipe'],
     });
 
     return mealPlans;
@@ -149,7 +147,7 @@ export class MealPlanService {
           package: { id: userPackageMealPlan.package.id},
         },
       },
-      relations: ['mealPlanMeals','mealPlanMeals.meal','mealPlanMeals.meal.mealRecipes','mealPlanMeals.meal.category'],
+      relations: ['mealPlanMeals','mealPlanMeals.meal','mealPlanMeals.meal.mealRecipes','mealPlanMeals.meal.category','mealPlanMeals.meal.mealRecipes.recipe'],
     });
 
     return mealPlans;
