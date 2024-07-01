@@ -4,6 +4,7 @@ import * as bodyParser from 'body-parser';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 // import * as fs from 'fs';
 
+
 async function bootstrap() {
   /* const httpsOptions = {
     key: fs.readFileSync('./key.pem'),
@@ -12,6 +13,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     // httpsOptions,
   });
+
   app.setGlobalPrefix('api');
   app.enableVersioning({
     type: VersioningType.URI,
@@ -22,6 +24,7 @@ async function bootstrap() {
     new ValidationPipe({ forbidUnknownValues: false, transform: true }),
   );
   app.use(bodyParser.json());
+
 
   await app.listen(3000);
 }
