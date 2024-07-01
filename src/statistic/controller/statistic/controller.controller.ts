@@ -6,6 +6,7 @@ import { User } from '../../../entity/user.entity';
 import { StatisticService } from '../../../statistic/service/statistic/service.service';
 import { CreateMeasurementDto } from '../../../statistic/dtos/measurement.dto';
 import { Measurements } from '../../../entity/measurements.entity';
+import { Coach } from '../../../entity/coach.entity';
 
 @Controller('statistic')
 @UseGuards(JwtAuthGuard)
@@ -15,6 +16,27 @@ export class StatisticController {
     @Post('measurements')
     create(@Body() createMeasurementDto: CreateMeasurementDto, @GetUser() user: User): Promise<Measurements> {
         return this.statisticService.create(createMeasurementDto, user);
+    }
+
+    @Get('getUserStatisticsByCoach/:userId/:timeId/:year/:month')
+    async getUserStatisticsByCoach(@Param('userId') userId: number, @GetUser() coach: Coach, @Param('timeId') timeId: number, @Param('year', ParseIntPipe) year: number, @Param('month', ParseIntPipe) month: number){
+        try{
+            switch (timeId) {
+                case 1:  
+                    return await this.statisticService.getUserStatisticsByCoach(userId,coach,'thisDay',year,month);
+                case 2:
+                    return await this.statisticService.getUserStatisticsByCoach(userId,coach,'thisWeek',year,month);
+                case 3:
+                    return await this.statisticService.getUserStatisticsByCoach(userId,coach,'thisMonth',year,month);
+                case 4:
+                    return await this.statisticService.getUserStatisticsByCoach(userId,coach,'thisYear',year,month)
+                case 5: 
+                default:   
+                    return await this.statisticService.getUserStatisticsByCoach(userId,coach,'allTime',year,month)
+            }
+        }catch(error){
+            throw new Error(error);
+        }
     }
 
     @Get('userWeights')
