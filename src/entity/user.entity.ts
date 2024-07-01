@@ -26,6 +26,7 @@ import { SavedIngredients } from './saved_ingredients.entity';
 import { AppNotification } from './app-notification.entity';
 import { SubscriptionReview } from './subscription-review.entity';
 import { UserPackageMealPlans } from './user_package_meal_plans.entity';
+import { Measurements } from './measurements.entity';
 import { MealPlans } from './meal_plans.entity';
 import { UserKeys } from './user-keys.entity';
 
@@ -193,4 +194,7 @@ export class User {
     (userPackageMealPlan) => userPackageMealPlan.user,
   )
   userPackageMealPlans: UserPackageMealPlans[];
+
+  @OneToMany(() => Measurements, (measurement) => measurement.user)
+  measurements: Measurements[];
 }

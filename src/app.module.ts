@@ -42,6 +42,9 @@ import { IngredientModule } from './nutrition_side/ingredient/ingredient.module'
 import { RecipeModule } from './nutrition_side/recipe/recipe.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { CoachSocialMediaModule } from './coach_social_media/coach_social_media.module';
+// import { IngredientService } from './nutrition_side/ingredient/ingredient.service';
+// import { IngredientController } from './nutrition_side/ingredient/ingredient.controller';
+import { StatisticModule } from './statistic/statistic.module';
 import { SubscriptionsReviewsModule } from './subscriptions_reviews/subscriptions_reviews.module';
 import { CoachCertificatesModule } from './coach_certificates/coach_certificates.module';
 import { MealModule } from './nutrition_side/meal/meal.module';
@@ -84,6 +87,8 @@ import { MealPlanPackageModule } from './nutrition_side/meal-plan-package/mealpl
     RecipeModule,
     NotificationsModule,
     CoachSocialMediaModule,
+    RecipeModule,
+    StatisticModule,
     SubscriptionsReviewsModule,
     RecipeModule,
     CoachCertificatesModule,
@@ -97,6 +102,7 @@ import { MealPlanPackageModule } from './nutrition_side/meal-plan-package/mealpl
   controllers: [
     AppController,
     WorkoutController,
+    // IngredientController,
     ExerciseController,
     WorkoutController,
     WorkoutHistoryController,

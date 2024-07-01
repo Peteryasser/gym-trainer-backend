@@ -40,13 +40,16 @@ export class MealController {
             return error;
         }
     }
-    
+
     @UseGuards(JwtAuthGuard)
     @Post('create-custom-meal')
     async createCustom(
         @Body() createMealDto: CreateMealDto,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ):Promise<Meals> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         try{
             return await this.mealService.create(createMealDto,user);
         }catch(error){
@@ -68,8 +71,11 @@ export class MealController {
     @Post('save/:id')
     async saveMeal(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<{ message: string }> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         await this.mealService.saveMeal(id, user);
         return { message: 'Meal saved successfully' };
     }
@@ -78,15 +84,21 @@ export class MealController {
     @Delete('unsave/:id')
     async unsaveMeal(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<{ message: string }> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         await this.mealService.unSaveMeal(id, user);
         return { message: 'Meal unsaved successfully' };
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('get-saved-meals')
-    async getAllSaved(@GetUser() user: User):Promise<Meals[]>{
+    async getAllSaved(@GetUser() user: User|Coach):Promise<Meals[]>{
+        if(user instanceof Coach){
+            user= await user.user
+          }
         return this.mealService.getAllSaved(user)
     }
 
@@ -102,16 +114,22 @@ export class MealController {
     @Delete('delete/:id')
     async deleteMeal(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<String> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         console.log('delete Meal');
         return this.mealService.deleteMeal(user, id);
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('get-my-meals')
-    async getAllByUser(@GetUser() user: User):Promise<Meals[]>{
+    async getAllByUser(@GetUser() user: User|Coach):Promise<Meals[]>{
         try{
+            if(user instanceof Coach){
+                user= await user.user
+              }
             return await this.mealService.getAllByUser(user)
         }catch{
             throw new Error("Error while loading meals");
@@ -122,10 +140,13 @@ export class MealController {
     @Put('update/:id')
     async update(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
         @Body() updateRecipeDto: CreateMealDto
         ):Promise<Meals>{
         try{
+            if(user instanceof Coach){
+                user= await user.user
+              }
             return await this.mealService.update(id,user,updateRecipeDto)
         }catch(error){
             console.log(error);
@@ -137,14 +158,20 @@ export class MealController {
     @Post('add-meal-to-history/:id')
     async addMealHistory(
         @Param('id') meal_id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<UserMealsHistory> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         return this.mealService.addMealHistory(user, meal_id);
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('get-meal-history')
-    async getMyHistory(@GetUser() user: User): Promise<UserMealsHistory[]> {
+    async getMyHistory(@GetUser() user: User|Coach): Promise<UserMealsHistory[]> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         return this.mealService.getMyHistory(user);
     }
 
@@ -152,8 +179,11 @@ export class MealController {
     @Delete('delete-meal-from-history/:id')
     async deleteMealHistory(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<String> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         return this.mealService.deleteMealHistory(id, user);
     }
 
@@ -161,8 +191,11 @@ export class MealController {
     @Get('get-user-nutritions-from-history')
     async getTotalNutritionalValues(
         @Body() historyNutDto: getHistoryNutritionsDto,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<MealNutritionsDto> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         return await this.mealService.getTotalNutritionalValues(historyNutDto,user);
     }
 

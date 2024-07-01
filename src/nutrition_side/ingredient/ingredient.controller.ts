@@ -7,6 +7,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { User } from '../../entity/user.entity';
 import { Ingredient } from '../../entity/ingredients.entity';
+import { Coach } from '../../entity/coach.entity';
 
 
 @Controller('ingredient')
@@ -85,9 +86,12 @@ export class IngredientController {
     @Post('save/:id')
     async saveIngredient(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<{ message: string }> {
         try{
+            if(user instanceof Coach){
+                user= await user.user
+              }
             await this.ingredientService.saveIngredient(id, user);
             return { message: 'Ingredient saved successfully' };
         }catch(error){
@@ -100,8 +104,11 @@ export class IngredientController {
     @Delete('unsave/:id')
     async unsaveIngredient(
         @Param('id') id: number,
-        @GetUser() user: User,
+        @GetUser() user: User|Coach,
     ): Promise<{ message: string }> {
+        if(user instanceof Coach){
+            user= await user.user
+          }
         console.log('unsaveIngredient');
         await this.ingredientService.unSaveIngredient(id, user);
         return { message: 'Ingredient unsaved successfully' };
@@ -109,7 +116,10 @@ export class IngredientController {
 
     @UseGuards(JwtAuthGuard)
     @Get('get-saved-ingredients')
-    async getAllSaved(@GetUser() user: User):Promise<Ingredient[]>{
+    async getAllSaved(@GetUser() user: User|Coach):Promise<Ingredient[]>{
+        if(user instanceof Coach){
+            user= await user.user
+          }
         return this.ingredientService.getAllSaved(user)
     }
 

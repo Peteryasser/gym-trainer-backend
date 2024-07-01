@@ -149,7 +149,7 @@ export class MealPlanService {
           package: { id: userPackageMealPlan.package.id},
         },
       },
-      relations: ['mealPlanMeals','mealPlanMeals.meal','mealPlanMeals.meal.mealRecipes'],
+      relations: ['mealPlanMeals','mealPlanMeals.meal','mealPlanMeals.meal.mealRecipes','mealPlanMeals.meal.category'],
     });
 
     return mealPlans;
