@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { config as dotenvConfig } from 'dotenv';
 import { CreateMeasurementDto } from '../../../statistic/dtos/measurement.dto';
@@ -9,7 +9,8 @@ import { Measurements } from '../../../entity/measurements.entity';
 import { Muscle } from '../../../entity/muscle.entity';
 import { WorkoutHistory } from '../../../entity/user-workout-history.entity';
 import { addHours } from 'date-fns';
-
+import { Coach } from 'src/entity/coach.entity';
+import { UserSubscription } from 'src/entity/user-subscription.entity'
 
 
 dotenvConfig({ path: '.env' });
@@ -22,7 +23,47 @@ export class StatisticService {
       private  muscleRepository: Repository<Muscle>,
       @InjectRepository(WorkoutHistory)
       private readonly workoutHistoryRepository: Repository<WorkoutHistory>,
+      @InjectRepository(UserSubscription)
+      private readonly userSubscriptionRepository: Repository<UserSubscription>,
       ) {}
+      
+      async getUserStatisticsByCoach(id: number,user: Coach, timeFilter: string, year: number, month: number){
+        const subscription = await this.userSubscriptionRepository.findOne({
+          where: {
+            user: { id: id },
+            package: { coach: user },
+          },
+    
+        });
+    
+        if (!subscription) {
+          throw new UnauthorizedException('You are not authorized to access this user’s data');
+        }
+        const [
+          userWeights,
+          userHeights,
+          userBodyFats,
+          userTrainedMuscles,
+          userTrainingDays,
+          lastMeasurements,
+        ] = await Promise.all([
+          this.getUserWeightsByUserId(id),
+          this.getUserHeightsByUserId(id),
+          this.getUserBodyFatsByUserId(id),
+          this.getUserTrainedMuscles(id, timeFilter),
+          this.getUserTrainingDays(id, year, month),
+          this.getLastMeasurementsForUser(id),
+        ]);
+      
+        return {
+          userWeights,
+          userHeights,
+          userBodyFats,
+          userTrainedMuscles,
+          userTrainingDays,
+          lastMeasurements,
+        };
+      }
 
       async create(createMeasurementDto: CreateMeasurementDto, user: User): Promise<any> {
         const connection = await ConnectionManager.getConnection();

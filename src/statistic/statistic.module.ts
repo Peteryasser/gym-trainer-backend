@@ -9,10 +9,11 @@ import { Muscle } from '../entity/muscle.entity';
 import { Exercise } from '../entity/exercise.entity';
 import { Workout } from '../entity/workout.entity';
 import { WorkoutExerciseDetails } from '../entity/workout-exercise-details.entity';
+import { UserSubscription } from 'src/entity/user-subscription.entity';
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([WorkoutHistory,User,Measurements,Muscle,Exercise,Workout,WorkoutExerciseDetails])],
+  imports: [TypeOrmModule.forFeature([WorkoutHistory,User,Measurements,Muscle,Exercise,Workout,WorkoutExerciseDetails,UserSubscription])],
   providers: [StatisticService],
   controllers: [StatisticController]
 
