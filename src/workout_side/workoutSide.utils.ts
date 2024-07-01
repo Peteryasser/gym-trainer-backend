@@ -1,5 +1,5 @@
-import { Coach } from 'src/entity/coach.entity';
-import { User } from 'src/entity/user.entity';
+import { Coach } from '../entity/coach.entity';
+import { User } from '../entity/user.entity';
 
 export class WorkoutSideUtils {
   static async getTheUser(user: User | Coach) {

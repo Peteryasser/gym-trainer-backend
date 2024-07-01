@@ -1,11 +1,11 @@
 import { Body, Controller,Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { WorkoutHistory } from 'src/entity/user-workout-history.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
-import { User } from 'src/entity/user.entity';
-import { StatisticService } from 'src/statistic/service/statistic/service.service';
-import { CreateMeasurementDto } from 'src/statistic/dtos/measurement.dto';
-import { Measurements } from 'src/entity/measurements.entity';
+import { GetUser } from '../../../auth/decorators/get-user.decorator';
+import { WorkoutHistory } from '../../../entity/user-workout-history.entity';
+import { JwtAuthGuard } from '../../../auth/guards/jwt.auth.guard';
+import { User } from '../../../entity/user.entity';
+import { StatisticService } from '../../../statistic/service/statistic/service.service';
+import { CreateMeasurementDto } from '../../../statistic/dtos/measurement.dto';
+import { Measurements } from '../../../entity/measurements.entity';
 
 @Controller('statistic')
 @UseGuards(JwtAuthGuard)

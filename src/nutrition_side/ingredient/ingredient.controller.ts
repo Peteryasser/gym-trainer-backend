@@ -7,7 +7,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { User } from '../../entity/user.entity';
 import { Ingredient } from '../../entity/ingredients.entity';
-import { Coach } from 'src/entity/coach.entity';
+import { Coach } from '../../entity/coach.entity';
 
 
 @Controller('ingredient')

@@ -9,7 +9,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { User } from '../../entity/user.entity';
 import { CreateRecipeDto } from './dtos/create-recipe.dto';
-import { Coach } from 'src/entity/coach.entity';
+import { Coach } from '../../entity/coach.entity';
 
 
 

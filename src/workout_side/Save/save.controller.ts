@@ -10,7 +10,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { SaveService } from './save.service';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { User } from '../../entity/user.entity';
-import { Coach } from 'src/entity/coach.entity';
+import { Coach } from '../../entity/coach.entity';
 import { WorkoutSideUtils } from '../workoutSide.utils';
 
 @Controller('favorites')

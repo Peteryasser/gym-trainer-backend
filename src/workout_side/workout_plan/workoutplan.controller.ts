@@ -12,7 +12,7 @@ import { UseGuards } from '@nestjs/common';
 import { WorkoutPlanService } from './workoutplan.service';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { User } from '../../entity/user.entity';
-import { Coach } from 'src/entity/coach.entity';
+import { Coach } from '../../entity/coach.entity';
 import { WorkoutPlanUpdateDto } from './dtos/workout_plan_update_dto';
 import { WorkoutPlan } from '../../entity/workout-plan.entity';
 import { WorkoutSideUtils } from '../workoutSide.utils';

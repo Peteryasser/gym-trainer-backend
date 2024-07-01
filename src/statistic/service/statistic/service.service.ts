@@ -1,14 +1,14 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { config as dotenvConfig } from 'dotenv';
-import { CreateMeasurementDto } from 'src/statistic/dtos/measurement.dto';
-import { User } from 'src/entity/user.entity';
+import { CreateMeasurementDto } from '../../../statistic/dtos/measurement.dto';
+import { User } from '../../../entity/user.entity';
 import { Repository } from 'typeorm';
-import { ConnectionManager } from 'src/config/connection_manager';
-import { Measurements } from 'src/entity/measurements.entity';
-import { Muscle } from 'src/entity/muscle.entity';
+import { ConnectionManager } from '../../../config/connection_manager';
+import { Measurements } from '../../../entity/measurements.entity';
+import { Muscle } from '../../../entity/muscle.entity';
 import * as moment from 'moment';
-import { WorkoutHistory } from 'src/entity/user-workout-history.entity';
+import { WorkoutHistory } from '../../../entity/user-workout-history.entity';
 import { addHours } from 'date-fns';
 
 

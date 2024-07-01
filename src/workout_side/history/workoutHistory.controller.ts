@@ -7,7 +7,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { WorkoutHistoryDTO } from './dtos/workoutHistory_dto';
 import { WorkoutHistory } from '../../entity/user-workout-history.entity';
 import { WorkoutSideUtils } from '../workoutSide.utils';
-import { Coach } from 'src/entity/coach.entity';
+import { Coach } from '../../entity/coach.entity';
 
 @Controller('workout-history')
 @UseGuards(JwtAuthGuard)

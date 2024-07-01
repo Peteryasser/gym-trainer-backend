@@ -19,7 +19,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { BodyPart } from '../../entity/bodyPart.entity';
 import { Equipment } from '../../entity/equipment.entity';
 import { Muscle } from '../../entity/muscle.entity';
-import { Coach } from 'src/entity/coach.entity';
+import { Coach } from '../../entity/coach.entity';
 import { WorkoutSideUtils } from '../workoutSide.utils';
 
 @Controller('exercises')

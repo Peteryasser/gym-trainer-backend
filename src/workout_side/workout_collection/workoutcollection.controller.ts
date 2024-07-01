@@ -16,7 +16,7 @@ import { User } from '../../entity/user.entity';
 import { WorkoutCollection } from '../../entity/workout-collection.entity';
 import { WorkoutCollectionUpdateDto } from './dtos/workout_collection_update_dto';
 import { WorkoutSideUtils } from '../workoutSide.utils';
-import { Coach } from 'src/entity/coach.entity';
+import { Coach } from '../../entity/coach.entity';
 
 @Controller('workout-collection')
 @UseGuards(JwtAuthGuard)
