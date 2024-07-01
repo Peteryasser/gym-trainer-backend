@@ -9,8 +9,8 @@ import { Measurements } from '../../../entity/measurements.entity';
 import { Muscle } from '../../../entity/muscle.entity';
 import { WorkoutHistory } from '../../../entity/user-workout-history.entity';
 import { addHours } from 'date-fns';
-import { Coach } from 'src/entity/coach.entity';
-import { UserSubscription } from 'src/entity/user-subscription.entity'
+import { Coach } from '../../../entity/coach.entity';
+import { UserSubscription } from '../../../entity/user-subscription.entity'
 
 
 dotenvConfig({ path: '.env' });

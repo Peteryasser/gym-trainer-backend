@@ -6,7 +6,7 @@ import { User } from '../../../entity/user.entity';
 import { StatisticService } from '../../../statistic/service/statistic/service.service';
 import { CreateMeasurementDto } from '../../../statistic/dtos/measurement.dto';
 import { Measurements } from '../../../entity/measurements.entity';
-import { Coach } from 'src/entity/coach.entity';
+import { Coach } from '../../../entity/coach.entity';
 
 @Controller('statistic')
 @UseGuards(JwtAuthGuard)
