@@ -22,7 +22,7 @@ export class StatisticService {
       @InjectRepository(Muscle)
       private  muscleRepository: Repository<Muscle>,
       @InjectRepository(WorkoutHistory)
-    private readonly workoutHistoryRepository: Repository<WorkoutHistory>,
+      private readonly workoutHistoryRepository: Repository<WorkoutHistory>,
       ) {}
 
       async create(createMeasurementDto: CreateMeasurementDto, user: User): Promise<any> {
