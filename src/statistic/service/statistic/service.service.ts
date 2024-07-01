@@ -159,30 +159,52 @@ export class StatisticService {
         let startDate: string;
         let endDate: string;
     
+        const startOfDay = (date: Date) => new Date(date.setHours(0, 0, 0, 0)).toISOString();
+        const endOfDay = (date: Date) => new Date(date.setHours(23, 59, 59, 999)).toISOString();
+    
+        const startOfWeek = (date: Date) => {
+            const day = date.getDay();
+            const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+            return new Date(date.setDate(diff)).toISOString();
+        };
+    
+        const endOfWeek = (date: Date) => {
+            const startOfWeekDate = new Date(startOfWeek(date));
+            return new Date(startOfWeekDate.setDate(startOfWeekDate.getDate() + 6)).toISOString();
+        };
+    
+        const startOfMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth(), 1).toISOString();
+        const endOfMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999).toISOString();
+    
+        const startOfYear = (date: Date) => new Date(date.getFullYear(), 0, 1).toISOString();
+        const endOfYear = (date: Date) => new Date(date.getFullYear(), 11, 31, 23, 59, 59, 999).toISOString();
+    
+        const now = new Date();
+    
         switch (timeFilter) {
-          case 'thisDay':
-            startDate = moment().startOf('day').toISOString();
-            endDate = moment().endOf('day').toISOString();
-            break;
-          case 'thisWeek':
-            startDate = moment().startOf('week').toISOString();
-            endDate = moment().endOf('week').toISOString();
-            break;
-          case 'thisMonth':
-            startDate = moment().startOf('month').toISOString();
-            endDate = moment().endOf('month').toISOString();
-            break;
-          case 'thisYear':
-            startDate = moment().startOf('year').toISOString();
-            endDate = moment().endOf('year').toISOString();
-            break;
-          case 'allTime':
-          default:
-            startDate = '1900-01-01T00:00:00.000Z';
-            endDate = moment().toISOString();
-            break;
-          }
-        
+            case 'thisDay':
+                startDate = startOfDay(new Date());
+                endDate = endOfDay(new Date());
+                break;
+            case 'thisWeek':
+                startDate = startOfWeek(new Date());
+                endDate = endOfWeek(new Date());
+                break;
+            case 'thisMonth':
+                startDate = startOfMonth(new Date());
+                endDate = endOfMonth(new Date());
+                break;
+            case 'thisYear':
+                startDate = startOfYear(new Date());
+                endDate = endOfYear(new Date());
+                break;
+            case 'allTime':
+            default:
+                startDate = '1900-01-01T00:00:00.000Z';
+                endDate = now.toISOString();
+                break;
+        }
+    
         return { startDate, endDate };
       }
 
