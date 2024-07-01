@@ -100,7 +100,7 @@ export class MealPlanPackageService {
         where: { user: { id: user.id } },
         relations: [
           'mealPlan',
-          'mealPlan.mealPlanMeals','mealPlan.mealPlanMeals.meal','mealPlan.mealPlanMeals.meal.mealRecipes'
+          'mealPlan.mealPlanMeals','mealPlan.mealPlanMeals.meal','mealPlan.mealPlanMeals.meal.mealRecipes','mealPlan.mealPlanMeals.meal.mealRecipes.recipe'
         ],
       },
     );
@@ -115,7 +115,7 @@ export class MealPlanPackageService {
         where: { id },
         relations: [
           'mealPlan',
-          'mealPlan.mealPlanMeals','mealPlan.mealPlanMeals.meal','mealPlan.mealPlanMeals.meal.mealRecipes'
+          'mealPlan.mealPlanMeals','mealPlan.mealPlanMeals.meal','mealPlan.mealPlanMeals.meal.mealRecipes','mealPlan.mealPlanMeals.meal.mealRecipes.recipe'
         ],
       },
     );
