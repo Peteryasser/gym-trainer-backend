@@ -7,7 +7,6 @@ import { Repository } from 'typeorm';
 import { ConnectionManager } from '../../../config/connection_manager';
 import { Measurements } from '../../../entity/measurements.entity';
 import { Muscle } from '../../../entity/muscle.entity';
-import * as moment from 'moment';
 import { WorkoutHistory } from '../../../entity/user-workout-history.entity';
 import { addHours } from 'date-fns';
 
