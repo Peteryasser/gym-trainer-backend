@@ -33,6 +33,9 @@ export class WorkoutHistory {
   @Column('int', { array: true })
   weights: number[]; // New column
 
+  @Column('int', { array: true })
+  reps: number[]; // New column
+
   @Column({ type: 'int' })
   duration: number;
 
