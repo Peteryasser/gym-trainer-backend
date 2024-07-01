@@ -228,9 +228,8 @@ export class WorkoutPlanPackageService {
           'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.secondaryMuscles',
           'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.equipments',
           'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.instructions',
-          'user',
+          // 'user',
           'package',
-          'package.coach',
         ],
       });
 
@@ -264,9 +263,9 @@ export class WorkoutPlanPackageService {
           'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.secondaryMuscles',
           'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.equipments',
           'workoutPlan.workoutPlanDetails.workoutCollection.workoutCollectionDetails.workout.workoutExercises.exercise.instructions',
-          'user',
+          // 'user',
           'package',
-          'package.coach',
+          // 'package.coach',
         ],
       });
 

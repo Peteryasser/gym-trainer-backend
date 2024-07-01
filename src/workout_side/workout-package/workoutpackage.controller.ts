@@ -75,10 +75,6 @@ export class WorkoutPlanPackageController {
     return this.workoutPlanPackageService.getMyWorkoutPlansInPackage(getUser);
   }
 
-
-
-
-
   // @Get('get-workout-plan-in-package/:id')
   // async getWorkoutPlanInPackage(@Param('id') id: number) {
   //   console.log('getWorkoutPlanInPackage');
