@@ -104,8 +104,10 @@ export class MealPlanPackageService {
         ],
       },
     );
+    
 
-    return userPackageMealPlans;
+    const mealPlans = userPackageMealPlans.map(upmp => upmp.mealPlan)
+    return mealPlans;
   }
 
   async getMealPlanInPackage(id: number):Promise<UserPackageMealPlans> {
